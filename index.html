@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>WAYGO — Coming Soon</title>
+
+<style>
+
+/* =====================================================
+   WAYGO — COMING SOON
+   BLACK / RED / ORANGE / MYSTERIOUS
+===================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background: #020202;
+    color: white;
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+}
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+:root {
+    --red: #ff1700;
+    --red2: #ff3600;
+    --orange: #ff6500;
+    --orange2: #ff9b00;
+    --dark: #030303;
+    --white: #fff3ec;
+}
+
+/* =====================================================
+   BACKGROUND
+===================================================== */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+
+    background:
+        radial-gradient(
+            circle at 50% 30%,
+            rgba(255, 40, 0, .08),
+            transparent 35%
+        );
+
+    animation: backgroundPulse 5s infinite alternate;
+}
+
+@keyframes backgroundPulse {
+    from {
+        opacity: .5;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Noise */
+
+.noise {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 100;
+
+    opacity: .035;
+
+    background-image:
+        repeating-radial-gradient(
+            circle,
+            rgba(255,255,255,.8) 0,
+            rgba(255,255,255,.8) 1px,
+            transparent 2px,
+            transparent 4px
+        );
+}
+
+/* =====================================================
+   PARTICLES
+===================================================== */
+
+#particles {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.particle {
+    position: absolute;
+
+    width: 3px;
+    height: 3px;
+
+    background: var(--orange);
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 5px var(--orange),
+        0 0 15px var(--red);
+
+    animation: particleMove linear infinite;
+}
+
+@keyframes particleMove {
+
+    0% {
+        transform:
+            translateY(110vh)
+            translateX(0)
+            rotate(0deg);
+
+        opacity: 0;
+    }
+
+    15% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        transform:
+            translateY(-20vh)
+            translateX(100px)
+            rotate(360deg);
+
+        opacity: 0;
+    }
+}
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero {
+
+    min-height: 100vh;
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 80px 20px;
+
+    overflow: hidden;
+
+    background:
+
+        radial-gradient(
+            circle at center,
+            rgba(255, 50, 0, .13),
+            transparent 35%
+        ),
+
+        linear-gradient(
+            180deg,
+            #020202,
+            #080100 70%,
+            #020202
+        );
+}
+
+/* Big glow */
+
+.hero::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 700px;
+    height: 700px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,50,0,.17),
+            rgba(255,50,0,.04) 45%,
+            transparent 70%
+        );
+
+    filter: blur(15px);
+
+    animation: heroGlow 5s infinite alternate;
+}
+
+@keyframes heroGlow {
+
+    0% {
+        transform: scale(.8);
+        opacity: .4;
+    }
+
+    100% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+.hero-content {
+
+    position: relative;
+
+    z-index: 10;
+
+    width: 100%;
+
+    max-width: 1000px;
+}
+
+/* =====================================================
+   SMALL TITLE
+===================================================== */
+
+.top-text {
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 12px;
+
+    letter-spacing: 8px;
+
+    color: #aaa;
+
+    margin-bottom: 30px;
+
+    animation: fadeDown 1.5s ease;
+}
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+.logo {
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: clamp(
+        65px,
+        15vw,
+        170px
+    );
+
+    line-height: .8;
+
+    font-weight: 900;
+
+    letter-spacing: -8px;
+
+    color: white;
+
+    text-shadow:
+
+        0 0 10px rgba(255,255,255,.5),
+
+        0 0 25px rgba(255,50,0,.9),
+
+        0 0 60px rgba(255,30,0,.5),
+
+        0 0 120px rgba(255,30,0,.25);
+
+    animation: logoAnimation 1.4s ease;
+}
+
+.logo span {
+
+    color: var(--red);
+
+    text-shadow:
+
+        0 0 10px var(--red),
+
+        0 0 30px var(--red),
+
+        0 0 80px var(--orange);
+}
+
+@keyframes logoAnimation {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            scale(.5)
+            translateY(40px);
+
+        filter: blur(20px);
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform:
+            scale(1)
+            translateY(0);
+
+        filter: blur(0);
+    }
+}
+
+/* =====================================================
+   TAGLINE
+===================================================== */
+
+.tagline {
+
+    margin-top: 35px;
+
+    font-size: clamp(
+        18px,
+        3vw,
+        30px
+    );
+
+    letter-spacing: 5px;
+
+    text-transform: uppercase;
+
+    color: #ddd;
+}
+
+.tagline span {
+
+    color: var(--orange);
+
+    text-shadow:
+        0 0 15px var(--orange);
+}
+
+/* =====================================================
+   COMING SOON
+===================================================== */
+
+.coming {
+
+    margin-top: 60px;
+}
+
+.coming-small {
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 12px;
+
+    letter-spacing: 7px;
+
+    color: #888;
+
+    margin-bottom: 15px;
+}
+
+.coming h1 {
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: clamp(
+        38px,
+        8vw,
+        95px
+    );
+
+    letter-spacing: 4px;
+
+    color: transparent;
+
+    -webkit-text-stroke: 1px white;
+
+    text-shadow:
+
+        0 0 20px rgba(255,50,0,.7),
+
+        0 0 50px rgba(255,30,0,.25);
+
+    animation:
+        glitch 4s infinite,
+        comingGlow 3s infinite alternate;
+}
+
+@keyframes comingGlow {
+
+    from {
+        text-shadow:
+            0 0 10px rgba(255,30,0,.3);
+    }
+
+    to {
+        text-shadow:
+            0 0 30px rgba(255,30,0,.8),
+            0 0 70px rgba(255,30,0,.3);
+    }
+}
+
+@keyframes glitch {
+
+    0%, 90%, 100% {
+        transform: translateX(0);
+    }
+
+    91% {
+        transform: translateX(-4px);
+    }
+
+    92% {
+        transform: translateX(5px);
+    }
+
+    93% {
+        transform: translateX(-2px);
+    }
+}
+
+.red-line {
+
+    width: 320px;
+
+    max-width: 80%;
+
+    height: 2px;
+
+    margin: 30px auto;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            var(--red),
+            var(--orange),
+            var(--red),
+            transparent
+        );
+
+    box-shadow:
+        0 0 15px var(--red),
+        0 0 30px var(--orange);
+}
+
+/* =====================================================
+   DESCRIPTION
+===================================================== */
+
+.description {
+
+    max-width: 650px;
+
+    margin: 0 auto;
+
+    color: #999;
+
+    font-size: 18px;
+
+    line-height: 1.7;
+
+    letter-spacing: 1px;
+}
+
+.description strong {
+
+    color: var(--red);
+
+    text-shadow:
+        0 0 10px var(--red);
+}
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.buttons {
+
+    margin-top: 40px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 15px;
+
+    flex-wrap: wrap;
+}
+
+.btn {
+
+    position: relative;
+
+    overflow: hidden;
+
+    padding: 17px 28px;
+
+    background: rgba(255,30,0,.04);
+
+    border: 1px solid var(--red);
+
+    color: white;
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 11px;
+
+    letter-spacing: 2px;
+
+    cursor: pointer;
+
+    transition: .3s;
+}
+
+.btn::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,100,0,.4),
+            transparent
+        );
+
+    transform: translateX(-100%);
+
+    transition: .5s;
+}
+
+.btn:hover::before {
+
+    transform: translateX(100%);
+}
+
+.btn:hover {
+
+    background: var(--red);
+
+    border-color: var(--orange);
+
+    box-shadow:
+
+        0 0 20px rgba(255,30,0,.7),
+
+        0 0 60px rgba(255,30,0,.3);
+
+    transform: translateY(-4px);
+}
+
+.music-btn {
+
+    border-color: var(--orange);
+
+    color: var(--orange);
+
+    min-width: 190px;
+}
+
+/* =====================================================
+   SCROLL
+===================================================== */
+
+.scroll {
+
+    position: absolute;
+
+    bottom: 25px;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    color: #666;
+
+    font-size: 10px;
+
+    letter-spacing: 5px;
+}
+
+.scroll-line {
+
+    width: 1px;
+
+    height: 35px;
+
+    margin: 10px auto;
+
+    background:
+        linear-gradient(
+            var(--orange),
+            transparent
+        );
+
+    animation: scrollAnimation 1.5s infinite;
+}
+
+@keyframes scrollAnimation {
+
+    0% {
+        opacity: 0;
+        height: 5px;
+    }
+
+    50% {
+        opacity: 1;
+        height: 35px;
+    }
+
+    100% {
+        opacity: 0;
+        height: 5px;
+    }
+}
+
+/* =====================================================
+   SECOND SECTION
+===================================================== */
+
+.section {
+
+    position: relative;
+
+    z-index: 5;
+
+    padding: 120px 20px;
+
+    background:
+
+        linear-gradient(
+            rgba(0,0,0,.97),
+            rgba(12,2,0,.97)
+        );
+
+    border-top:
+        1px solid
+        rgba(255,50,0,.2);
+}
+
+.section-container {
+
+    max-width: 1100px;
+
+    margin: auto;
+
+    text-align: center;
+}
+
+.section-title {
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: clamp(
+        25px,
+        5vw,
+        50px
+    );
+
+    margin-bottom: 60px;
+}
+
+.section-title span {
+
+    color: var(--red);
+
+    text-shadow:
+        0 0 20px var(--red);
+}
+
+/* =====================================================
+   CARDS
+===================================================== */
+
+.cards {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 20px;
+}
+
+.card {
+
+    position: relative;
+
+    min-height: 230px;
+
+    padding: 35px 25px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(255,40,0,.08),
+            rgba(0,0,0,.9)
+        );
+
+    border:
+        1px solid
+        rgba(255,70,0,.25);
+
+    overflow: hidden;
+
+    transition: .4s;
+}
+
+.card::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 150px;
+
+    height: 150px;
+
+    right: -60px;
+
+    bottom: -60px;
+
+    background: var(--red);
+
+    filter: blur(80px);
+
+    opacity: .08;
+}
+
+.card:hover {
+
+    transform: translateY(-10px);
+
+    border-color:
+        var(--orange);
+
+    box-shadow:
+        0 20px 60px
+        rgba(255,40,0,.15);
+}
+
+.icon {
+
+    font-size: 45px;
+
+    margin-bottom: 20px;
+
+    filter:
+        drop-shadow(
+            0 0 12px
+            var(--orange)
+        );
+}
+
+.card h3 {
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: 18px;
+
+    color: var(--orange);
+
+    margin-bottom: 15px;
+}
+
+.card p {
+
+    color: #888;
+
+    font-size: 16px;
+
+    line-height: 1.6;
+}
+
+/* =====================================================
+   CTA
+===================================================== */
+
+.cta {
+
+    padding: 130px 20px;
+
+    text-align: center;
+
+    background:
+
+        radial-gradient(
+            circle at center,
+            rgba(255,30,0,.13),
+            transparent 45%
+        );
+}
+
+.cta h2 {
+
+    font-family: 'Orbitron', sans-serif;
+
+    font-size: clamp(
+        30px,
+        7vw,
+        70px
+    );
+
+    margin-bottom: 20px;
+}
+
+.cta h2 span {
+
+    color: var(--red);
+
+    text-shadow:
+        0 0 25px var(--red);
+}
+
+.cta p {
+
+    color: #777;
+
+    font-size: 18px;
+
+    margin-bottom: 35px;
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+footer {
+
+    padding: 45px 20px;
+
+    background: #010101;
+
+    border-top:
+        1px solid
+        rgba(255,50,0,.15);
+
+    text-align: center;
+
+    color: #555;
+
+    font-size: 11px;
+
+    letter-spacing: 4px;
+}
+
+footer strong {
+
+    color: var(--red);
+
+    text-shadow:
+        0 0 10px var(--red);
+}
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+@keyframes fadeDown {
+
+    from {
+        opacity: 0;
+        transform:
+            translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            translateY(0);
+    }
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width: 750px) {
+
+    .hero {
+        min-height: 100svh;
+    }
+
+    .logo {
+        letter-spacing: -5px;
+    }
+
+    .tagline {
+        letter-spacing: 2px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .scroll {
+        display: none;
+    }
+
+    .description {
+        font-size: 16px;
+    }
+
+    .buttons {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 260px;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+
+<!-- Noise overlay -->
+<div class="noise"></div>
+
+<!-- Animated particles -->
+<div id="particles"></div>
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="top-text">
+            EXPLORE · EARN · INSPIRE
+        </div>
+
+
+        <div class="logo">
+            WAY<span>GO</span>
+        </div>
+
+
+        <div class="tagline">
+            YOUR JOURNEY.
+            <span>YOUR INFLUENCE.</span>
+        </div>
+
+
+        <div class="coming">
+
+            <div class="coming-small">
+                THE NEXT ADVENTURE IS
+            </div>
+
+            <h1>
+                COMING SOON
+            </h1>
+
+            <div class="red-line"></div>
+
+        </div>
+
+
+        <p class="description">
+
+            A new world of travel, exploration
+            and influence is coming.
+
+            <br><br>
+
+            Discover real places.
+            Explore the unknown.
+            Earn points.
+            Inspire millions.
+
+            <br><br>
+
+            <strong>
+                SOMETHING BIG IS COMING...
+            </strong>
+
+        </p>
+
+
+        <div class="buttons">
+
+            <button
+                class="btn music-btn"
+                id="musicButton"
+                onclick="toggleMusic()"
+            >
+                🔊 PLAY MUSIC
+            </button>
+
+
+            <button
+                class="btn"
+                onclick="discoverWaygo()"
+            >
+                DISCOVER WAYGO
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="scroll">
+
+        SCROLL TO EXPLORE
+
+        <div class="scroll-line"></div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     WAYGO FEATURES
+===================================================== -->
+
+<section
+    class="section"
+    id="discover"
+>
+
+    <div class="section-container">
+
+        <h2 class="section-title">
+
+            JOIN THE
+
+            <span>
+                MOVEMENT
+            </span>
+
+        </h2>
+
+
+        <div class="cards">
+
+
+            <div class="card">
+
+                <div class="icon">
+                    🌍
+                </div>
+
+                <h3>
+                    EXPLORE
+                </h3>
+
+                <p>
+                    Discover real places,
+                    hidden destinations and
+                    unforgettable experiences
+                    around the world.
+                </p>
+
+            </div>
+
+
+
+            <div class="card">
+
+                <div class="icon">
+                    ⚡
+                </div>
+
+                <h3>
+                    EARN
+                </h3>
+
+                <p>
+                    Turn your adventures into
+                    points, challenges,
+                    achievements and rewards.
+                </p>
+
+            </div>
+
+
+
+            <div class="card">
+
+                <div class="icon">
+                    🔥
+                </div>
+
+                <h3>
+                    INSPIRE
+                </h3>
+
+                <p>
+                    Share your journey,
+                    build your influence and
+                    inspire the next generation
+                    of explorers.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     CTA
+===================================================== -->
+
+<section class="cta">
+
+    <h2>
+        YOUR JOURNEY.
+        <br>
+
+        <span>
+            YOUR WAYGO.
+        </span>
+    </h2>
+
+
+    <p>
+        The world is waiting.
+    </p>
+
+
+    <button
+        class="btn"
+        onclick="notifyUser()"
+    >
+        🔥 JOIN THE MOVEMENT
+    </button>
+
+</section>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    <strong>WAYGO</strong>
+
+    <br><br>
+
+    EXPLORE THE WORLD · EARN · INSPIRE
+
+    <br><br>
+
+    © 2026 WAYGO
+
+</footer>
+
+
+
+<script>
+
+/* =====================================================
+   PARTICLES
+===================================================== */
+
+const particleContainer =
+    document.getElementById("particles");
+
+
+for (let i = 0; i < 90; i++) {
+
+    const particle =
+        document.createElement("div");
+
+    particle.className =
+        "particle";
+
+
+    const size =
+        Math.random() * 3 + 1;
+
+
+    particle.style.width =
+        size + "px";
+
+    particle.style.height =
+        size + "px";
+
+
+    particle.style.left =
+        Math.random() * 100 + "%";
+
+
+    particle.style.animationDuration =
+        (5 + Math.random() * 12) + "s";
+
+
+    particle.style.animationDelay =
+        Math.random() * 12 + "s";
+
+
+    if (Math.random() > .5) {
+
+        particle.style.background =
+            "#ff2500";
+
+        particle.style.boxShadow =
+            "0 0 6px #ff2500, 0 0 15px #ff4500";
+
+    }
+
+
+    particleContainer.appendChild(
+        particle
+    );
+
+}
+
+
+
+/* =====================================================
+   SCROLL
+===================================================== */
+
+function discoverWaygo() {
+
+    document
+        .getElementById("discover")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
+}
+
+
+
+/* =====================================================
+   POPUP
+===================================================== */
+
+function notifyUser() {
+
+    alert(
+        "🔥 WAYGO IS COMING SOON!\n\n" +
+        "The movement is about to begin."
+    );
+
+}
+
+
+
+/* =====================================================
+   WAYGO MYSTERIOUS MUSIC
+=====================================================
+
+   This creates music directly with Web Audio API.
+
+   No MP3 is required.
+
+===================================================== */
+
+let audioContext = null;
+
+let masterGain = null;
+
+let musicPlaying = false;
+
+let musicTimer = null;
+
+
+/* -----------------------------------------------------
+   START MUSIC
+----------------------------------------------------- */
+
+function startMusic() {
+
+    if (musicPlaying) {
+        return;
+    }
+
+
+    audioContext =
+        new (
+            window.AudioContext ||
+            window.webkitAudioContext
+        )();
+
+
+    masterGain =
+        audioContext.createGain();
+
+
+    masterGain.gain.value =
+        0.045;
+
+
+    masterGain.connect(
+        audioContext.destination
+    );
+
+
+    /* =========================================
+       DEEP BASS
+    ========================================= */
+
+    const bass =
+        audioContext.createOscillator();
+
+
+    const bassGain =
+        audioContext.createGain();
+
+
+    bass.type =
+        "sine";
+
+
+    bass.frequency.value =
+        55;
+
+
+    bassGain.gain.value =
+        0.35;
+
+
+    bass.connect(
+        bassGain
+    );
+
+
+    bassGain.connect(
+        masterGain
+    );
+
+
+    bass.start();
+
+
+
+    /* =========================================
+       DARK ATMOSPHERE
+    ========================================= */
+
+    const atmosphere =
+        audioContext.createOscillator();
+
+
+    const atmosphereGain =
+        audioContext.createGain();
+
+
+    atmosphere.type =
+        "triangle";
+
+
+    atmosphere.frequency.value =
+        110;
+
+
+    atmosphereGain.gain.value =
+        0.07;
+
+
+    atmosphere.connect(
+        atmosphereGain
+    );
+
+
+    atmosphereGain.connect(
+        masterGain
+    );
+
+
+    atmosphere.start();
+
+
+
+    /* =========================================
+       SECOND LOW FREQUENCY
+    ========================================= */
+
+    const dark =
+        audioContext.createOscillator();
+
+
+    const darkGain =
+        audioContext.createGain();
+
+
+    dark.type =
+        "sine";
+
+
+    dark.frequency.value =
+        82;
+
+
+    darkGain.gain.value =
+        0.08;
+
+
+    dark.connect(
+        darkGain
+    );
+
+
+    darkGain.connect(
+        masterGain
+    );
+
+
+    dark.start();
+
+
+
+    /* =========================================
+       RANDOM MYSTERIOUS NOTES
+    ========================================= */
+
+    const notes = [
+
+        110,
+
+        123.47,
+
+        146.83,
+
+        164.81,
+
+        196,
+
+        220,
+
+        246.94,
+
+        293.66
+
+    ];
+
+
+    function mysteriousNote() {
+
+        if (!musicPlaying) {
+            return;
+        }
+
+
+        const oscillator =
+            audioContext.createOscillator();
+
+
+        const gain =
+            audioContext.createGain();
+
+
+        const filter =
+            audioContext.createBiquadFilter();
+
+
+        oscillator.type =
+            Math.random() > .5
+                ? "sine"
+                : "triangle";
+
+
+        oscillator.frequency.value =
+            notes[
+                Math.floor(
+                    Math.random() *
+                    notes.length
+                )
+            ];
+
+
+        filter.type =
+            "lowpass";
+
+
+        filter.frequency.value =
+            900;
+
+
+        const now =
+            audioContext.currentTime;
+
+
+        gain.gain.setValueAtTime(
+            0,
+            now
+        );
+
+
+        gain.gain.linearRampToValueAtTime(
+            0.10,
+            now + 0.15
+        );
+
+
+        gain.gain.exponentialRampToValueAtTime(
+            0.001,
+            now + 3
+        );
+
+
+        oscillator.connect(
+            filter
+        );
+
+
+        filter.connect(
+            gain
+        );
+
+
+        gain.connect(
+            masterGain
+        );
+
+
+        oscillator.start(
+            now
+        );
+
+
+        oscillator.stop(
+            now + 3
+        );
+
+
+        musicTimer =
+            setTimeout(
+                mysteriousNote,
+                1300 +
+                Math.random() * 1800
+            );
+
+    }
+
+
+    mysteriousNote();
+
+
+
+    /* =========================================
+       DOPAMINE HEARTBEAT
+    ========================================= */
+
+    const heartbeat =
+        audioContext.createOscillator();
+
+
+    const heartbeatGain =
+        audioContext.createGain();
+
+
+    heartbeat.type =
+        "sine";
+
+
+    heartbeat.frequency.value =
+        42;
+
+
+    heartbeatGain.gain.value =
+        0;
+
+
+    heartbeat.connect(
+        heartbeatGain
+    );
+
+
+    heartbeatGain.connect(
+        masterGain
+    );
+
+
+    heartbeat.start();
+
+
+    function pulse() {
+
+        if (!musicPlaying) {
+            return;
+        }
+
+
+        const now =
+            audioContext.currentTime;
+
+
+        heartbeatGain
+            .gain
+            .cancelScheduledValues(
+                now
+            );
+
+
+        heartbeatGain
+            .gain
+            .setValueAtTime(
+                0,
+                now
+            );
+
+
+        heartbeatGain
+            .gain
+            .linearRampToValueAtTime(
+                0.25,
+                now + 0.05
+            );
+
+
+        heartbeatGain
+            .gain
+            .exponentialRampToValueAtTime(
+                0.001,
+                now + 0.45
+            );
+
+
+        setTimeout(
+            pulse,
+            2200
+        );
+
+    }
+
+
+    pulse();
+
+
+    musicPlaying =
+        true;
+
+
+    document
+        .getElementById("musicButton")
+        .innerHTML =
+        "🔊 MUSIC ON";
+
+}
+
+
+
+/* =====================================================
+   STOP MUSIC
+===================================================== */
+
+function stopMusic() {
+
+    musicPlaying =
+        false;
+
+
+    if (musicTimer) {
+
+        clearTimeout(
+            musicTimer
+        );
+
+    }
+
+
+    if (audioContext) {
+
+        audioContext.close();
+
+        audioContext =
+            null;
+
+    }
+
+
+    document
+        .getElementById("musicButton")
+        .innerHTML =
+        "🔇 PLAY MUSIC";
+
+}
+
+
+
+/* =====================================================
+   TOGGLE MUSIC
+===================================================== */
+
+function toggleMusic() {
+
+    if (musicPlaying) {
+
+        stopMusic();
+
+    } else {
+
+        startMusic();
+
+    }
+
+}
+
+
+
+/* =====================================================
+   MOUSE PARALLAX
+===================================================== */
+
+document.addEventListener(
+    "mousemove",
+    function(event) {
+
+        const x =
+            (event.clientX /
+            window.innerWidth -
+            .5) * 15;
+
+
+        const y =
+            (event.clientY /
+            window.innerHeight -
+            .5) * 15;
+
+
+        const logo =
+            document.querySelector(
+                ".logo"
+            );
+
+
+        if (logo) {
+
+            logo.style.transform =
+                `translate(${x}px, ${y}px)`;
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
