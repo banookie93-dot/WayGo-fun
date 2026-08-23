@@ -1,0 +1,2329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>WayGo Creator Admin</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --red: #ff3025;
+      --orange: #ff6900;
+      --orange2: #ff9b32;
+
+      --black: #070708;
+      --panel: #101012;
+      --panel2: #151518;
+
+      --border: rgba(255,255,255,.08);
+
+      --text: #f5f5f5;
+      --muted: #77777e;
+    }
+
+    body {
+      min-height: 100vh;
+
+      background:
+        radial-gradient(
+          circle at 50% -20%,
+          rgba(255,70,0,.15),
+          transparent 35%
+        ),
+        #070708;
+
+      color: var(--text);
+
+      font-family:
+        "DM Sans",
+        sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font-family: inherit;
+    }
+
+    /* =========================
+       LOGIN
+    ========================= */
+
+    #loginPage {
+      min-height: 100vh;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 20px;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 430px;
+
+      padding: 42px;
+
+      border: 1px solid var(--border);
+      border-radius: 27px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(25,25,28,.98),
+          rgba(11,11,13,.98)
+        );
+
+      box-shadow:
+        0 40px 120px rgba(0,0,0,.5);
+    }
+
+    .logo {
+      width: 55px;
+      height: 55px;
+
+      display: grid;
+      place-items: center;
+
+      margin-bottom: 28px;
+
+      border-radius: 17px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--red),
+          var(--orange)
+        );
+
+      font-family: "Space Grotesk";
+      font-weight: 800;
+
+      box-shadow:
+        0 15px 40px rgba(255,60,0,.3);
+    }
+
+    .login-card h1 {
+      margin-bottom: 10px;
+
+      font-family: "Space Grotesk";
+
+      font-size: 34px;
+      letter-spacing: -1px;
+    }
+
+    .login-card p {
+      margin-bottom: 28px;
+
+      color: var(--muted);
+
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .field {
+      margin-bottom: 15px;
+    }
+
+    .field label {
+      display: block;
+
+      margin-bottom: 8px;
+
+      color: #8d8d93;
+
+      font-size: 11px;
+      font-weight: 800;
+
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    input,
+    select {
+
+      width: 100%;
+
+      min-height: 53px;
+
+      padding: 14px 16px;
+
+      border: 1px solid #2a2a2e;
+      border-radius: 14px;
+
+      outline: none;
+
+      background: #09090a;
+      color: white;
+
+      font-size: 14px;
+
+      transition: .2s;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--orange);
+
+      box-shadow:
+        0 0 0 4px rgba(255,105,0,.08);
+    }
+
+    select option {
+      background: #151518;
+    }
+
+    .primary-button {
+
+      width: 100%;
+
+      min-height: 56px;
+
+      margin-top: 8px;
+
+      border: 0;
+      border-radius: 15px;
+
+      background:
+        linear-gradient(
+          100deg,
+          #ed241b,
+          #ff4b00,
+          #ff7900
+        );
+
+      color: white;
+
+      cursor: pointer;
+
+      font-weight: 800;
+      letter-spacing: .5px;
+
+      box-shadow:
+        0 18px 50px rgba(255,60,0,.25);
+
+      transition: .25s;
+    }
+
+    .primary-button:hover {
+      transform: translateY(-2px);
+
+      box-shadow:
+        0 25px 65px rgba(255,60,0,.35);
+    }
+
+    .login-error {
+      display: none;
+
+      margin-top: 15px;
+
+      padding: 12px;
+
+      border-radius: 12px;
+
+      background: rgba(255,50,40,.08);
+
+      border: 1px solid rgba(255,50,40,.2);
+
+      color: #ff8077;
+
+      font-size: 12px;
+    }
+
+    /* =========================
+       DASHBOARD
+    ========================= */
+
+    #dashboard {
+      display: none;
+    }
+
+    .topbar {
+
+      height: 76px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 30px;
+
+      border-bottom: 1px solid var(--border);
+
+      background:
+        rgba(8,8,9,.85);
+
+      backdrop-filter: blur(20px);
+
+      position: sticky;
+      top: 0;
+
+      z-index: 50;
+    }
+
+    .brand {
+
+      display: flex;
+      align-items: center;
+
+      gap: 11px;
+
+      font-family: "Space Grotesk";
+
+      font-weight: 700;
+    }
+
+    .brand-icon {
+
+      width: 38px;
+      height: 38px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 12px;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--red),
+          var(--orange)
+        );
+
+      font-weight: 800;
+    }
+
+    .admin-label {
+
+      margin-left: 8px;
+
+      padding: 5px 9px;
+
+      border-radius: 7px;
+
+      background: rgba(255,105,0,.1);
+
+      color: #ff814d;
+
+      font-size: 9px;
+      font-weight: 800;
+
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .logout {
+
+      padding: 10px 14px;
+
+      border: 1px solid #2a2a2e;
+      border-radius: 10px;
+
+      background: #111113;
+
+      color: #85858b;
+
+      cursor: pointer;
+
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .logout:hover {
+      color: white;
+      border-color: #44444a;
+    }
+
+    .main {
+
+      width: 100%;
+      max-width: 1400px;
+
+      margin: auto;
+
+      padding: 35px 30px 70px;
+    }
+
+    .heading {
+
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+
+      margin-bottom: 30px;
+    }
+
+    .heading h1 {
+
+      font-family: "Space Grotesk";
+
+      font-size: clamp(32px,5vw,52px);
+
+      letter-spacing: -2px;
+    }
+
+    .heading p {
+
+      margin-top: 8px;
+
+      color: var(--muted);
+
+      font-size: 13px;
+    }
+
+    .refresh {
+
+      padding: 12px 16px;
+
+      border: 1px solid #29292d;
+      border-radius: 12px;
+
+      background: #111113;
+
+      color: #a1a1a7;
+
+      cursor: pointer;
+
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .refresh:hover {
+      color: white;
+      border-color: #44444a;
+    }
+
+    /* =========================
+       STATS
+    ========================= */
+
+    .stats {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 13px;
+
+      margin-bottom: 25px;
+    }
+
+    .stat {
+
+      padding: 21px;
+
+      border: 1px solid var(--border);
+      border-radius: 18px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,.04),
+          rgba(255,255,255,.012)
+        );
+    }
+
+    .stat-label {
+
+      color: #6e6e74;
+
+      font-size: 10px;
+      font-weight: 800;
+
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stat-number {
+
+      margin-top: 9px;
+
+      font-family: "Space Grotesk";
+
+      font-size: 30px;
+      font-weight: 700;
+    }
+
+    .stat.new .stat-number {
+      color: #ff6940;
+    }
+
+    .stat.accepted .stat-number {
+      color: #65d49b;
+    }
+
+    .stat.rejected .stat-number {
+      color: #ff5e5e;
+    }
+
+    /* =========================
+       CONTROLS
+    ========================= */
+
+    .controls {
+
+      display: flex;
+
+      gap: 10px;
+
+      margin-bottom: 18px;
+    }
+
+    .search {
+
+      flex: 1;
+
+      position: relative;
+    }
+
+    .search input {
+
+      padding-left: 43px;
+    }
+
+    .search-icon {
+
+      position: absolute;
+
+      left: 16px;
+      top: 50%;
+
+      transform: translateY(-50%);
+
+      color: #5d5d63;
+
+      font-size: 14px;
+    }
+
+    .filter {
+
+      width: 180px;
+    }
+
+    /* =========================
+       APPLICATIONS
+    ========================= */
+
+    .applications {
+
+      display: grid;
+
+      gap: 11px;
+    }
+
+    .application {
+
+      display: grid;
+
+      grid-template-columns:
+        1.6fr
+        1fr
+        1fr
+        140px
+        80px;
+
+      align-items: center;
+
+      gap: 20px;
+
+      padding: 18px 20px;
+
+      border: 1px solid var(--border);
+      border-radius: 17px;
+
+      background:
+        rgba(16,16,18,.8);
+
+      cursor: pointer;
+
+      transition: .2s;
+    }
+
+    .application:hover {
+
+      transform: translateY(-2px);
+
+      border-color:
+        rgba(255,105,0,.25);
+
+      background:
+        rgba(23,23,25,.95);
+    }
+
+    .creator {
+
+      display: flex;
+      align-items: center;
+
+      gap: 13px;
+    }
+
+    .avatar {
+
+      width: 43px;
+      height: 43px;
+
+      display: grid;
+      place-items: center;
+
+      flex-shrink: 0;
+
+      border-radius: 13px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #ff3025,
+          #ff7600
+        );
+
+      font-family: "Space Grotesk";
+      font-weight: 800;
+    }
+
+    .creator-name {
+
+      font-weight: 700;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .creator-email {
+
+      margin-top: 3px;
+
+      color: #67676d;
+
+      font-size: 11px;
+
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .data-title {
+
+      margin-bottom: 4px;
+
+      color: #5f5f65;
+
+      font-size: 9px;
+      font-weight: 800;
+
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .data-value {
+
+      color: #c5c5ca;
+
+      font-size: 12px;
+    }
+
+    .status {
+
+      display: inline-flex;
+
+      width: fit-content;
+
+      padding: 7px 10px;
+
+      border-radius: 9px;
+
+      font-size: 9px;
+      font-weight: 800;
+
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .status.New {
+
+      color: #ff8a63;
+
+      background:
+        rgba(255,105,0,.1);
+    }
+
+    .status.Reviewed {
+
+      color: #82a9ff;
+
+      background:
+        rgba(80,120,255,.1);
+    }
+
+    .status.Accepted {
+
+      color: #65d49b;
+
+      background:
+        rgba(70,200,140,.1);
+    }
+
+    .status.Rejected {
+
+      color: #ff6c6c;
+
+      background:
+        rgba(255,60,60,.1);
+    }
+
+    .arrow {
+
+      color: #525258;
+
+      font-size: 18px;
+
+      text-align: right;
+    }
+
+    .empty {
+
+      padding: 80px 20px;
+
+      border: 1px dashed #29292d;
+      border-radius: 18px;
+
+      text-align: center;
+
+      color: #67676d;
+    }
+
+    /* =========================
+       MODAL
+    ========================= */
+
+    .modal-bg {
+
+      display: none;
+
+      position: fixed;
+
+      inset: 0;
+
+      z-index: 100;
+
+      padding: 25px;
+
+      background:
+        rgba(0,0,0,.72);
+
+      backdrop-filter:
+        blur(10px);
+
+      overflow-y: auto;
+    }
+
+    .modal {
+
+      width: 100%;
+      max-width: 760px;
+
+      margin: 30px auto;
+
+      border: 1px solid var(--border);
+      border-radius: 25px;
+
+      background:
+        #111113;
+
+      box-shadow:
+        0 40px 120px rgba(0,0,0,.65);
+
+      overflow: hidden;
+    }
+
+    .modal-top {
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      padding: 25px;
+
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-title {
+
+      display: flex;
+      align-items: center;
+
+      gap: 14px;
+    }
+
+    .modal-title h2 {
+
+      font-family: "Space Grotesk";
+
+      font-size: 23px;
+    }
+
+    .close {
+
+      width: 37px;
+      height: 37px;
+
+      border: 1px solid #2c2c30;
+      border-radius: 10px;
+
+      background: #18181b;
+
+      color: #88888e;
+
+      cursor: pointer;
+
+      font-size: 18px;
+    }
+
+    .close:hover {
+      color: white;
+    }
+
+    .modal-body {
+
+      padding: 25px;
+    }
+
+    .detail-grid {
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(2,1fr);
+
+      gap: 12px;
+
+      margin-bottom: 25px;
+    }
+
+    .detail {
+
+      padding: 16px;
+
+      border: 1px solid #222226;
+      border-radius: 14px;
+
+      background: #0c0c0e;
+    }
+
+    .detail.full {
+      grid-column: 1 / -1;
+    }
+
+    .detail-label {
+
+      margin-bottom: 7px;
+
+      color: #606066;
+
+      font-size: 9px;
+      font-weight: 800;
+
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .detail-value {
+
+      color: #d7d7dc;
+
+      font-size: 13px;
+      line-height: 1.6;
+
+      word-break: break-word;
+    }
+
+    .detail-value a {
+
+      color: #ff7847;
+
+      text-decoration: none;
+    }
+
+    .detail-value a:hover {
+      text-decoration: underline;
+    }
+
+    .modal-actions {
+
+      display: flex;
+
+      gap: 10px;
+
+      padding-top: 5px;
+    }
+
+    .status-button {
+
+      flex: 1;
+
+      min-height: 48px;
+
+      border: 1px solid #2c2c30;
+      border-radius: 12px;
+
+      background: #19191c;
+
+      color: #99999f;
+
+      cursor: pointer;
+
+      font-size: 10px;
+      font-weight: 800;
+
+      text-transform: uppercase;
+      letter-spacing: .5px;
+
+      transition: .2s;
+    }
+
+    .status-button:hover {
+      transform: translateY(-2px);
+    }
+
+    .status-button.accept {
+      border-color: rgba(70,200,140,.25);
+      color: #65d49b;
+    }
+
+    .status-button.reject {
+      border-color: rgba(255,60,60,.2);
+      color: #ff6c6c;
+    }
+
+    .delete-button {
+
+      width: 100%;
+
+      margin-top: 12px;
+
+      min-height: 45px;
+
+      border: 1px solid rgba(255,60,60,.15);
+      border-radius: 12px;
+
+      background: rgba(255,60,60,.05);
+
+      color: #ff6565;
+
+      cursor: pointer;
+
+      font-size: 10px;
+      font-weight: 800;
+
+      text-transform: uppercase;
+    }
+
+    @media(max-width:1000px) {
+
+      .application {
+
+        grid-template-columns:
+          1fr 1fr;
+
+      }
+
+      .arrow {
+        display: none;
+      }
+
+      .stats {
+        grid-template-columns:
+          repeat(2,1fr);
+      }
+
+    }
+
+    @media(max-width:650px) {
+
+      .topbar {
+        padding: 0 15px;
+      }
+
+      .main {
+        padding: 25px 15px 50px;
+      }
+
+      .admin-label {
+        display: none;
+      }
+
+      .heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .controls {
+        flex-direction: column;
+      }
+
+      .filter {
+        width: 100%;
+      }
+
+      .application {
+        grid-template-columns: 1fr;
+        gap: 13px;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .detail.full {
+        grid-column: auto;
+      }
+
+      .modal-actions {
+        flex-direction: column;
+      }
+
+      .login-card {
+        padding: 30px 22px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     LOGIN
+===================================================== -->
+
+<section id="loginPage">
+
+  <div class="login-card">
+
+    <div class="logo">
+      W
+    </div>
+
+    <h1>
+      Creator Admin
+    </h1>
+
+    <p>
+      Sign in to manage WayGo creator
+      applications.
+    </p>
+
+    <form
+      id="loginForm"
+    >
+
+      <div class="field">
+
+        <label>
+          Email
+        </label>
+
+        <input
+          id="loginEmail"
+          type="email"
+          placeholder="admin@example.com"
+          required
+        >
+
+      </div>
+
+
+      <div class="field">
+
+        <label>
+          Password
+        </label>
+
+        <input
+          id="loginPassword"
+          type="password"
+          placeholder="Your password"
+          required
+        >
+
+      </div>
+
+
+      <button
+        class="primary-button"
+        type="submit"
+      >
+        SIGN IN
+      </button>
+
+    </form>
+
+
+    <div
+      class="login-error"
+      id="loginError"
+    >
+      Invalid email or password.
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+
+<section id="dashboard">
+
+
+  <header class="topbar">
+
+    <div class="brand">
+
+      <div class="brand-icon">
+        W
+      </div>
+
+      WayGo
+
+      <span class="admin-label">
+        Creator Admin
+      </span>
+
+    </div>
+
+
+    <button
+      class="logout"
+      onclick="logout()"
+    >
+      LOG OUT
+    </button>
+
+  </header>
+
+
+  <main class="main">
+
+
+    <div class="heading">
+
+      <div>
+
+        <h1>
+          Creator Applications
+        </h1>
+
+        <p>
+          Review and manage your WayGo creator community.
+        </p>
+
+      </div>
+
+
+      <button
+        class="refresh"
+        onclick="loadApplications()"
+      >
+        REFRESH
+      </button>
+
+    </div>
+
+
+    <!-- STATS -->
+
+    <div class="stats">
+
+      <div class="stat">
+
+        <div class="stat-label">
+          Total
+        </div>
+
+        <div
+          class="stat-number"
+          id="totalCount"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="stat new">
+
+        <div class="stat-label">
+          New
+        </div>
+
+        <div
+          class="stat-number"
+          id="newCount"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="stat accepted">
+
+        <div class="stat-label">
+          Accepted
+        </div>
+
+        <div
+          class="stat-number"
+          id="acceptedCount"
+        >
+          0
+        </div>
+
+      </div>
+
+
+      <div class="stat rejected">
+
+        <div class="stat-label">
+          Rejected
+        </div>
+
+        <div
+          class="stat-number"
+          id="rejectedCount"
+        >
+          0
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- CONTROLS -->
+
+    <div class="controls">
+
+      <div class="search">
+
+        <span class="search-icon">
+          /
+        </span>
+
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Search creator, email, niche..."
+          oninput="renderApplications()"
+        >
+
+      </div>
+
+
+      <select
+        class="filter"
+        id="statusFilter"
+        onchange="renderApplications()"
+      >
+
+        <option value="All">
+          All statuses
+        </option>
+
+        <option value="New">
+          New
+        </option>
+
+        <option value="Reviewed">
+          Reviewed
+        </option>
+
+        <option value="Accepted">
+          Accepted
+        </option>
+
+        <option value="Rejected">
+          Rejected
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <!-- APPLICATIONS -->
+
+    <div
+      class="applications"
+      id="applications"
+    >
+
+      <div class="empty">
+        Loading applications...
+      </div>
+
+    </div>
+
+
+  </main>
+
+</section>
+
+
+
+<!-- =====================================================
+     MODAL
+===================================================== -->
+
+<div
+  class="modal-bg"
+  id="modalBg"
+>
+
+  <div class="modal">
+
+    <div class="modal-top">
+
+      <div class="modal-title">
+
+        <div
+          class="avatar"
+          id="modalAvatar"
+        >
+          W
+        </div>
+
+        <div>
+
+          <h2 id="modalName">
+            Creator
+          </h2>
+
+          <div
+            class="creator-email"
+            id="modalEmail"
+          >
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <button
+        class="close"
+        onclick="closeModal()"
+      >
+        ×
+      </button>
+
+    </div>
+
+
+    <div class="modal-body">
+
+      <div
+        class="detail-grid"
+        id="detailGrid"
+      >
+      </div>
+
+
+      <div class="modal-actions">
+
+        <button
+          class="status-button"
+          onclick="changeStatus('Reviewed')"
+        >
+          Mark Reviewed
+        </button>
+
+        <button
+          class="status-button accept"
+          onclick="changeStatus('Accepted')"
+        >
+          Accept Creator
+        </button>
+
+        <button
+          class="status-button reject"
+          onclick="changeStatus('Rejected')"
+        >
+          Reject
+        </button>
+
+      </div>
+
+
+      <button
+        class="delete-button"
+        onclick="deleteApplication()"
+      >
+        Delete Application
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<script>
+
+
+/* =====================================================
+   SUPABASE
+===================================================== */
+
+const SUPABASE_URL =
+  "https://delofghfierelbyyvcnc.supabase.co";
+
+
+const SUPABASE_KEY =
+  "sb_publishable_Sk6oGk-IXbd_eC4xkwlIKQ_MEWGR0-c";
+
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+/* =====================================================
+   DATA
+===================================================== */
+
+let applications = [];
+
+let selectedApplication = null;
+
+
+/* =====================================================
+   AUTH CHECK
+===================================================== */
+
+async function checkAuth() {
+
+  const {
+    data
+  } =
+    await supabaseClient.auth.getSession();
+
+
+  if (
+    data.session
+  ) {
+
+    showDashboard();
+
+  } else {
+
+    showLogin();
+
+  }
+
+}
+
+
+/* =====================================================
+   SHOW LOGIN
+===================================================== */
+
+function showLogin() {
+
+  document.getElementById(
+    "loginPage"
+  ).style.display = "flex";
+
+
+  document.getElementById(
+    "dashboard"
+  ).style.display = "none";
+
+}
+
+
+/* =====================================================
+   SHOW DASHBOARD
+===================================================== */
+
+function showDashboard() {
+
+  document.getElementById(
+    "loginPage"
+  ).style.display = "none";
+
+
+  document.getElementById(
+    "dashboard"
+  ).style.display = "block";
+
+
+  loadApplications();
+
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+document
+  .getElementById("loginForm")
+  .addEventListener(
+    "submit",
+    async event => {
+
+      event.preventDefault();
+
+
+      const email =
+        document.getElementById(
+          "loginEmail"
+        ).value.trim();
+
+
+      const password =
+        document.getElementById(
+          "loginPassword"
+        ).value;
+
+
+      const button =
+        event.target.querySelector(
+          "button"
+        );
+
+
+      button.disabled = true;
+
+      button.textContent =
+        "SIGNING IN...";
+
+
+      const {
+        error
+      } =
+        await supabaseClient.auth.signInWithPassword({
+          email,
+          password
+        });
+
+
+      if (error) {
+
+        document.getElementById(
+          "loginError"
+        ).textContent =
+          error.message;
+
+        document.getElementById(
+          "loginError"
+        ).style.display =
+          "block";
+
+
+        button.disabled = false;
+
+        button.textContent =
+          "SIGN IN";
+
+        return;
+
+      }
+
+
+      document.getElementById(
+        "loginError"
+      ).style.display =
+        "none";
+
+
+      button.disabled = false;
+
+      button.textContent =
+        "SIGN IN";
+
+
+      showDashboard();
+
+    }
+  );
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+async function logout() {
+
+  await supabaseClient.auth.signOut();
+
+  showLogin();
+
+}
+
+
+/* =====================================================
+   LOAD APPLICATIONS
+===================================================== */
+
+async function loadApplications() {
+
+  const container =
+    document.getElementById(
+      "applications"
+    );
+
+
+  container.innerHTML =
+    `<div class="empty">
+      Loading applications...
+    </div>`;
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("creator_applications")
+      .select("*")
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
+
+
+  if (error) {
+
+    console.error(error);
+
+
+    container.innerHTML =
+      `<div class="empty">
+        Could not load applications.
+        <br><br>
+        ${escapeHtml(error.message)}
+      </div>`;
+
+    return;
+
+  }
+
+
+  applications =
+    data || [];
+
+
+  updateStats();
+
+  renderApplications();
+
+}
+
+
+/* =====================================================
+   STATS
+===================================================== */
+
+function updateStats() {
+
+  document.getElementById(
+    "totalCount"
+  ).textContent =
+    applications.length;
+
+
+  document.getElementById(
+    "newCount"
+  ).textContent =
+    applications.filter(
+      x => x.status === "New"
+    ).length;
+
+
+  document.getElementById(
+    "acceptedCount"
+  ).textContent =
+    applications.filter(
+      x => x.status === "Accepted"
+    ).length;
+
+
+  document.getElementById(
+    "rejectedCount"
+  ).textContent =
+    applications.filter(
+      x => x.status === "Rejected"
+    ).length;
+
+}
+
+
+/* =====================================================
+   RENDER
+===================================================== */
+
+function renderApplications() {
+
+  const container =
+    document.getElementById(
+      "applications"
+    );
+
+
+  const search =
+    document.getElementById(
+      "searchInput"
+    ).value
+      .toLowerCase()
+      .trim();
+
+
+  const filter =
+    document.getElementById(
+      "statusFilter"
+    ).value;
+
+
+  let filtered =
+    applications.filter(
+      application => {
+
+        const searchable = [
+          application.name,
+          application.email,
+          application.country,
+          application.social,
+          application.followers,
+          application.niche,
+          application.content_type,
+          application.why
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+
+        const matchesSearch =
+          !search ||
+          searchable.includes(search);
+
+
+        const matchesFilter =
+          filter === "All" ||
+          application.status === filter;
+
+
+        return (
+          matchesSearch &&
+          matchesFilter
+        );
+
+      }
+    );
+
+
+  if (!filtered.length) {
+
+    container.innerHTML =
+      `<div class="empty">
+        No creator applications found.
+      </div>`;
+
+    return;
+
+  }
+
+
+  container.innerHTML =
+    filtered
+      .map(
+        application =>
+          applicationHTML(application)
+      )
+      .join("");
+
+}
+
+
+/* =====================================================
+   APPLICATION HTML
+===================================================== */
+
+function applicationHTML(application) {
+
+  const name =
+    application.name ||
+    "Unknown Creator";
+
+
+  const initial =
+    name
+      .charAt(0)
+      .toUpperCase();
+
+
+  const date =
+    application.created_at
+      ? new Date(
+          application.created_at
+        ).toLocaleDateString()
+      : "-";
+
+
+  return `
+
+    <div
+      class="application"
+      onclick="openApplication('${application.id}')"
+    >
+
+      <div class="creator">
+
+        <div class="avatar">
+          ${escapeHtml(initial)}
+        </div>
+
+        <div>
+
+          <div class="creator-name">
+            ${escapeHtml(name)}
+          </div>
+
+          <div class="creator-email">
+            ${escapeHtml(application.email || "")}
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div>
+
+        <div class="data-title">
+          Niche
+        </div>
+
+        <div class="data-value">
+          ${escapeHtml(application.niche || "-")}
+        </div>
+
+      </div>
+
+
+      <div>
+
+        <div class="data-title">
+          Audience
+        </div>
+
+        <div class="data-value">
+          ${escapeHtml(application.followers || "-")}
+        </div>
+
+      </div>
+
+
+      <div>
+
+        <div class="data-title">
+          Status
+        </div>
+
+        <span
+          class="status ${escapeHtml(application.status || "New")}"
+        >
+          ${escapeHtml(application.status || "New")}
+        </span>
+
+      </div>
+
+
+      <div class="arrow">
+        →
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* =====================================================
+   OPEN APPLICATION
+===================================================== */
+
+function openApplication(id) {
+
+  const application =
+    applications.find(
+      x => x.id === id
+    );
+
+
+  if (!application) {
+    return;
+  }
+
+
+  selectedApplication =
+    application;
+
+
+  const name =
+    application.name ||
+    "Creator";
+
+
+  document.getElementById(
+    "modalName"
+  ).textContent =
+    name;
+
+
+  document.getElementById(
+    "modalEmail"
+  ).textContent =
+    application.email || "";
+
+
+  document.getElementById(
+    "modalAvatar"
+  ).textContent =
+    name
+      .charAt(0)
+      .toUpperCase();
+
+
+  const fields = [
+
+    [
+      "Email",
+      application.email
+    ],
+
+    [
+      "Country",
+      application.country
+    ],
+
+    [
+      "Social Media",
+      application.social
+    ],
+
+    [
+      "Followers",
+      application.followers
+    ],
+
+    [
+      "Niche",
+      application.niche
+    ],
+
+    [
+      "Content Type",
+      application.content_type
+    ],
+
+    [
+      "Status",
+      application.status
+    ],
+
+    [
+      "Applied",
+      application.created_at
+        ? new Date(
+            application.created_at
+          ).toLocaleString()
+        : "-"
+    ],
+
+    [
+      "Why WayGo?",
+      application.why,
+      true
+    ]
+
+  ];
+
+
+  const grid =
+    document.getElementById(
+      "detailGrid"
+    );
+
+
+  grid.innerHTML =
+    fields
+      .map(
+        field => {
+
+          const label =
+            field[0];
+
+          const value =
+            field[1] || "-";
+
+          const full =
+            field[2]
+              ? "full"
+              : "";
+
+
+          let displayValue =
+            escapeHtml(value);
+
+
+          if (
+            label === "Email" &&
+            value !== "-"
+          ) {
+
+            displayValue =
+              `<a href="mailto:${escapeAttribute(value)}">
+                ${escapeHtml(value)}
+              </a>`;
+
+          }
+
+
+          if (
+            label === "Social Media" &&
+            value !== "-"
+          ) {
+
+            let url =
+              value;
+
+
+            if (
+              !url.startsWith("http")
+            ) {
+
+              if (
+                url.startsWith("@")
+              ) {
+
+                url =
+                  "https://instagram.com/" +
+                  url.substring(1);
+
+              } else {
+
+                url =
+                  "https://" + url;
+
+              }
+
+            }
+
+
+            displayValue =
+              `<a
+                href="${escapeAttribute(url)}"
+                target="_blank"
+                rel="noopener"
+              >
+                ${escapeHtml(value)}
+              </a>`;
+
+          }
+
+
+          return `
+
+            <div class="detail ${full}">
+
+              <div class="detail-label">
+                ${escapeHtml(label)}
+              </div>
+
+              <div class="detail-value">
+                ${displayValue}
+              </div>
+
+            </div>
+
+          `;
+
+        }
+      )
+      .join("");
+
+
+  document.getElementById(
+    "modalBg"
+  ).style.display =
+    "block";
+
+
+  document.body.style.overflow =
+    "hidden";
+
+}
+
+
+/* =====================================================
+   CLOSE MODAL
+===================================================== */
+
+function closeModal() {
+
+  document.getElementById(
+    "modalBg"
+  ).style.display =
+    "none";
+
+
+  document.body.style.overflow =
+    "";
+
+}
+
+
+/* =====================================================
+   CHANGE STATUS
+===================================================== */
+
+async function changeStatus(status) {
+
+  if (!selectedApplication) {
+    return;
+  }
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("creator_applications")
+      .update({
+        status
+      })
+      .eq(
+        "id",
+        selectedApplication.id
+      );
+
+
+  if (error) {
+
+    alert(
+      "Could not update status: " +
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  selectedApplication.status =
+    status;
+
+
+  const index =
+    applications.findIndex(
+      x =>
+        x.id ===
+        selectedApplication.id
+    );
+
+
+  if (index !== -1) {
+
+    applications[index].status =
+      status;
+
+  }
+
+
+  updateStats();
+
+  renderApplications();
+
+  openApplication(
+    selectedApplication.id
+  );
+
+}
+
+
+/* =====================================================
+   DELETE
+===================================================== */
+
+async function deleteApplication() {
+
+  if (!selectedApplication) {
+    return;
+  }
+
+
+  const confirmed =
+    confirm(
+      "Are you sure you want to delete this application?"
+    );
+
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from("creator_applications")
+      .delete()
+      .eq(
+        "id",
+        selectedApplication.id
+      );
+
+
+  if (error) {
+
+    alert(
+      "Could not delete application: " +
+      error.message
+    );
+
+    return;
+
+  }
+
+
+  applications =
+    applications.filter(
+      x =>
+        x.id !==
+        selectedApplication.id
+    );
+
+
+  selectedApplication =
+    null;
+
+
+  closeModal();
+
+  updateStats();
+
+  renderApplications();
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHtml(value) {
+
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+
+}
+
+
+function escapeAttribute(value) {
+
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+
+}
+
+
+/* =====================================================
+   MODAL CLICK OUTSIDE
+===================================================== */
+
+document
+  .getElementById("modalBg")
+  .addEventListener(
+    "click",
+    event => {
+
+      if (
+        event.target.id ===
+        "modalBg"
+      ) {
+
+        closeModal();
+
+      }
+
+    }
+  );
+
+
+/* =====================================================
+   START
+===================================================== */
+
+checkAuth();
+
+
+</script>
+
+</body>
+
+</html>
