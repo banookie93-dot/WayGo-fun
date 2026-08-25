@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Charismer</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            overflow: hidden;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-family: 'Manrope', sans-serif;
+
+            background: #0d0003;
+
+            color: white;
+        }
+
+
+        /* =========================================
+           POZADIE
+        ========================================= */
+
+        .background {
+            position: fixed;
+            inset: 0;
+
+            overflow: hidden;
+
+            background:
+                radial-gradient(
+                    ellipse at center,
+                    #4b0010 0%,
+                    #250006 28%,
+                    #0d0003 65%,
+                    #030001 100%
+                );
+        }
+
+
+        /* =========================================
+           HLAVNÁ ČERVENÁ ŽIARA
+        ========================================= */
+
+        .glow {
+            position: absolute;
+
+            width: 440px;
+            height: 440px;
+
+            left: 50%;
+            top: 50%;
+
+            transform:
+                translate(-50%, -50%);
+
+            border-radius: 50%;
+
+            background: #ff1744;
+
+            filter: blur(160px);
+
+            opacity: .12;
+
+            animation:
+                breathe 5s ease-in-out infinite;
+        }
+
+
+        @keyframes breathe {
+
+            0%,
+            100% {
+                transform:
+                    translate(-50%, -50%)
+                    scale(.9);
+
+                opacity: .08;
+            }
+
+            50% {
+                transform:
+                    translate(-50%, -50%)
+                    scale(1.12);
+
+                opacity: .16;
+            }
+        }
+
+
+        /* =========================================
+           OTVORENÝ KRUH
+        ========================================= */
+
+        .circle {
+            position: absolute;
+
+            width: 310px;
+            height: 310px;
+
+            left: 50%;
+            top: 50%;
+
+            transform:
+                translate(-50%, -50%)
+                rotate(-35deg);
+
+            border-radius: 50%;
+
+            border:
+                1px solid rgba(255,23,68,.13);
+
+            border-left-color: transparent;
+            border-bottom-color: transparent;
+
+            box-shadow:
+                0 0 60px rgba(255,23,68,.06);
+
+            animation:
+                rotate 14s linear infinite;
+        }
+
+
+        @keyframes rotate {
+
+            from {
+                transform:
+                    translate(-50%, -50%)
+                    rotate(-35deg);
+            }
+
+            to {
+                transform:
+                    translate(-50%, -50%)
+                    rotate(325deg);
+            }
+        }
+
+
+        /* =========================================
+           DRUHÝ OTVORENÝ KRUH
+        ========================================= */
+
+        .circle-small {
+            position: absolute;
+
+            width: 190px;
+            height: 190px;
+
+            left: 50%;
+            top: 50%;
+
+            transform:
+                translate(-50%, -50%)
+                rotate(40deg);
+
+            border-radius: 50%;
+
+            border:
+                1px solid rgba(255,80,105,.08);
+
+            border-right-color: transparent;
+            border-top-color: transparent;
+
+            animation:
+                rotateReverse 10s linear infinite;
+        }
+
+
+        @keyframes rotateReverse {
+
+            from {
+                transform:
+                    translate(-50%, -50%)
+                    rotate(40deg);
+            }
+
+            to {
+                transform:
+                    translate(-50%, -50%)
+                    rotate(-320deg);
+            }
+        }
+
+
+        /* =========================================
+           ČERVENÉ BODY
+        ========================================= */
+
+        .dots {
+            position: absolute;
+            inset: 0;
+        }
+
+
+        .dot {
+            position: absolute;
+
+            width: 4px;
+            height: 4px;
+
+            border-radius: 50%;
+
+            background: #ff3155;
+
+            box-shadow:
+                0 0 12px #ff1744,
+                0 0 25px rgba(255,23,68,.5);
+
+            animation:
+                pulse 3s ease-in-out infinite;
+        }
+
+
+        .dot:nth-child(1) {
+            top: 28%;
+            left: 23%;
+        }
+
+        .dot:nth-child(2) {
+            top: 23%;
+            right: 24%;
+            animation-delay: .7s;
+        }
+
+        .dot:nth-child(3) {
+            bottom: 25%;
+            left: 20%;
+            animation-delay: 1.4s;
+        }
+
+        .dot:nth-child(4) {
+            bottom: 29%;
+            right: 21%;
+            animation-delay: 2s;
+        }
+
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: .15;
+                transform: scale(.7);
+            }
+
+            50% {
+                opacity: .9;
+                transform: scale(1.35);
+            }
+        }
+
+
+        /* =========================================
+           HLAVNÝ OBSAH
+        ========================================= */
+
+        .content {
+            position: relative;
+
+            z-index: 10;
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+
+            text-align: center;
+
+            animation:
+                appear 1.1s ease forwards;
+        }
+
+
+        /* =========================================
+           LOGO
+        ========================================= */
+
+        .logo {
+            font-size: clamp(48px, 10vw, 110px);
+
+            font-weight: 700;
+
+            letter-spacing: -5px;
+
+            line-height: 1;
+
+            color: #fff;
+
+            text-shadow:
+                0 0 20px rgba(255,23,68,.35),
+                0 0 60px rgba(255,23,68,.18);
+        }
+
+
+        .logo span {
+            color: #ff1744;
+
+            text-shadow:
+                0 0 15px rgba(255,23,68,.7),
+                0 0 35px rgba(255,23,68,.25);
+        }
+
+
+        /* =========================================
+           PODČIARKNUTIE
+        ========================================= */
+
+        .line {
+            position: relative;
+
+            width: 65px;
+            height: 1px;
+
+            margin-top: 26px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    #ff1744,
+                    transparent
+                );
+
+            box-shadow:
+                0 0 15px rgba(255,23,68,.7);
+
+            animation:
+                lineAppear 1.4s ease forwards;
+        }
+
+
+        .line::before,
+        .line::after {
+            content: "";
+
+            position: absolute;
+
+            width: 3px;
+            height: 3px;
+
+            top: -1px;
+
+            border-radius: 50%;
+
+            background: #ff1744;
+
+            box-shadow:
+                0 0 10px #ff1744;
+        }
+
+
+        .line::before {
+            left: 0;
+        }
+
+
+        .line::after {
+            right: 0;
+        }
+
+
+        .text {
+            margin-top: 18px;
+
+            color: rgba(255,255,255,.28);
+
+            font-size: 9px;
+
+            font-weight: 500;
+
+            letter-spacing: 5px;
+
+            text-transform: uppercase;
+        }
+
+
+        /* =========================================
+           ANIMÁCIE
+        ========================================= */
+
+        @keyframes appear {
+
+            0% {
+                opacity: 0;
+
+                transform:
+                    translateY(10px)
+                    scale(.97);
+            }
+
+            100% {
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+        }
+
+
+        @keyframes lineAppear {
+
+            0% {
+                width: 0;
+                opacity: 0;
+            }
+
+            100% {
+                width: 65px;
+                opacity: 1;
+            }
+        }
+
+
+        /* =========================================
+           3 SEKUNDY → MAIN
+        ========================================= */
+
+        body {
+            animation:
+                pageOut .7s ease 2.3s forwards;
+        }
+
+
+        @keyframes pageOut {
+
+            0% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0;
+            }
+        }
+
+
+        /* =========================================
+           MOBIL
+        ========================================= */
+
+        @media (max-width: 500px) {
+
+            .glow {
+                width: 300px;
+                height: 300px;
+
+                filter: blur(120px);
+            }
+
+            .circle {
+                width: 235px;
+                height: 235px;
+            }
+
+            .circle-small {
+                width: 145px;
+                height: 145px;
+            }
+
+            .logo {
+                letter-spacing: -4px;
+            }
+
+            .text {
+                font-size: 7px;
+                letter-spacing: 4px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+    <!-- =========================================
+         POZADIE
+    ========================================= -->
+
+    <div class="background">
+
+        <div class="glow"></div>
+
+        <div class="circle"></div>
+
+        <div class="circle-small"></div>
+
+        <div class="dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         LOGO
+    ========================================= -->
+
+    <main class="content">
+
+        <div class="logo">
+            Charis<span>mer</span>
+        </div>
+
+        <div class="line"></div>
+
+        <div class="text">
+            Presence · Confidence · Influence
+        </div>
+
+    </main>
+
+
+    <!-- =========================================
+         PRESUN NA MAIN
+    ========================================= -->
+
+    <script>
+
+        setTimeout(() => {
+
+            window.location.href = "mainC.html";
+
+        }, 3000);
+
+    </script>
+
+
+</body>
+</html>
