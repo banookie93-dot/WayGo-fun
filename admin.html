@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>WebTok — Admin</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: Arial, Helvetica, sans-serif;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            width: 550px;
+            height: 550px;
+            top: -300px;
+            left: -250px;
+            border-radius: 50%;
+            background: #ff00cc;
+            filter: blur(160px);
+            opacity: .17;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            width: 550px;
+            height: 550px;
+            right: -280px;
+            bottom: -300px;
+            border-radius: 50%;
+            background: #00eaff;
+            filter: blur(160px);
+            opacity: .15;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .page {
+            min-height: 100vh;
+            padding: 35px 18px 50px;
+        }
+
+        .container {
+            width: min(950px, 100%);
+            margin: auto;
+        }
+
+        /* HEADER */
+
+        .top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 28px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .logo {
+            width: 55px;
+            height: 55px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 17px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff00cc,
+                    #8b5cff,
+                    #00eaff
+                );
+
+            font-size: 28px;
+            font-weight: 1000;
+
+            box-shadow:
+                0 0 35px
+                rgba(255, 0, 204, .3);
+        }
+
+        .brand-name {
+            font-size: 22px;
+            font-weight: 1000;
+        }
+
+        .brand-label {
+            margin-top: 4px;
+            color: rgba(255,255,255,.38);
+            font-size: 9px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .back {
+            padding: 12px 16px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.1);
+
+            border-radius: 13px;
+
+            background:
+                rgba(255,255,255,.05);
+
+            color: #fff;
+
+            font-size: 10px;
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+        /* STATS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .stat {
+            padding: 18px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            border-radius: 19px;
+
+            background:
+                rgba(255,255,255,.04);
+        }
+
+        .stat-number {
+            font-size: 25px;
+            font-weight: 1000;
+        }
+
+        .stat-label {
+            margin-top: 5px;
+
+            color:
+                rgba(255,255,255,.35);
+
+            font-size: 8px;
+            font-weight: 900;
+
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* TABS */
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            margin-bottom: 14px;
+            scrollbar-width: none;
+        }
+
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab {
+            flex: 0 0 auto;
+
+            padding: 11px 17px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            border-radius: 999px;
+
+            background:
+                rgba(255,255,255,.04);
+
+            color:
+                rgba(255,255,255,.4);
+
+            font-size: 10px;
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+        .tab.active {
+            color: #fff;
+            border-color: transparent;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff00cc,
+                    #8b5cff
+                );
+        }
+
+        /* PANELS */
+
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+
+            animation:
+                fadeIn
+                .25s
+                ease;
+        }
+
+        @keyframes fadeIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(7px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        /* CARD */
+
+        .card {
+            padding: 21px;
+            margin-bottom: 13px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            border-radius: 22px;
+
+            background:
+                rgba(255,255,255,.045);
+
+            backdrop-filter:
+                blur(15px);
+        }
+
+        .card-title {
+            font-size: 17px;
+            font-weight: 1000;
+        }
+
+        .card-subtitle {
+            margin-top: 5px;
+
+            color:
+                rgba(255,255,255,.35);
+
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        /* FORM */
+
+        .form {
+            margin-top: 18px;
+        }
+
+        .field {
+            margin-bottom: 12px;
+        }
+
+        .field label {
+            display: block;
+
+            margin-bottom: 6px;
+
+            color:
+                rgba(255,255,255,.45);
+
+            font-size: 8px;
+            font-weight: 900;
+
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .field input,
+        .field textarea,
+        .field select {
+            width: 100%;
+
+            padding: 13px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.1);
+
+            border-radius: 13px;
+
+            background:
+                rgba(0,0,0,.35);
+
+            color: #fff;
+
+            outline: none;
+
+            font-family: inherit;
+            font-size: 11px;
+        }
+
+        .field textarea {
+            min-height: 85px;
+            resize: vertical;
+        }
+
+        .field select option {
+            background: #111;
+        }
+
+        .field input:focus,
+        .field textarea:focus,
+        .field select:focus {
+            border-color:
+                rgba(139,92,255,.7);
+        }
+
+        /* BUTTON */
+
+        .button {
+            min-height: 46px;
+
+            padding:
+                0
+                17px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.1);
+
+            border-radius: 13px;
+
+            background:
+                rgba(255,255,255,.05);
+
+            color: #fff;
+
+            font-size: 10px;
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+        .button.primary {
+            border: none;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff00cc,
+                    #8b5cff
+                );
+
+            box-shadow:
+                0 8px 25px
+                rgba(255,0,204,.12);
+        }
+
+        /* ITEMS */
+
+        .list {
+            margin-top: 18px;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 15px;
+
+            margin-bottom: 8px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.07);
+
+            border-radius: 16px;
+
+            background:
+                rgba(255,255,255,.025);
+        }
+
+        .item-info {
+            min-width: 0;
+        }
+
+        .item-name {
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .item-description {
+            margin-top: 5px;
+
+            color:
+                rgba(255,255,255,.4);
+
+            font-size: 9px;
+            line-height: 1.5;
+        }
+
+        .item-url {
+            margin-top: 5px;
+
+            color:
+                rgba(139,92,255,.75);
+
+            font-size: 9px;
+
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .small {
+            min-height: 35px;
+
+            padding:
+                0
+                11px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            border-radius: 10px;
+
+            background:
+                rgba(255,255,255,.05);
+
+            color: #fff;
+
+            font-size: 8px;
+            font-weight: 900;
+
+            cursor: pointer;
+        }
+
+        .approve {
+            color: #54e3ac;
+        }
+
+        .delete,
+        .reject {
+            color: #ff6d9b;
+        }
+
+        /* EMPTY */
+
+        .empty {
+            padding: 35px 15px;
+
+            text-align: center;
+
+            border:
+                1px dashed
+                rgba(255,255,255,.1);
+
+            border-radius: 17px;
+
+            color:
+                rgba(255,255,255,.3);
+
+            font-size: 10px;
+        }
+
+        /* TOAST */
+
+        .toast {
+            position: fixed;
+
+            left: 50%;
+            bottom: 24px;
+
+            transform:
+                translate(-50%, 20px);
+
+            padding:
+                12px
+                17px;
+
+            border:
+                1px solid
+                rgba(255,255,255,.1);
+
+            border-radius: 13px;
+
+            background:
+                rgba(15,15,20,.96);
+
+            color: #fff;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            opacity: 0;
+            visibility: hidden;
+
+            transition: .25s;
+
+            z-index: 9999;
+        }
+
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+
+            transform:
+                translate(-50%, 0);
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 700px) {
+
+            .page {
+                padding:
+                    28px
+                    14px
+                    40px;
+            }
+
+            .stats {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .top {
+                align-items: flex-start;
+            }
+
+            .item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .actions {
+                width: 100%;
+            }
+
+            .small {
+                flex: 1;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <main class="page">
+
+        <div class="container">
+
+
+            <!-- HEADER -->
+
+            <header class="top">
+
+                <div class="brand">
+
+                    <div class="logo">
+                        W
+                    </div>
+
+                    <div>
+
+                        <div class="brand-name">
+                            WebTok
+                        </div>
+
+                        <div class="brand-label">
+                            Admin
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="back"
+                    onclick="goHome()"
+                >
+                    Back
+                </button>
+
+            </header>
+
+
+            <!-- STATS -->
+
+            <section class="stats">
+
+                <div class="stat">
+
+                    <div
+                        id="webCount"
+                        class="stat-number"
+                    >
+                        0
+                    </div>
+
+                    <div class="stat-label">
+                        Webs
+                    </div>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div
+                        id="roomCount"
+                        class="stat-number"
+                    >
+                        0
+                    </div>
+
+                    <div class="stat-label">
+                        Rooms
+                    </div>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div
+                        id="suggestionCount"
+                        class="stat-number"
+                    >
+                        0
+                    </div>
+
+                    <div class="stat-label">
+                        Suggestions
+                    </div>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div
+                        id="userCount"
+                        class="stat-number"
+                    >
+                        —
+                    </div>
+
+                    <div class="stat-label">
+                        Users
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- TABS -->
+
+            <nav class="tabs">
+
+                <button
+                    class="tab active"
+                    onclick="openTab('webs', this)"
+                >
+                    Webs
+                </button>
+
+                <button
+                    class="tab"
+                    onclick="openTab('rooms', this)"
+                >
+                    Rooms
+                </button>
+
+                <button
+                    class="tab"
+                    onclick="openTab('suggestions', this)"
+                >
+                    Suggestions
+                </button>
+
+            </nav>
+
+
+            <!-- WEBS -->
+
+            <section
+                id="webs"
+                class="panel active"
+            >
+
+
+                <div class="card">
+
+                    <div class="card-title">
+                        Add website
+                    </div>
+
+                    <div class="card-subtitle">
+                        Add a new website or game to WebTok.
+                    </div>
+
+
+                    <div class="form">
+
+
+                        <div class="field">
+
+                            <label>
+                                Name
+                            </label>
+
+                            <input
+                                id="webName"
+                                type="text"
+                                placeholder="Example Game"
+                            >
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label>
+                                Description
+                            </label>
+
+                            <textarea
+                                id="webDescription"
+                                placeholder="Description..."
+                            ></textarea>
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label>
+                                URL
+                            </label>
+
+                            <input
+                                id="webURL"
+                                type="url"
+                                placeholder="https://example.com"
+                            >
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label>
+                                Category
+                            </label>
+
+                            <select id="webCategory">
+
+                                <option value="Game">
+                                    Game
+                                </option>
+
+                                <option value="Website">
+                                    Website
+                                </option>
+
+                                <option value="Quiz">
+                                    Quiz
+                                </option>
+
+                                <option value="Entertainment">
+                                    Entertainment
+                                </option>
+
+                                <option value="Other">
+                                    Other
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <button
+                            class="button primary"
+                            onclick="addWebsite()"
+                        >
+                            Add website
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="card-title">
+                        Websites
+                    </div>
+
+                    <div class="list" id="webList"></div>
+
+                </div>
+
+
+            </section>
+
+
+            <!-- ROOMS -->
+
+            <section
+                id="rooms"
+                class="panel"
+            >
+
+                <div class="card">
+
+                    <div class="card-title">
+                        Rooms
+                    </div>
+
+                    <div class="card-subtitle">
+                        Manage rooms created in WebTok.
+                    </div>
+
+                    <div
+                        class="list"
+                        id="roomList"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- SUGGESTIONS -->
+
+            <section
+                id="suggestions"
+                class="panel"
+            >
+
+                <div class="card">
+
+                    <div class="card-title">
+                        Suggestions
+                    </div>
+
+                    <div class="card-subtitle">
+                        Review website suggestions from users.
+                    </div>
+
+                    <div
+                        class="list"
+                        id="suggestionList"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+        </div>
+
+    </main>
+
+
+    <div
+        id="toast"
+        class="toast"
+    ></div>
+
+
+    <script>
+
+
+        /* ==============================================
+           SUPABASE
+        ============================================== */
+
+        const SUPABASE_URL =
+            "https://smfvllbwzbnenjrllfqw.supabase.co";
+
+
+        const SUPABASE_KEY =
+            "sb_publishable_MKLzWWJG8xkltmNcEL24fg_PCSclHEs";
+
+
+        const supabaseClient =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+
+
+        /* ==============================================
+           TABS
+        ============================================== */
+
+        function openTab(
+            id,
+            button
+        ) {
+
+            document
+                .querySelectorAll(".panel")
+                .forEach(
+                    panel =>
+                        panel.classList.remove(
+                            "active"
+                        )
+                );
+
+
+            document
+                .querySelectorAll(".tab")
+                .forEach(
+                    tab =>
+                        tab.classList.remove(
+                            "active"
+                        )
+                );
+
+
+            document
+                .getElementById(id)
+                .classList.add(
+                    "active"
+                );
+
+
+            button.classList.add(
+                "active"
+            );
+
+        }
+
+
+        /* ==============================================
+           WEBSITES
+        ============================================== */
+
+        async function loadWebsites() {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+
+                    .from("websites")
+
+                    .select("*")
+
+                    .order(
+                        "created_at",
+                        {
+                            ascending: false
+                        }
+                    );
+
+
+            if (error) {
+
+                console.error(error);
+
+                document.getElementById(
+                    "webList"
+                ).innerHTML =
+                    empty(
+                        "Could not load websites."
+                    );
+
+                return;
+
+            }
+
+
+            document.getElementById(
+                "webCount"
+            ).textContent =
+                data?.length || 0;
+
+
+            const list =
+                document.getElementById(
+                    "webList"
+                );
+
+
+            if (!data?.length) {
+
+                list.innerHTML =
+                    empty(
+                        "No websites yet."
+                    );
+
+                return;
+
+            }
+
+
+            list.innerHTML =
+                data
+                    .map(
+                        website => `
+
+                        <div class="item">
+
+                            <div class="item-info">
+
+                                <div class="item-name">
+                                    ${escapeHTML(
+                                        website.name
+                                    )}
+                                </div>
+
+                                <div class="item-description">
+                                    ${escapeHTML(
+                                        website.description || ""
+                                    )}
+                                </div>
+
+                                <div class="item-url">
+                                    ${escapeHTML(
+                                        website.url || ""
+                                    )}
+                                </div>
+
+                            </div>
+
+
+                            <div class="actions">
+
+                                <button
+                                    class="small delete"
+                                    onclick="deleteWebsite(
+                                        '${escapeAttribute(
+                                            website.id
+                                        )}'
+                                    )"
+                                >
+                                    Delete
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    `
+                    )
+                    .join("");
+
+        }
+
+
+        async function addWebsite() {
+
+            const name =
+                document
+                    .getElementById("webName")
+                    .value
+                    .trim();
+
+
+            const description =
+                document
+                    .getElementById("webDescription")
+                    .value
+                    .trim();
+
+
+            const url =
+                document
+                    .getElementById("webURL")
+                    .value
+                    .trim();
+
+
+            const category =
+                document
+                    .getElementById("webCategory")
+                    .value;
+
+
+            if (!name || !url) {
+
+                showToast(
+                    "Name and URL are required."
+                );
+
+                return;
+
+            }
+
+
+            try {
+
+                new URL(url);
+
+            }
+
+            catch {
+
+                showToast(
+                    "Enter a valid URL."
+                );
+
+                return;
+
+            }
+
+
+            const {
+                error
+            } =
+                await supabaseClient
+
+                    .from("websites")
+
+                    .insert({
+
+                        name:
+                            name,
+
+                        description:
+                            description,
+
+                        url:
+                            url,
+
+                        category:
+                            category
+
+                    });
+
+
+            if (error) {
+
+                console.error(error);
+
+                showToast(
+                    "Could not add website."
+                );
+
+                return;
+
+            }
+
+
+            document.getElementById(
+                "webName"
+            ).value = "";
+
+
+            document.getElementById(
+                "webDescription"
+            ).value = "";
+
+
+            document.getElementById(
+                "webURL"
+            ).value = "";
+
+
+            showToast(
+                "Website added."
+            );
+
+
+            loadWebsites();
+
+        }
+
+
+        async function deleteWebsite(
+            id
+        ) {
+
+            if (
+                !confirm(
+                    "Delete this website?"
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            const {
+                error
+            } =
+                await supabaseClient
+
+                    .from("websites")
+
+                    .delete()
+
+                    .eq(
+                        "id",
+                        id
+                    );
+
+
+            if (error) {
+
+                console.error(error);
+
+                showToast(
+                    "Could not delete website."
+                );
+
+                return;
+
+            }
+
+
+            showToast(
+                "Website deleted."
+            );
+
+
+            loadWebsites();
+
+        }
+
+
+        /* ==============================================
+           ROOMS
+        ============================================== */
+
+        async function loadRooms() {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+
+                    .from("rooms")
+
+                    .select("*")
+
+                    .order(
+                        "created_at",
+                        {
+                            ascending: false
+                        }
+                    );
+
+
+            if (error) {
+
+                console.error(error);
+
+                document.getElementById(
+                    "roomList"
+                ).innerHTML =
+                    empty(
+                        "Could not load rooms."
+                    );
+
+                return;
+
+            }
+
+
+            document.getElementById(
+                "roomCount"
+            ).textContent =
+                data?.length || 0;
+
+
+            const list =
+                document.getElementById(
+                    "roomList"
+                );
+
+
+            if (!data?.length) {
+
+                list.innerHTML =
+                    empty(
+                        "No rooms yet."
+                    );
+
+                return;
+
+            }
+
+
+            list.innerHTML =
+                data
+                    .map(
+                        room => `
+
+                        <div class="item">
+
+                            <div class="item-info">
+
+                                <div class="item-name">
+                                    ${escapeHTML(
+                                        room.name
+                                    )}
+                                </div>
+
+                                <div class="item-description">
+                                    ${escapeHTML(
+                                        room.description || ""
+                                    )}
+                                </div>
+
+                                <div class="item-url">
+                                    ${escapeHTML(
+                                        room.website_url || ""
+                                    )}
+                                </div>
+
+                            </div>
+
+
+                            <div class="actions">
+
+                                <button
+                                    class="small delete"
+                                    onclick="deleteRoom(
+                                        '${escapeAttribute(
+                                            room.id
+                                        )}'
+                                    )"
+                                >
+                                    Delete
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    `
+                    )
+                    .join("");
+
+        }
+
+
+        async function deleteRoom(
+            id
+        ) {
+
+            if (
+                !confirm(
+                    "Delete this room?"
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            const {
+                error
+            } =
+                await supabaseClient
+
+                    .from("rooms")
+
+                    .delete()
+
+                    .eq(
+                        "id",
+                        id
+                    );
+
+
+            if (error) {
+
+                console.error(error);
+
+                showToast(
+                    "Could not delete room."
+                );
+
+                return;
+
+            }
+
+
+            showToast(
+                "Room deleted."
+            );
+
+
+            loadRooms();
+
+        }
+
+
+        /* ==============================================
+           SUGGESTIONS
+        ============================================== */
+
+        async function loadSuggestions() {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+
+                    .from(
+                        "website_suggestions"
+                    )
+
+                    .select("*")
+
+                    .order(
+                        "created_at",
+                        {
+                            ascending: false
+                        }
+                    );
+
+
+            if (error) {
+
+                console.error(error);
+
+                document.getElementById(
+                    "suggestionList"
+                ).innerHTML =
+                    empty(
+                        "Could not load suggestions."
+                    );
+
+                return;
+
+            }
+
+
+            document.getElementById(
+                "suggestionCount"
+            ).textContent =
+                data?.length || 0;
+
+
+            const list =
+                document.getElementById(
+                    "suggestionList"
+                );
+
+
+            if (!data?.length) {
+
+                list.innerHTML =
+                    empty(
+                        "No suggestions yet."
+                    );
+
+                return;
+
+            }
+
+
+            list.innerHTML =
+                data
+                    .map(
+                        suggestion => `
+
+                        <div class="item">
+
+                            <div class="item-info">
+
+                                <div class="item-name">
+
+                                    ${escapeHTML(
+                                        suggestion.name ||
+                                        suggestion.title ||
+                                        "Suggested website"
+                                    )}
+
+                                </div>
+
+                                <div class="item-description">
+
+                                    ${escapeHTML(
+                                        suggestion.description || ""
+                                    )}
+
+                                </div>
+
+                                <div class="item-url">
+
+                                    ${escapeHTML(
+                                        suggestion.url ||
+                                        suggestion.website_url ||
+                                        ""
+                                    )}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="actions">
+
+                                <button
+                                    class="small approve"
+                                    onclick="approveSuggestion(
+                                        '${escapeAttribute(
+                                            suggestion.id
+                                        )}'
+                                    )"
+                                >
+                                    Add
+                                </button>
+
+
+                                <button
+                                    class="small reject"
+                                    onclick="deleteSuggestion(
+                                        '${escapeAttribute(
+                                            suggestion.id
+                                        )}'
+                                    )"
+                                >
+                                    Reject
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    `
+                    )
+                    .join("");
+
+        }
+
+
+        async function approveSuggestion(
+            id
+        ) {
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+
+                    .from(
+                        "website_suggestions"
+                    )
+
+                    .select("*")
+
+                    .eq(
+                        "id",
+                        id
+                    )
+
+                    .single();
+
+
+            if (error || !data) {
+
+                showToast(
+                    "Suggestion not found."
+                );
+
+                return;
+
+            }
+
+
+            const {
+                error: insertError
+            } =
+                await supabaseClient
+
+                    .from("websites")
+
+                    .insert({
+
+                        name:
+                            data.name ||
+                            data.title,
+
+                        description:
+                            data.description || "",
+
+                        url:
+                            data.url ||
+                            data.website_url,
+
+                        category:
+                            data.category ||
+                            "Other"
+
+                    });
+
+
+            if (insertError) {
+
+                console.error(
+                    insertError
+                );
+
+                showToast(
+                    "Could not add website."
+                );
+
+                return;
+
+            }
+
+
+            await supabaseClient
+
+                .from(
+                    "website_suggestions"
+                )
+
+                .delete()
+
+                .eq(
+                    "id",
+                    id
+                );
+
+
+            showToast(
+                "Suggestion added."
+            );
+
+
+            loadSuggestions();
+
+            loadWebsites();
+
+        }
+
+
+        async function deleteSuggestion(
+            id
+        ) {
+
+            if (
+                !confirm(
+                    "Reject this suggestion?"
+                )
+            ) {
+
+                return;
+
+            }
+
+
+            const {
+                error
+            } =
+                await supabaseClient
+
+                    .from(
+                        "website_suggestions"
+                    )
+
+                    .delete()
+
+                    .eq(
+                        "id",
+                        id
+                    );
+
+
+            if (error) {
+
+                console.error(error);
+
+                showToast(
+                    "Could not reject suggestion."
+                );
+
+                return;
+
+            }
+
+
+            showToast(
+                "Suggestion rejected."
+            );
+
+
+            loadSuggestions();
+
+        }
+
+
+        /* ==============================================
+           HELPERS
+        ============================================== */
+
+        function empty(
+            text
+        ) {
+
+            return `
+
+                <div class="empty">
+                    ${escapeHTML(text)}
+                </div>
+
+            `;
+
+        }
+
+
+        function escapeHTML(
+            value
+        ) {
+
+            return String(
+                value ?? ""
+            )
+
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+
+            .replace(
+                /</g,
+                "&lt;"
+            )
+
+            .replace(
+                />/g,
+                "&gt;"
+            )
+
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+        }
+
+
+        function escapeAttribute(
+            value
+        ) {
+
+            return String(
+                value ?? ""
+            )
+
+            .replace(
+                /\\/g,
+                "\\\\"
+            )
+
+            .replace(
+                /'/g,
+                "\\'"
+            );
+
+        }
+
+
+        function showToast(
+            message
+        ) {
+
+            const toast =
+                document.getElementById(
+                    "toast"
+                );
+
+
+            toast.textContent =
+                message;
+
+
+            toast.classList.add(
+                "show"
+            );
+
+
+            setTimeout(
+                () => {
+
+                    toast.classList.remove(
+                        "show"
+                    );
+
+                },
+                2300
+            );
+
+        }
+
+
+        function goHome() {
+
+            window.location.href =
+                "main.html";
+
+        }
+
+
+        /* ==============================================
+           START
+        ============================================== */
+
+        async function init() {
+
+            await loadWebsites();
+
+            await loadRooms();
+
+            await loadSuggestions();
+
+        }
+
+
+        init();
+
+    </script>
+
+</body>
+
+</html>
