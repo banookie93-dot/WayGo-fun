@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>WebTok — Share</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: Arial, Helvetica, sans-serif;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            top: -250px;
+            left: -200px;
+            border-radius: 50%;
+            background: #ff00cc;
+            filter: blur(150px);
+            opacity: .16;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            width: 500px;
+            height: 500px;
+            right: -250px;
+            bottom: -250px;
+            border-radius: 50%;
+            background: #00eaff;
+            filter: blur(150px);
+            opacity: .14;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .page {
+            width: 100%;
+            min-height: 100vh;
+            padding: 55px 20px 120px;
+        }
+
+        .container {
+            width: min(700px, 100%);
+            margin: 0 auto;
+        }
+
+        /* HEADER */
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 58px;
+            height: 58px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff00cc,
+                    #8b5cff,
+                    #00eaff
+                );
+            font-size: 30px;
+            font-weight: 1000;
+            box-shadow:
+                0 0 30px rgba(255,0,204,.25);
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 1000;
+        }
+
+        .subtitle {
+            margin-top: 8px;
+            color: rgba(255,255,255,.45);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* SEARCH */
+
+        .search-box {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .search-box input {
+            width: 100%;
+            height: 56px;
+            padding: 0 18px;
+            border:
+                1px solid
+                rgba(255,255,255,.1);
+            border-radius: 18px;
+            outline: none;
+            background:
+                rgba(255,255,255,.05);
+            color: white;
+            font-size: 14px;
+        }
+
+        .search-box input:focus {
+            border-color:
+                rgba(139,92,255,.7);
+            background:
+                rgba(255,255,255,.07);
+        }
+
+        .search-box input::placeholder {
+            color:
+                rgba(255,255,255,.3);
+        }
+
+        /* FILTERS */
+
+        .filters {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            margin-bottom: 22px;
+            scrollbar-width: none;
+        }
+
+        .filters::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter {
+            flex: 0 0 auto;
+            padding: 10px 15px;
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+            border-radius: 999px;
+            background:
+                rgba(255,255,255,.04);
+            color:
+                rgba(255,255,255,.5);
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .filter.active {
+            color: white;
+            border-color:
+                transparent;
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff00cc,
+                    #8b5cff
+                );
+        }
+
+        /* SECTION */
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 1000;
+        }
+
+        .room-count {
+            color:
+                rgba(255,255,255,.3);
+            font-size: 11px;
+        }
+
+        /* ROOMS */
+
+        .rooms {
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+        }
+
+        .room {
+            padding: 19px;
+            border:
+                1px solid
+                rgba(255,255,255,.09);
+            border-radius: 21px;
+            background:
+                rgba(255,255,255,.045);
+            cursor: pointer;
+            transition:
+                transform .2s ease,
+                background .2s ease,
+                border-color .2s ease;
+        }
+
+        .room:hover {
+            transform:
+                translateY(-3px);
+            background:
+                rgba(255,255,255,.075);
+            border-color:
+                rgba(255,255,255,.17);
+        }
+
+        .room:active {
+            transform:
+                scale(.98);
+        }
+
+        .room-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .room-name {
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .public-label {
+            flex: 0 0 auto;
+            padding: 5px 8px;
+            border-radius: 8px;
+            background:
+                rgba(0,255,170,.08);
+            color:
+                #54e6b0;
+            font-size: 9px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .room-description {
+            margin-top: 8px;
+            color:
+                rgba(255,255,255,.48);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .room-url {
+            margin-top: 10px;
+            color:
+                rgba(139,92,255,.8);
+            font-size: 11px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .room-meta {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-top: 14px;
+            color:
+                rgba(255,255,255,.3);
+            font-size: 9px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background:
+                #8b5cff;
+        }
+
+        /* EMPTY */
+
+        .empty {
+            padding: 45px 20px;
+            text-align: center;
+            border:
+                1px dashed
+                rgba(255,255,255,.12);
+            border-radius: 22px;
+            background:
+                rgba(255,255,255,.025);
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .empty-text {
+            max-width: 420px;
+            margin: 10px auto 20px;
+            color:
+                rgba(255,255,255,.4);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* BUTTON */
+
+        .button {
+            min-height: 50px;
+            padding: 0 20px;
+            border: none;
+            border-radius: 15px;
+            background:
+                linear-gradient(
+                    135deg,
+                    #ff00cc,
+                    #8b5cff
+                );
+            color: white;
+            font-size: 12px;
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        /* LOADING */
+
+        .loading {
+            padding: 80px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .loader {
+            width: 42px;
+            height: 42px;
+            border:
+                3px solid
+                rgba(255,255,255,.08);
+            border-top-color:
+                #ff00cc;
+            border-right-color:
+                #8b5cff;
+            border-radius: 50%;
+            animation:
+                spin .8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform:
+                    rotate(360deg);
+            }
+        }
+
+        /* NAVBAR */
+
+        .bottom-nav {
+            position: fixed;
+            left: 50%;
+            bottom: 18px;
+            transform:
+                translateX(-50%);
+            width:
+                min(
+                    430px,
+                    calc(100% - 30px)
+                );
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 6px;
+            border:
+                1px solid
+                rgba(255,255,255,.1);
+            border-radius: 22px;
+            background:
+                rgba(12,12,18,.88);
+            backdrop-filter:
+                blur(20px);
+            -webkit-backdrop-filter:
+                blur(20px);
+            box-shadow:
+                0 10px 40px
+                rgba(0,0,0,.45);
+            z-index: 5000;
+        }
+
+        .bottom-nav-button {
+            flex: 1;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 17px;
+            background: transparent;
+            color:
+                rgba(255,255,255,.42);
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: .2s ease;
+        }
+
+        .bottom-nav-button:hover {
+            color: white;
+            background:
+                rgba(255,255,255,.06);
+        }
+
+        .bottom-nav-button.active {
+            color: white;
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255,0,204,.22),
+                    rgba(139,92,255,.22)
+                );
+        }
+
+        @media (max-width: 500px) {
+
+            .page {
+                padding:
+                    50px
+                    15px
+                    105px;
+            }
+
+            .bottom-nav {
+                bottom: 12px;
+                width:
+                    calc(100% - 24px);
+                height: 60px;
+            }
+
+            .bottom-nav-button {
+                height: 48px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <main class="page">
+
+        <div class="container">
+
+
+            <!-- HEADER -->
+
+            <header class="header">
+
+                <div class="logo">
+                    W
+                </div>
+
+                <div class="title">
+                    Find a Room
+                </div>
+
+                <div class="subtitle">
+                    Discover games and websites
+                    and join other people.
+                </div>
+
+            </header>
+
+
+            <!-- SEARCH -->
+
+            <div class="search-box">
+
+                <input
+                    id="search"
+                    type="search"
+                    placeholder="Search rooms, games or websites..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <!-- FILTERS -->
+
+            <div class="filters">
+
+                <button
+                    class="filter active"
+                    data-category="All"
+                >
+                    All
+                </button>
+
+                <button
+                    class="filter"
+                    data-category="Game"
+                >
+                    Games
+                </button>
+
+                <button
+                    class="filter"
+                    data-category="Website"
+                >
+                    Websites
+                </button>
+
+                <button
+                    class="filter"
+                    data-category="Quiz"
+                >
+                    Quiz
+                </button>
+
+                <button
+                    class="filter"
+                    data-category="Entertainment"
+                >
+                    Entertainment
+                </button>
+
+                <button
+                    class="filter"
+                    data-category="Other"
+                >
+                    Other
+                </button>
+
+            </div>
+
+
+            <!-- ROOM LIST -->
+
+            <div class="section-header">
+
+                <div class="section-title">
+                    Public Rooms
+                </div>
+
+                <div
+                    id="roomCount"
+                    class="room-count"
+                >
+                    0 rooms
+                </div>
+
+            </div>
+
+
+            <div
+                id="rooms"
+                class="rooms"
+            >
+
+                <div class="loading">
+
+                    <div class="loader"></div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </main>
+
+
+    <!-- NAVBAR -->
+
+    <nav class="bottom-nav">
+
+        <button
+            class="bottom-nav-button"
+            onclick="goHome()"
+        >
+            Home
+        </button>
+
+        <button
+            class="bottom-nav-button active"
+            onclick="goShare()"
+        >
+            Share
+        </button>
+
+        <button
+            class="bottom-nav-button"
+            onclick="goAccount()"
+        >
+            Account
+        </button>
+
+    </nav>
+
+
+    <script>
+
+        /* =====================================================
+           SUPABASE
+        ===================================================== */
+
+        const SUPABASE_URL =
+            "https://smfvllbwzbnenjrllfqw.supabase.co";
+
+        const SUPABASE_KEY =
+            "sb_publishable_MKLzWWJG8xkltmNcEL24fg_PCSclHEs";
+
+        const supabaseClient =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_KEY
+            );
+
+
+        /* =====================================================
+           STATE
+        ===================================================== */
+
+        let allRooms = [];
+
+        let currentCategory = "All";
+
+        let currentSearch = "";
+
+
+        const roomsElement =
+            document.getElementById(
+                "rooms"
+            );
+
+
+        const searchElement =
+            document.getElementById(
+                "search"
+            );
+
+
+        const roomCount =
+            document.getElementById(
+                "roomCount"
+            );
+
+
+        /* =====================================================
+           LOAD ROOMS
+        ===================================================== */
+
+        async function loadRooms() {
+
+            try {
+
+                const {
+                    data,
+                    error
+                } =
+                    await supabaseClient
+
+                        .from("rooms")
+
+                        .select(
+                            "id,name,description,website_url,category,is_public,created_at"
+                        )
+
+                        .eq(
+                            "is_public",
+                            true
+                        )
+
+                        .order(
+                            "created_at",
+                            {
+                                ascending: false
+                            }
+                        );
+
+
+                if (error) {
+
+                    console.error(
+                        "Room loading error:",
+                        error
+                    );
+
+                    showError();
+
+                    return;
+
+                }
+
+
+                allRooms =
+                    data || [];
+
+
+                renderRooms();
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                showError();
+
+            }
+
+        }
+
+
+        /* =====================================================
+           RENDER
+        ===================================================== */
+
+        function renderRooms() {
+
+            const search =
+                currentSearch
+                    .toLowerCase()
+                    .trim();
+
+
+            const filtered =
+                allRooms.filter(
+                    room => {
+
+                        const matchesCategory =
+                            currentCategory ===
+                            "All" ||
+                            room.category ===
+                            currentCategory;
+
+
+                        const searchable =
+                            [
+                                room.name,
+                                room.description,
+                                room.category,
+                                room.website_url
+                            ]
+                                .filter(Boolean)
+                                .join(" ")
+                                .toLowerCase();
+
+
+                        const matchesSearch =
+                            !search ||
+                            searchable.includes(
+                                search
+                            );
+
+
+                        return (
+                            matchesCategory &&
+                            matchesSearch
+                        );
+
+                    }
+                );
+
+
+            roomCount.textContent =
+                filtered.length +
+                (
+                    filtered.length === 1
+                        ? " room"
+                        : " rooms"
+                );
+
+
+            if (!filtered.length) {
+
+                roomsElement.innerHTML = `
+
+                    <div class="empty">
+
+                        <div class="empty-title">
+                            No rooms found
+                        </div>
+
+                        <div class="empty-text">
+
+                            Try another search or category.
+                            You can also create your own room
+                            from your account.
+
+                        </div>
+
+                        <button
+                            class="button"
+                            onclick="goAccount()"
+                        >
+                            Create a room
+                        </button>
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+            roomsElement.innerHTML =
+                filtered
+                    .map(
+                        createRoomHTML
+                    )
+                    .join("");
+
+        }
+
+
+        /* =====================================================
+           ROOM CARD
+        ===================================================== */
+
+        function createRoomHTML(room) {
+
+            return `
+
+                <div
+                    class="room"
+                    onclick="openRoom(
+                        '${escapeAttribute(room.id)}'
+                    )"
+                >
+
+                    <div class="room-top">
+
+                        <div class="room-name">
+
+                            ${escapeHTML(
+                                room.name
+                            )}
+
+                        </div>
+
+                        <div class="public-label">
+                            Public
+                        </div>
+
+                    </div>
+
+
+                    <div class="room-description">
+
+                        ${
+                            room.description
+                                ? escapeHTML(
+                                    room.description
+                                )
+                                : "No description."
+                        }
+
+                    </div>
+
+
+                    <div class="room-url">
+
+                        ${escapeHTML(
+                            room.website_url
+                        )}
+
+                    </div>
+
+
+                    <div class="room-meta">
+
+                        <span>
+                            ${escapeHTML(
+                                room.category ||
+                                "Other"
+                            )}
+                        </span>
+
+                        <span class="dot"></span>
+
+                        <span>
+                            Open room
+                        </span>
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+
+
+        /* =====================================================
+           SEARCH
+        ===================================================== */
+
+        searchElement.addEventListener(
+            "input",
+            event => {
+
+                currentSearch =
+                    event.target.value;
+
+                renderRooms();
+
+            }
+        );
+
+
+        /* =====================================================
+           FILTERS
+        ===================================================== */
+
+        document
+            .querySelectorAll(
+                ".filter"
+            )
+            .forEach(
+                button => {
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            document
+                                .querySelectorAll(
+                                    ".filter"
+                                )
+                                .forEach(
+                                    item =>
+                                        item.classList.remove(
+                                            "active"
+                                        )
+                                );
+
+
+                            button.classList.add(
+                                "active"
+                            );
+
+
+                            currentCategory =
+                                button.dataset.category;
+
+
+                            renderRooms();
+
+                        }
+                    );
+
+                }
+            );
+
+
+        /* =====================================================
+           OPEN ROOM
+        ===================================================== */
+
+        function openRoom(roomId) {
+
+            window.location.href =
+                "room.html?id=" +
+                encodeURIComponent(
+                    roomId
+                );
+
+        }
+
+
+        /* =====================================================
+           NAVIGATION
+        ===================================================== */
+
+        function goHome() {
+
+            window.location.href =
+                "main.html";
+
+        }
+
+
+        function goShare() {
+
+            window.location.href =
+                "share.html";
+
+        }
+
+
+        function goAccount() {
+
+            window.location.href =
+                "account.html";
+
+        }
+
+
+        /* =====================================================
+           ERROR
+        ===================================================== */
+
+        function showError() {
+
+            roomsElement.innerHTML = `
+
+                <div class="empty">
+
+                    <div class="empty-title">
+                        Something went wrong
+                    </div>
+
+                    <div class="empty-text">
+
+                        We couldn't load the rooms.
+                        Check your Supabase connection
+                        and try again.
+
+                    </div>
+
+                    <button
+                        class="button"
+                        onclick="loadRooms()"
+                    >
+                        Try again
+                    </button>
+
+                </div>
+
+            `;
+
+        }
+
+
+        /* =====================================================
+           SECURITY
+        ===================================================== */
+
+        function escapeHTML(value) {
+
+            return String(value)
+
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
+
+        function escapeAttribute(value) {
+
+            return String(value)
+                .replace(
+                    /\\/g,
+                    "\\\\"
+                )
+                .replace(
+                    /'/g,
+                    "\\'"
+                );
+
+        }
+
+
+        /* =====================================================
+           START
+        ===================================================== */
+
+        loadRooms();
+
+    </script>
+
+</body>
+
+</html>
