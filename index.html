@@ -1,20 +1,38 @@
 <!DOCTYPE html>
 <html lang="sk">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>WayGo — Už čoskoro</title>
 
+
+  <!-- FONTS -->
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
 
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
     rel="stylesheet"
   >
 
+
+  <!-- SUPABASE -->
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 
   <style>
 
@@ -24,147 +42,222 @@
       padding: 0;
     }
 
+
     :root {
+
       --purple: #9855ff;
       --pink: #ff4fd0;
       --blue: #648cff;
       --yellow: #ffe66f;
+
       --white: #fffaff;
+
       --muted: #968d9f;
+
       --bg: #090511;
+
     }
+
 
     html {
       scroll-behavior: smooth;
     }
 
+
     body {
+
       min-height: 100vh;
+
       overflow-x: hidden;
 
       background:
+
         radial-gradient(
-          circle at 50% 15%,
-          #381452 0%,
-          #190923 35%,
-          #090511 78%
+          circle at 50% 10%,
+          #42145e 0%,
+          #21092d 32%,
+          #090511 75%
         );
 
       color: var(--white);
+
       font-family: "DM Sans", sans-serif;
+
     }
 
-    /* =========================
+
+    /* =====================================
        BACKGROUND
-    ========================= */
+    ===================================== */
 
     .background {
+
       position: fixed;
+
       inset: 0;
+
       z-index: -100;
+
       overflow: hidden;
+
       pointer-events: none;
+
     }
 
+
     .glow {
+
       position: absolute;
+
       border-radius: 50%;
-      filter: blur(130px);
+
+      filter: blur(120px);
+
       opacity: .45;
 
       animation:
-        glowMove 13s ease-in-out infinite;
+        glowMove 12s ease-in-out infinite;
+
     }
+
 
     .glow-1 {
+
       width: 700px;
       height: 700px;
-      left: -280px;
+
+      left: -250px;
       top: -250px;
+
       background: #7135ff;
+
     }
+
 
     .glow-2 {
+
       width: 650px;
       height: 650px;
-      right: -300px;
-      top: 10%;
+
+      right: -280px;
+      top: 15%;
+
       background: #ff3fc9;
-      animation-delay: -5s;
+
+      animation-delay: -4s;
+
     }
 
+
     .glow-3 {
+
       width: 600px;
       height: 600px;
+
       left: 30%;
       bottom: -400px;
+
       background: #376dff;
-      animation-delay: -8s;
+
+      animation-delay: -7s;
+
     }
+
 
     @keyframes glowMove {
 
-      0%, 100% {
+      0%,
+      100% {
+
         transform:
           translate(0, 0)
           scale(1);
+
       }
 
       50% {
+
         transform:
-          translate(40px, -40px)
-          scale(1.12);
+          translate(45px, -40px)
+          scale(1.13);
+
       }
 
     }
 
+
     .grain {
+
       position: absolute;
+
       inset: 0;
+
       opacity: .035;
 
       background-image:
+
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+
     }
 
 
-    /* =========================
+    /* =====================================
        NAV
-    ========================= */
+    ===================================== */
 
     nav {
-      position: relative;
-      z-index: 100;
 
-      width: min(1250px, calc(100% - 40px));
+      width:
+        min(
+          1250px,
+          calc(100% - 40px)
+        );
 
       margin: auto;
+
       padding: 25px 0;
 
       display: flex;
+
       align-items: center;
+
       justify-content: space-between;
+
     }
+
 
     .logo {
-      font-family: "Space Grotesk";
-      font-size: 27px;
+
+      font-family:
+        "Space Grotesk";
+
+      font-size: 28px;
+
       font-weight: 700;
+
       letter-spacing: -1.5px;
+
     }
 
+
     .logo span {
+
       color: var(--pink);
 
       text-shadow:
-        0 0 25px rgba(255,79,208,.7);
+        0 0 25px
+        rgba(255,79,208,.8);
+
     }
 
+
     .nav-pill {
+
       padding: 9px 16px;
 
       border:
-        1px solid rgba(255,255,255,.13);
+        1px solid
+        rgba(255,255,255,.13);
 
       border-radius: 100px;
 
@@ -174,61 +267,82 @@
       color: #cfc5d8;
 
       font-size: 9px;
+
       font-weight: 800;
+
       letter-spacing: 1.7px;
+
       text-transform: uppercase;
 
-      backdrop-filter: blur(15px);
+      backdrop-filter:
+        blur(15px);
+
     }
 
 
-    /* =========================
+    /* =====================================
        HERO
-    ========================= */
+    ===================================== */
 
     .hero {
+
       position: relative;
 
-      width: min(1500px, calc(100% - 10px));
+      width:
+        min(
+          1500px,
+          calc(100% - 20px)
+        );
 
       min-height: 950px;
 
       margin: auto;
 
       display: flex;
+
       align-items: center;
+
       justify-content: center;
 
-      padding: 80px 0 180px;
+      padding:
+        80px 0 180px;
 
-      overflow: visible;
     }
 
+
     .hero-content {
+
       position: relative;
+
       z-index: 70;
 
       width: 100%;
 
       text-align: center;
+
     }
 
 
-    /* =========================
-       PHOTOS
-    ========================= */
+    /* =====================================
+       FLOATING PHOTOS
+    ===================================== */
 
     .floating {
-      position: absolute;
-      z-index: 30;
 
-      pointer-events: auto;
+      position: absolute;
+
+      z-index: 30;
 
       animation:
         floatingMove 5s ease-in-out infinite;
+
+      cursor: pointer;
+
     }
 
+
     .floating-inner {
+
       position: relative;
 
       width: 100%;
@@ -237,52 +351,71 @@
       overflow: hidden;
 
       border:
-        5px solid rgba(255,255,255,.96);
+        5px solid
+        rgba(255,255,255,.97);
 
       background: #171020;
 
       box-shadow:
-        0 40px 90px rgba(0,0,0,.62),
-        0 0 65px rgba(157,79,255,.27);
+
+        0 35px 80px
+        rgba(0,0,0,.65),
+
+        0 0 60px
+        rgba(157,79,255,.28);
 
       transition:
-        transform .35s cubic-bezier(.2,.8,.2,1),
-        box-shadow .35s ease;
+        .4s ease;
+
     }
+
 
     .floating-inner::before {
+
       content: "";
 
       position: absolute;
+
       inset: 0;
+
       z-index: 3;
 
-      pointer-events: none;
-
       background:
+
         linear-gradient(
           135deg,
-          rgba(255,255,255,.22),
+          rgba(255,255,255,.3),
           transparent 25%,
-          transparent 65%,
-          rgba(255,68,210,.15)
+          transparent 60%,
+          rgba(255,68,210,.2)
         );
+
+      pointer-events: none;
+
     }
 
+
     .floating-inner::after {
+
       content: "";
 
       position: absolute;
+
       inset: 0;
+
       z-index: 4;
+
+      border:
+        1px solid
+        rgba(255,255,255,.3);
 
       pointer-events: none;
 
-      border:
-        1px solid rgba(255,255,255,.2);
     }
 
+
     .floating img {
+
       display: block;
 
       width: 100%;
@@ -293,225 +426,308 @@
       opacity: 1;
 
       filter:
-        saturate(1.18)
-        contrast(1.07)
-        brightness(1.06);
+
+        saturate(1.2)
+        contrast(1.08)
+        brightness(1.08);
 
       transition:
         transform .6s ease;
+
     }
 
+
     .floating:hover .floating-inner {
+
       transform:
         scale(1.08)
         rotate(0deg) !important;
 
       box-shadow:
-        0 50px 100px rgba(0,0,0,.7),
-        0 0 90px rgba(185,85,255,.45);
+
+        0 50px 100px
+        rgba(0,0,0,.75),
+
+        0 0 100px
+        rgba(185,85,255,.5);
+
     }
 
+
     .floating:hover img {
-      transform: scale(1.1);
+
+      transform:
+        scale(1.12);
+
     }
 
 
     /* PHOTO 1 */
 
     .sticker-1 {
+
       width: 390px;
       height: 525px;
 
       left: -65px;
       top: 3%;
 
-      transform: rotate(-11deg);
+      transform:
+        rotate(-11deg);
 
-      animation-delay: -1s;
+      animation-delay:
+        -1s;
+
     }
 
+
     .sticker-1 .floating-inner {
+
       border-radius: 38px;
+
     }
 
 
     /* PHOTO 2 */
 
     .sticker-2 {
+
       width: 390px;
       height: 525px;
 
       right: -65px;
       top: 2%;
 
-      transform: rotate(11deg);
+      transform:
+        rotate(11deg);
 
-      animation-delay: -3s;
+      animation-delay:
+        -3s;
+
     }
 
+
     .sticker-2 .floating-inner {
+
       border-radius: 38px;
+
     }
 
 
     /* PHOTO 3 */
 
     .sticker-3 {
+
       width: 455px;
       height: 305px;
 
       left: -30px;
       bottom: 0;
 
-      transform: rotate(7deg);
+      transform:
+        rotate(7deg);
 
-      animation-delay: -5s;
+      animation-delay:
+        -5s;
+
     }
 
+
     .sticker-3 .floating-inner {
+
       border-radius: 32px;
+
     }
 
 
     /* PHOTO 4 */
 
     .sticker-4 {
+
       width: 330px;
       height: 330px;
 
       right: -20px;
       bottom: 0;
 
-      transform: rotate(-9deg);
+      transform:
+        rotate(-9deg);
 
-      animation-delay: -2s;
+      animation-delay:
+        -2s;
+
     }
 
+
     .sticker-4 .floating-inner {
+
       border-radius: 50%;
+
     }
 
 
     /* PHOTO 5 */
 
     .sticker-5 {
+
       width: 235px;
       height: 235px;
 
       left: 12%;
       top: -3%;
 
-      transform: rotate(-13deg);
+      transform:
+        rotate(-13deg);
 
-      animation-delay: -4s;
+      animation-delay:
+        -4s;
+
     }
 
+
     .sticker-5 .floating-inner {
+
       border-radius: 50%;
+
     }
 
 
     /* PHOTO 6 */
 
     .sticker-6 {
+
       width: 245px;
       height: 245px;
 
       right: 12%;
       bottom: -3%;
 
-      transform: rotate(12deg);
+      transform:
+        rotate(12deg);
 
-      animation-delay: -6s;
+      animation-delay:
+        -6s;
+
     }
 
+
     .sticker-6 .floating-inner {
+
       border-radius: 32px;
+
     }
 
 
     @keyframes floatingMove {
 
-      0%, 100% {
+      0%,
+      100% {
+
         margin-top: 0;
+
       }
 
       50% {
-        margin-top: -30px;
+
+        margin-top: -28px;
+
       }
 
     }
 
 
-    /* =========================
+    /* =====================================
        STARS
-    ========================= */
+    ===================================== */
 
     .star {
+
       position: absolute;
+
       z-index: 55;
 
       color: var(--yellow);
 
-      font-size: 34px;
+      font-size: 35px;
 
       text-shadow:
-        0 0 25px rgba(255,227,110,.65);
+        0 0 25px
+        rgba(255,227,110,.7);
 
       animation:
         starFloat 4s ease-in-out infinite;
+
     }
+
 
     .star-1 {
+
       left: 22%;
       top: 27%;
+
     }
 
+
     .star-2 {
+
       right: 22%;
       top: 29%;
 
       color: var(--pink);
 
-      animation-delay: -2s;
+      animation-delay:
+        -2s;
+
     }
 
+
     .star-3 {
+
       left: 33%;
       bottom: 23%;
 
       color: var(--blue);
 
-      animation-delay: -1s;
+      animation-delay:
+        -1s;
+
     }
+
 
     @keyframes starFloat {
 
-      0%, 100% {
+      0%,
+      100% {
+
         transform:
           translateY(0)
           rotate(0)
           scale(1);
+
       }
 
       50% {
+
         transform:
           translateY(-13px)
           rotate(15deg)
           scale(1.15);
+
       }
 
     }
 
 
-    /* =========================
-       LAUNCH
-    ========================= */
+    /* =====================================
+       LAUNCH PILL
+    ===================================== */
 
     .launch-pill {
+
       display: inline-flex;
 
       align-items: center;
+
       gap: 8px;
 
       margin-bottom: 27px;
@@ -519,11 +735,13 @@
       padding: 10px 17px;
 
       border:
-        1px solid rgba(255,255,255,.16);
+        1px solid
+        rgba(255,255,255,.16);
 
       border-radius: 100px;
 
       background:
+
         linear-gradient(
           90deg,
           rgba(144,75,255,.2),
@@ -531,21 +749,25 @@
         );
 
       box-shadow:
-        0 0 35px rgba(143,70,255,.16);
+
+        0 0 35px
+        rgba(143,70,255,.2);
 
       color: #ddd4e7;
 
       font-size: 9px;
+
       font-weight: 800;
 
       letter-spacing: 2px;
+
       text-transform: uppercase;
 
-      animation:
-        appear .7s ease both;
     }
 
+
     .launch-dot {
+
       width: 6px;
       height: 6px;
 
@@ -554,37 +776,54 @@
       background: #72ffa5;
 
       box-shadow:
-        0 0 14px #72ffa5;
+        0 0 14px
+        #72ffa5;
 
       animation:
         pulse 1.5s infinite;
+
     }
+
 
     @keyframes pulse {
 
-      0%, 100% {
-        transform: scale(1);
+      0%,
+      100% {
+
+        transform:
+          scale(1);
+
       }
 
       50% {
-        transform: scale(.55);
+
+        transform:
+          scale(.55);
+
       }
 
     }
 
 
-    /* =========================
+    /* =====================================
        TITLE
-    ========================= */
+    ===================================== */
 
     .hero-title {
+
       position: relative;
+
       z-index: 75;
 
-      font-family: "Space Grotesk";
+      font-family:
+        "Space Grotesk";
 
       font-size:
-        clamp(105px, 19vw, 245px);
+        clamp(
+          105px,
+          19vw,
+          245px
+        );
 
       line-height: .75;
 
@@ -594,21 +833,26 @@
 
       user-select: none;
 
-      animation:
-        titleIn .9s .1s ease both;
+      text-shadow:
+        0 10px 80px
+        rgba(0,0,0,.25);
+
     }
+
 
     .hero-title .way {
+
       color: #fffaff;
 
-      text-shadow:
-        0 0 55px rgba(255,255,255,.08);
     }
 
+
     .hero-title .go {
+
       color: transparent;
 
       background:
+
         linear-gradient(
           110deg,
           #8749ff,
@@ -617,53 +861,64 @@
         );
 
       -webkit-background-clip: text;
+
       background-clip: text;
 
       filter:
+
         drop-shadow(
           0 0 32px
-          rgba(255,70,210,.3)
+          rgba(255,70,210,.4)
         );
+
     }
 
 
-    /* =========================
+    /* =====================================
        SUBTITLE
-    ========================= */
+    ===================================== */
 
     .subtitle {
+
       position: relative;
+
       z-index: 75;
 
       max-width: 520px;
 
-      margin: 43px auto 22px;
+      margin:
+        43px auto 22px;
 
       color: #aaa0b4;
 
       font-size: 15px;
+
       line-height: 1.7;
 
-      animation:
-        appear .7s .25s ease both;
     }
+
 
     .subtitle strong {
+
       color: white;
+
     }
 
 
-    /* =========================
+    /* =====================================
        DATE
-    ========================= */
+    ===================================== */
 
     .date {
+
       position: relative;
+
       z-index: 75;
 
       display: inline-flex;
 
       align-items: center;
+
       gap: 9px;
 
       margin-bottom: 23px;
@@ -671,7 +926,8 @@
       padding: 8px 14px;
 
       border:
-        1px solid rgba(255,255,255,.13);
+        1px solid
+        rgba(255,255,255,.13);
 
       border-radius: 12px;
 
@@ -681,103 +937,151 @@
       color: #d4c9de;
 
       font-size: 10px;
+
       font-weight: 700;
 
-      backdrop-filter: blur(18px);
+      backdrop-filter:
+        blur(18px);
+
     }
+
 
     .date b {
-      color: #ff7fe0;
+
+      color:
+        #ff7fe0;
+
     }
 
 
-    /* =========================
+    /* =====================================
        SIGNUP
-    ========================= */
+    ===================================== */
 
     .signup {
+
       position: relative;
+
       z-index: 80;
 
-      width: min(580px, calc(100% - 35px));
+      width:
+        min(
+          580px,
+          calc(100% - 35px)
+        );
 
       margin: auto;
+
     }
 
+
     .form {
+
       display: flex;
+
       gap: 7px;
 
       padding: 6px;
 
       border:
-        1px solid rgba(255,255,255,.18);
+        1px solid
+        rgba(255,255,255,.18);
 
       border-radius: 18px;
 
       background:
-        rgba(12,6,21,.86);
+        rgba(12,6,21,.88);
 
-      backdrop-filter: blur(25px);
+      backdrop-filter:
+        blur(25px);
 
       box-shadow:
-        0 25px 80px rgba(0,0,0,.45),
-        0 0 60px rgba(143,72,255,.14);
+
+        0 25px 80px
+        rgba(0,0,0,.45),
+
+        0 0 60px
+        rgba(143,72,255,.18);
+
     }
 
+
     .form:focus-within {
+
       border-color:
         rgba(192,124,255,.7);
 
       box-shadow:
-        0 25px 80px rgba(0,0,0,.48),
-        0 0 70px rgba(155,76,255,.24);
+
+        0 25px 80px
+        rgba(0,0,0,.48),
+
+        0 0 70px
+        rgba(155,76,255,.28);
+
     }
 
+
     .form input {
+
       flex: 1;
+
       min-width: 0;
 
       height: 54px;
 
-      padding: 0 16px;
+      padding:
+        0 16px;
 
       border: none;
+
       outline: none;
 
-      background: transparent;
+      background:
+        transparent;
 
       color: white;
 
       font-family: inherit;
+
       font-size: 14px;
+
     }
+
 
     .form input::placeholder {
+
       color: #6f6678;
+
     }
 
+
     .form button {
+
       height: 54px;
 
-      padding: 0 23px;
+      padding:
+        0 23px;
 
       border: none;
 
       border-radius: 12px;
 
       background:
+
         linear-gradient(
           135deg,
           #ffffff,
           #eadcff
         );
 
-      color: #130b1b;
+      color:
+        #130b1b;
 
       font-family: inherit;
 
       font-size: 10px;
+
       font-weight: 800;
 
       letter-spacing: .5px;
@@ -785,37 +1089,50 @@
       cursor: pointer;
 
       transition:
-        transform .2s ease,
-        box-shadow .2s ease;
+        .2s ease;
+
     }
+
 
     .form button:hover {
-      transform: translateY(-2px);
+
+      transform:
+        translateY(-2px);
 
       box-shadow:
+
         0 8px 30px
         rgba(225,194,255,.35);
+
     }
+
 
     .form button:disabled {
+
       opacity: .5;
+
       cursor: wait;
+
     }
 
+
     .small-note {
+
       margin-top: 10px;
 
       color: #61586b;
 
       font-size: 9px;
+
     }
 
 
-    /* =========================
+    /* =====================================
        MESSAGE
-    ========================= */
+    ===================================== */
 
     .message {
+
       display: none;
 
       margin-top: 12px;
@@ -827,109 +1144,133 @@
       font-size: 12px;
 
       text-align: left;
+
     }
+
 
     .message.show {
+
       display: block;
+
     }
 
+
     .message.success {
+
       color: #9effbf;
 
       background:
         rgba(70,255,140,.07);
 
       border:
-        1px solid rgba(70,255,140,.18);
+        1px solid
+        rgba(70,255,140,.18);
+
     }
 
+
     .message.error {
+
       color: #ff9eaf;
 
       background:
         rgba(255,70,110,.06);
 
       border:
-        1px solid rgba(255,70,110,.15);
+        1px solid
+        rgba(255,70,110,.15);
+
     }
 
 
-    /* =========================
+    /* =====================================
        COUNTDOWN
-    ========================= */
+    ===================================== */
 
     .countdown-wrapper {
+
       position: relative;
+
       z-index: 80;
 
       margin-top: 38px;
+
     }
 
+
     .countdown-title {
+
       margin-bottom: 11px;
 
       color: #776d83;
 
       font-size: 8px;
+
       font-weight: 800;
 
       letter-spacing: 3px;
+
       text-transform: uppercase;
+
     }
 
+
     .countdown {
+
       display: flex;
 
       align-items: center;
+
       justify-content: center;
 
       gap: 7px;
+
     }
 
+
     .count-box {
+
       min-width: 70px;
 
       padding: 12px 8px;
 
       border:
-        1px solid rgba(255,255,255,.1);
+        1px solid
+        rgba(255,255,255,.1);
 
       border-radius: 12px;
 
       background:
         rgba(255,255,255,.04);
 
-      backdrop-filter: blur(15px);
-
-      transition:
-        transform .2s ease,
-        border-color .2s ease,
-        box-shadow .2s ease;
-    }
-
-    .count-box:hover {
-      transform: translateY(-3px);
-
-      border-color:
-        rgba(255,255,255,.2);
+      backdrop-filter:
+        blur(15px);
 
       box-shadow:
-        0 10px 35px rgba(150,70,255,.15);
+        0 0 25px
+        rgba(150,80,255,.06);
+
     }
 
+
     .count-box strong {
+
       display: block;
 
-      font-family: "Space Grotesk";
+      font-family:
+        "Space Grotesk";
 
       font-size: 25px;
 
       line-height: 1;
 
       letter-spacing: -1px;
+
     }
 
+
     .count-box span {
+
       display: block;
 
       margin-top: 5px;
@@ -937,92 +1278,131 @@
       color: #62596d;
 
       font-size: 7px;
+
       font-weight: 700;
 
       letter-spacing: 1px;
+
       text-transform: uppercase;
+
     }
 
+
     .colon {
+
       padding-bottom: 17px;
 
       color: #8452bd;
 
       font-weight: 800;
+
     }
 
 
-    /* =========================
+    /* =====================================
        SECTIONS
-    ========================= */
+    ===================================== */
 
     .section {
-      width: min(1100px, calc(100% - 30px));
 
-      margin: 0 auto 100px;
+      width:
+        min(
+          1100px,
+          calc(100% - 30px)
+        );
+
+      margin:
+        0 auto 100px;
+
     }
 
+
     .section-header {
+
       display: flex;
 
       justify-content: space-between;
+
       align-items: flex-end;
 
       gap: 30px;
 
       margin-bottom: 14px;
+
       padding-bottom: 20px;
 
       border-bottom:
-        1px solid rgba(255,255,255,.08);
+        1px solid
+        rgba(255,255,255,.08);
+
     }
 
+
     .section-number {
+
       margin-bottom: 7px;
 
       color: #746a7e;
 
       font-size: 8px;
+
       font-weight: 800;
 
       letter-spacing: 2px;
+
     }
+
 
     .section-header h2 {
-      font-family: "Space Grotesk";
+
+      font-family:
+        "Space Grotesk";
 
       font-size:
-        clamp(34px, 6vw, 58px);
+        clamp(
+          34px,
+          6vw,
+          58px
+        );
 
       letter-spacing: -3px;
+
     }
 
+
     .section-header p {
+
       max-width: 340px;
 
       color: #786f82;
 
       font-size: 12px;
+
       line-height: 1.7;
 
       text-align: right;
+
     }
 
 
-    /* =========================
+    /* =====================================
        CARDS
-    ========================= */
+    ===================================== */
 
     .cards {
+
       display: grid;
 
       grid-template-columns:
         repeat(3, 1fr);
 
       gap: 12px;
+
     }
 
+
     .card {
+
       position: relative;
 
       min-height: 230px;
@@ -1032,7 +1412,8 @@
       overflow: hidden;
 
       border:
-        1px solid rgba(255,255,255,.09);
+        1px solid
+        rgba(255,255,255,.09);
 
       border-radius: 18px;
 
@@ -1042,9 +1423,12 @@
       transition:
         transform .3s ease,
         border-color .3s ease;
+
     }
 
+
     .card::after {
+
       content: "";
 
       position: absolute;
@@ -1057,65 +1441,94 @@
 
       border-radius: 50%;
 
-      background: var(--card-color);
+      background:
+        var(--card-color);
 
-      filter: blur(65px);
+      filter:
+        blur(65px);
 
       opacity: .25;
+
     }
 
+
     .card:hover {
-      transform: translateY(-7px);
+
+      transform:
+        translateY(-7px);
 
       border-color:
         rgba(255,255,255,.18);
+
     }
 
+
     .card-number {
+
       position: relative;
+
       z-index: 2;
 
       margin-bottom: 70px;
 
       color: #716879;
 
-      font-family: "Space Grotesk";
+      font-family:
+        "Space Grotesk";
 
       font-size: 10px;
+
     }
 
+
     .card h3 {
+
       position: relative;
+
       z-index: 2;
 
       margin-bottom: 8px;
 
-      font-family: "Space Grotesk";
+      font-family:
+        "Space Grotesk";
 
       font-size: 19px;
+
     }
 
+
     .card p {
+
       position: relative;
+
       z-index: 2;
 
       color: #756c80;
 
       font-size: 12px;
+
       line-height: 1.7;
+
     }
 
 
-    /* =========================
+    /* =====================================
        FINAL CTA
-    ========================= */
+    ===================================== */
 
     .final {
-      width: min(1100px, calc(100% - 30px));
 
-      margin: 0 auto 70px;
+      width:
+        min(
+          1100px,
+          calc(100% - 30px)
+        );
 
-      padding: 80px 25px;
+      margin:
+        0 auto 70px;
+
+      padding:
+        80px 25px;
 
       position: relative;
 
@@ -1124,11 +1537,13 @@
       text-align: center;
 
       border:
-        1px solid rgba(255,255,255,.1);
+        1px solid
+        rgba(255,255,255,.1);
 
       border-radius: 25px;
 
       background:
+
         radial-gradient(
           circle at 50% 110%,
           rgba(255,68,214,.18),
@@ -1136,38 +1551,50 @@
         ),
 
         rgba(255,255,255,.035);
+
     }
 
+
     .final small {
-      position: relative;
 
       color: #8c8098;
 
       font-size: 9px;
+
       font-weight: 800;
 
       letter-spacing: 3px;
+
     }
 
+
     .final h2 {
-      position: relative;
 
       margin: 15px 0;
 
-      font-family: "Space Grotesk";
+      font-family:
+        "Space Grotesk";
 
       font-size:
-        clamp(42px, 8vw, 75px);
+        clamp(
+          42px,
+          8vw,
+          75px
+        );
 
       line-height: .95;
 
       letter-spacing: -4px;
+
     }
 
+
     .final h2 span {
+
       color: transparent;
 
       background:
+
         linear-gradient(
           90deg,
           #9a5cff,
@@ -1175,33 +1602,44 @@
         );
 
       -webkit-background-clip: text;
+
       background-clip: text;
+
     }
 
+
     .final p {
-      position: relative;
 
       max-width: 430px;
 
-      margin: 0 auto 28px;
+      margin:
+        0 auto 28px;
 
       color: #7c7385;
 
       font-size: 13px;
+
       line-height: 1.7;
+
     }
 
 
-    /* =========================
+    /* =====================================
        FOOTER
-    ========================= */
+    ===================================== */
 
     footer {
-      width: min(1100px, calc(100% - 30px));
+
+      width:
+        min(
+          1100px,
+          calc(100% - 30px)
+        );
 
       margin: auto;
 
-      padding: 0 0 35px;
+      padding:
+        0 0 35px;
 
       display: flex;
 
@@ -1210,124 +1648,118 @@
       color: #514958;
 
       font-size: 9px;
-    }
-
-
-    /* =========================
-       ANIMATIONS
-    ========================= */
-
-    @keyframes appear {
-
-      from {
-        opacity: 0;
-
-        transform:
-          translateY(18px);
-      }
-
-      to {
-        opacity: 1;
-
-        transform:
-          translateY(0);
-      }
-
-    }
-
-    @keyframes titleIn {
-
-      from {
-        opacity: 0;
-
-        transform:
-          scale(.92)
-          translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-
-        transform:
-          scale(1)
-          translateY(0);
-      }
 
     }
 
 
-    /* =========================
-       TABLET
-    ========================= */
+    /* =====================================
+       MOBILE
+    ===================================== */
 
     @media (max-width: 1100px) {
 
       .sticker-1 {
+
         width: 285px;
         height: 390px;
+
         left: -50px;
+
       }
+
 
       .sticker-2 {
+
         width: 285px;
         height: 390px;
+
         right: -50px;
+
       }
+
 
       .sticker-3 {
+
         width: 320px;
         height: 215px;
+
         left: -30px;
+
       }
+
 
       .sticker-4 {
+
         width: 230px;
         height: 230px;
+
         right: -20px;
+
       }
+
 
       .sticker-5 {
+
         width: 160px;
         height: 160px;
+
         left: 10%;
+
       }
 
+
       .sticker-6 {
+
         width: 170px;
         height: 170px;
+
         right: 10%;
+
       }
 
     }
 
 
-    /* =========================
-       MOBILE
-    ========================= */
-
     @media (max-width: 700px) {
 
       nav {
-        width: calc(100% - 28px);
+
+        width:
+          calc(100% - 28px);
+
         padding-top: 18px;
+
       }
 
+
       .hero {
+
         width: 100%;
 
         min-height: 760px;
 
-        padding: 50px 0 120px;
+        padding:
+          50px 0 120px;
+
       }
+
 
       .hero-title {
+
         font-size:
-          clamp(70px, 21vw, 115px);
+          clamp(
+            70px,
+            21vw,
+            115px
+          );
 
         letter-spacing: -7px;
+
       }
 
+
       .subtitle {
+
         max-width: 390px;
 
         margin-top: 34px;
@@ -1335,203 +1767,305 @@
         padding: 0 25px;
 
         font-size: 13px;
+
       }
 
+
       .sticker-1 {
+
         width: 125px;
         height: 170px;
 
         left: -22px;
         top: 11%;
+
       }
 
+
       .sticker-2 {
+
         width: 125px;
         height: 170px;
 
         right: -22px;
         top: 11%;
+
       }
 
+
       .sticker-3 {
+
         width: 165px;
         height: 112px;
 
         left: -15px;
         bottom: 14%;
+
       }
 
+
       .sticker-4 {
+
         width: 120px;
         height: 120px;
 
         right: -12px;
         bottom: 14%;
+
       }
 
+
       .sticker-5 {
+
         width: 75px;
         height: 75px;
 
         left: 7%;
         top: 6%;
+
       }
 
+
       .sticker-6 {
+
         width: 80px;
         height: 80px;
 
         right: 7%;
         bottom: 6%;
+
       }
+
 
       .star {
+
         font-size: 20px;
+
       }
+
 
       .star-1 {
+
         left: 5%;
+
       }
+
 
       .star-2 {
+
         right: 5%;
+
       }
+
 
       .star-3 {
+
         display: none;
+
       }
+
 
       .form {
+
         flex-direction: column;
+
       }
+
 
       .form button {
+
         width: 100%;
+
       }
+
 
       .countdown {
+
         gap: 4px;
+
       }
 
+
       .count-box {
+
         min-width: 58px;
 
         padding: 10px 5px;
+
       }
+
 
       .count-box strong {
+
         font-size: 20px;
+
       }
+
 
       .colon {
+
         font-size: 11px;
+
       }
+
 
       .section-header {
+
         display: block;
+
       }
+
 
       .section-header p {
+
         margin-top: 12px;
+
         text-align: left;
+
       }
+
 
       .cards {
+
         grid-template-columns: 1fr;
+
       }
+
 
       .card {
+
         min-height: 200px;
+
       }
+
 
       .card-number {
+
         margin-bottom: 50px;
+
       }
+
 
       .final {
-        padding: 65px 18px;
+
+        padding:
+          65px 18px;
+
       }
+
 
       .final h2 {
-        letter-spacing: -2.5px;
+
+        letter-spacing:
+          -2.5px;
+
       }
 
+
       footer {
+
         flex-direction: column;
 
         gap: 9px;
 
         text-align: center;
+
       }
 
     }
 
 
-    /* =========================
-       SMALL PHONES
-    ========================= */
-
     @media (max-width: 430px) {
 
       .hero {
+
         min-height: 720px;
+
       }
+
 
       .hero-title {
+
         font-size: 73px;
+
         letter-spacing: -6px;
+
       }
+
 
       .sticker-1 {
+
         width: 100px;
         height: 135px;
+
         left: -18px;
+
       }
+
 
       .sticker-2 {
+
         width: 100px;
         height: 135px;
+
         right: -18px;
+
       }
+
 
       .sticker-3 {
+
         width: 135px;
         height: 92px;
+
         left: -12px;
+
       }
+
 
       .sticker-4 {
+
         width: 95px;
         height: 95px;
+
         right: -10px;
+
       }
+
 
       .sticker-5 {
+
         width: 60px;
         height: 60px;
+
       }
 
+
       .sticker-6 {
+
         width: 65px;
         height: 65px;
+
       }
 
     }
 
   </style>
+
 </head>
 
 
 <body>
 
-  <!-- =========================
-       BACKGROUND
-  ========================= -->
+
+  <!-- BACKGROUND -->
 
   <div class="background">
 
     <div class="glow glow-1"></div>
+
     <div class="glow glow-2"></div>
+
     <div class="glow glow-3"></div>
 
     <div class="grain"></div>
@@ -1539,9 +2073,7 @@
   </div>
 
 
-  <!-- =========================
-       NAV
-  ========================= -->
+  <!-- NAV -->
 
   <nav>
 
@@ -1556,21 +2088,18 @@
   </nav>
 
 
-  <!-- =========================
-       MAIN
-  ========================= -->
+  <!-- =====================================
+       HERO
+  ====================================== -->
 
   <main>
-
-
-    <!-- =========================
-         HERO
-    ========================= -->
 
     <section class="hero">
 
 
-      <!-- PHOTO 1 -->
+      <!-- =================================
+           PHOTO 1
+      ================================== -->
 
       <div class="floating sticker-1">
 
@@ -1586,7 +2115,9 @@
       </div>
 
 
-      <!-- PHOTO 2 -->
+      <!-- =================================
+           PHOTO 2
+      ================================== -->
 
       <div class="floating sticker-2">
 
@@ -1602,7 +2133,9 @@
       </div>
 
 
-      <!-- PHOTO 3 -->
+      <!-- =================================
+           PHOTO 3
+      ================================== -->
 
       <div class="floating sticker-3">
 
@@ -1618,7 +2151,9 @@
       </div>
 
 
-      <!-- PHOTO 4 -->
+      <!-- =================================
+           PHOTO 4
+      ================================== -->
 
       <div class="floating sticker-4">
 
@@ -1634,7 +2169,9 @@
       </div>
 
 
-      <!-- PHOTO 5 -->
+      <!-- =================================
+           PHOTO 5
+      ================================== -->
 
       <div class="floating sticker-5">
 
@@ -1650,7 +2187,9 @@
       </div>
 
 
-      <!-- PHOTO 6 -->
+      <!-- =================================
+           PHOTO 6
+      ================================== -->
 
       <div class="floating sticker-6">
 
@@ -1681,7 +2220,7 @@
       </div>
 
 
-      <!-- HERO CONTENT -->
+      <!-- CONTENT -->
 
       <div class="hero-content">
 
@@ -1697,7 +2236,11 @@
 
         <h1 class="hero-title">
 
-          <span class="way">Way</span><span class="go">Go</span>
+          <span class="way">
+            Way
+          </span><span class="go">
+            Go
+          </span>
 
         </h1>
 
@@ -1866,17 +2409,17 @@
 
         </div>
 
-
       </div>
 
     </section>
 
 
-    <!-- =========================
+    <!-- =====================================
          ABOUT
-    ========================= -->
+    ====================================== -->
 
     <section class="section">
+
 
       <div class="section-header">
 
@@ -1983,9 +2526,9 @@
     </section>
 
 
-    <!-- =========================
+    <!-- =====================================
          FINAL CTA
-    ========================= -->
+    ====================================== -->
 
     <section class="final">
 
@@ -2044,12 +2587,11 @@
 
     </section>
 
+
   </main>
 
 
-  <!-- =========================
-       FOOTER
-  ========================= -->
+  <!-- FOOTER -->
 
   <footer>
 
@@ -2064,24 +2606,20 @@
   </footer>
 
 
-  <!-- =========================
+  <!-- =====================================
        JAVASCRIPT
-  ========================= -->
+  ====================================== -->
 
   <script>
 
-    /* =====================================================
+
+    /* =====================================
        SUPABASE
-       
-       SEM VLOŽ:
-       
-       SUPABASE PROJECT URL
-       SUPABASE PUBLISHABLE KEY
-    ===================================================== */
+    ====================================== */
 
     const SUPABASE_URL =
-      "https://vfjounxgwkhjaopoertc.supabase.co
-";
+      "https://vfjounxgwkhjaopoertc.supabase.co";
+
 
     const SUPABASE_PUBLISHABLE_KEY =
       "sb_publishable_yBcXZlEACwgRoRyD6DiFJA_0ZPTYyxQ";
@@ -2092,13 +2630,16 @@
 
     /*
       Supabase vytvoríme iba vtedy,
-      ak sú vložené reálne údaje.
+      keď sú údaje vyplnené.
+      
+      Countdown preto bude fungovať
+      aj keď Supabase ešte nemáš nastavený.
     */
 
     if (
-      window.supabase &&
-      SUPABASE_URL !== "SEM_DAJ_TVOJ_SUPABASE_URL" &&
-      SUPABASE_PUBLISHABLE_KEY !== "SEM_DAJ_TVOJ_SUPABASE_PUBLISHABLE_KEY"
+      SUPABASE_URL.startsWith("https://") &&
+      SUPABASE_PUBLISHABLE_KEY !==
+        "SEM_DAJ_TVOJ_SUPABASE_PUBLISHABLE_KEY"
     ) {
 
       supabaseClient =
@@ -2110,9 +2651,9 @@
     }
 
 
-    /* =====================================================
+    /* =====================================
        WAITLIST
-    ===================================================== */
+    ====================================== */
 
     async function addToWaitlist(
       form,
@@ -2138,20 +2679,20 @@
 
 
       /*
-        Ak ešte nie je nastavený Supabase,
-        zobrazíme jasnú chybu namiesto
-        toho, aby stránka spadla.
+        Ak Supabase ešte nie je
+        nastavený, ukážeme správu.
       */
 
       if (!supabaseClient) {
 
         messageElement.textContent =
-          "Supabase ešte nie je nastavený. Doplň URL a Publishable Key v kóde.";
+          "⚠️ Supabase ešte nie je nastavený.";
 
         messageElement.className =
           "message error show";
 
         return;
+
       }
 
 
@@ -2167,6 +2708,7 @@
 
       try {
 
+
         const { error } =
           await supabaseClient
             .from("waitlist")
@@ -2177,13 +2719,16 @@
 
         if (error) {
 
+
           console.error(
             "Supabase error:",
             error
           );
 
 
-          if (error.code === "23505") {
+          if (
+            error.code === "23505"
+          ) {
 
             messageElement.textContent =
               "👀 Tento email už na zozname je.";
@@ -2191,7 +2736,9 @@
             messageElement.className =
               "message success show";
 
-          } else {
+          }
+
+          else {
 
             messageElement.textContent =
               "Ups! Niečo sa pokazilo. Skús to ešte raz.";
@@ -2208,6 +2755,7 @@
             "SKÚSIŤ ZNOVA →";
 
           return;
+
         }
 
 
@@ -2236,7 +2784,10 @@
         }, 4000);
 
 
-      } catch (error) {
+      }
+
+      catch (error) {
+
 
         console.error(error);
 
@@ -2259,76 +2810,67 @@
     }
 
 
-    /* =====================================================
+    /* =====================================
        FORM 1
-    ===================================================== */
+    ====================================== */
 
-    const firstForm =
-      document.getElementById(
-        "waitlistForm"
+    document
+      .getElementById("waitlistForm")
+      .addEventListener(
+        "submit",
+        function(event) {
+
+          event.preventDefault();
+
+          addToWaitlist(
+            this,
+            document.getElementById(
+              "message"
+            )
+          );
+
+        }
       );
 
 
-    firstForm.addEventListener(
-      "submit",
-      function(event) {
-
-        event.preventDefault();
-
-        addToWaitlist(
-          this,
-          document.getElementById(
-            "message"
-          )
-        );
-
-      }
-    );
-
-
-    /* =====================================================
+    /* =====================================
        FORM 2
-    ===================================================== */
+    ====================================== */
 
-    const secondForm =
-      document.getElementById(
+    document
+      .getElementById(
         "waitlistFormBottom"
+      )
+      .addEventListener(
+        "submit",
+        function(event) {
+
+          event.preventDefault();
+
+          addToWaitlist(
+            this,
+            document.getElementById(
+              "messageBottom"
+            )
+          );
+
+        }
       );
 
 
-    secondForm.addEventListener(
-      "submit",
-      function(event) {
-
-        event.preventDefault();
-
-        addToWaitlist(
-          this,
-          document.getElementById(
-            "messageBottom"
-          )
-        );
-
-      }
-    );
-
-
-    /* =====================================================
+    /* =====================================
        REAL COUNTDOWN
-       
-       LAUNCH:
-       21. SEPTEMBER 2026
-       10:00
-       
-       Slovensko bude vtedy v CEST = UTC+2.
-       
-       Preto používame:
-       
-       2026-09-21T10:00:00+02:00
-       
-       JavaScript si tento čas prevedie na
-       absolútny timestamp.
-    ===================================================== */
+    ======================================
+
+       21. september 2026
+       10:00 slovenského času
+
+       Používame explicitne:
+       +02:00
+
+       aby prehliadač nemohol
+       zle interpretovať timezone.
+    ====================================== */
 
 
     const LAUNCH_TIME =
@@ -2337,103 +2879,68 @@
       ).getTime();
 
 
-    /*
-      Elementy countdownu
-    */
-
-    const daysEl =
-      document.getElementById(
-        "days"
-      );
-
-    const hoursEl =
-      document.getElementById(
-        "hours"
-      );
-
-    const minutesEl =
-      document.getElementById(
-        "minutes"
-      );
-
-    const secondsEl =
-      document.getElementById(
-        "seconds"
-      );
-
-    const countdownTitle =
-      document.getElementById(
-        "countdownTitle"
-      );
-
-
-    /*
-      Bezpečnostná kontrola.
-      Ak by niečo bolo zle,
-      countdown sa nerozbije potichu.
-    */
-
-    if (
-      !daysEl ||
-      !hoursEl ||
-      !minutesEl ||
-      !secondsEl ||
-      !countdownTitle
-    ) {
-
-      console.error(
-        "WayGo countdown: elementy countdownu neboli nájdené."
-      );
-
-    }
-
-
-    /* =====================================================
-       UPDATE COUNTDOWN
-    ===================================================== */
-
     function updateCountdown() {
+
 
       const now =
         Date.now();
 
 
-      const remaining =
+      const difference =
         LAUNCH_TIME - now;
 
 
       /*
-        LAUNCH UŽ PREBEHOL
+        LAUNCH JE TU
       */
 
-      if (remaining <= 0) {
+      if (
+        difference <= 0
+      ) {
 
-        daysEl.textContent =
+
+        document.getElementById(
+          "days"
+        ).textContent =
           "00";
 
-        hoursEl.textContent =
+
+        document.getElementById(
+          "hours"
+        ).textContent =
           "00";
 
-        minutesEl.textContent =
+
+        document.getElementById(
+          "minutes"
+        ).textContent =
           "00";
 
-        secondsEl.textContent =
+
+        document.getElementById(
+          "seconds"
+        ).textContent =
           "00";
 
-        countdownTitle.textContent =
+
+        document.getElementById(
+          "countdownTitle"
+        ).textContent =
           "WAYGO JE LIVE ✦";
 
+
         return;
+
       }
 
 
       /*
-        Celkový počet sekúnd
+        CELKOVÉ SEKUNDY
       */
 
       const totalSeconds =
         Math.floor(
-          remaining / 1000
+          difference / 1000
         );
 
 
@@ -2480,31 +2987,39 @@
 
 
       /*
-        VÝPIS
+        ZAPÍŠ ČÍSLA
       */
 
-      daysEl.textContent =
+      document.getElementById(
+        "days"
+      ).textContent =
         String(days).padStart(
           2,
           "0"
         );
 
 
-      hoursEl.textContent =
+      document.getElementById(
+        "hours"
+      ).textContent =
         String(hours).padStart(
           2,
           "0"
         );
 
 
-      minutesEl.textContent =
+      document.getElementById(
+        "minutes"
+      ).textContent =
         String(minutes).padStart(
           2,
           "0"
         );
 
 
-      secondsEl.textContent =
+      document.getElementById(
+        "seconds"
+      ).textContent =
         String(seconds).padStart(
           2,
           "0"
@@ -2513,15 +3028,15 @@
     }
 
 
-    /* =====================================================
-       SPUSTENIE
-    ===================================================== */
+    /*
+      SPUSTÍME HNEĎ
+    */
 
     updateCountdown();
 
 
     /*
-      Aktualizácia každú sekundu
+      KAŽDÚ SEKUNDU
     */
 
     setInterval(
@@ -2532,5 +3047,7 @@
 
   </script>
 
+
 </body>
+
 </html>
