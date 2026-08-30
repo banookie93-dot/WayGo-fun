@@ -17,6 +17,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -70,7 +71,9 @@
       border-radius: 50%;
       filter: blur(130px);
       opacity: .45;
-      animation: glowMove 13s ease-in-out infinite;
+
+      animation:
+        glowMove 13s ease-in-out infinite;
     }
 
     .glow-1 {
@@ -100,13 +103,19 @@
     }
 
     @keyframes glowMove {
+
       0%, 100% {
-        transform: translate(0, 0) scale(1);
+        transform:
+          translate(0, 0)
+          scale(1);
       }
 
       50% {
-        transform: translate(40px, -40px) scale(1.12);
+        transform:
+          translate(40px, -40px)
+          scale(1.12);
       }
+
     }
 
     .grain {
@@ -405,6 +414,7 @@
     }
 
     @keyframes floatingMove {
+
       0%, 100% {
         margin-top: 0;
       }
@@ -412,6 +422,7 @@
       50% {
         margin-top: -30px;
       }
+
     }
 
     /* =========================
@@ -458,6 +469,7 @@
     }
 
     @keyframes starFloat {
+
       0%, 100% {
         transform:
           translateY(0)
@@ -471,6 +483,7 @@
           rotate(15deg)
           scale(1.15);
       }
+
     }
 
     /* =========================
@@ -531,6 +544,7 @@
     }
 
     @keyframes pulse {
+
       0%, 100% {
         transform: scale(1);
       }
@@ -538,6 +552,7 @@
       50% {
         transform: scale(.55);
       }
+
     }
 
     /* =========================
@@ -1180,6 +1195,7 @@
     ========================= */
 
     @keyframes appear {
+
       from {
         opacity: 0;
 
@@ -1193,9 +1209,11 @@
         transform:
           translateY(0);
       }
+
     }
 
     @keyframes titleIn {
+
       from {
         opacity: 0;
 
@@ -1211,6 +1229,7 @@
           scale(1)
           translateY(0);
       }
+
     }
 
     /* =========================
@@ -1254,6 +1273,7 @@
         height: 170px;
         right: 10%;
       }
+
     }
 
     /* =========================
@@ -1419,6 +1439,7 @@
 
         text-align: center;
       }
+
     }
 
     /* =========================
@@ -1469,7 +1490,9 @@
         width: 65px;
         height: 65px;
       }
+
     }
+
   </style>
 </head>
 
@@ -1929,6 +1952,7 @@
     const SUPABASE_PUBLISHABLE_KEY =
       "sb_publishable_yBcXZlEACwgRoRyD6DiFJA_0ZPTYyxQ";
 
+
     const supabaseClient =
       window.supabase.createClient(
         SUPABASE_URL,
@@ -1972,19 +1996,18 @@
       messageElement.className =
         "message";
 
-      messageElement.innerHTML = "";
-
 
       try {
 
         /*
-          DÔLEŽITÉ:
-          Nepoužívame .select().
-
-          Pre waitlist nám stačí INSERT.
-          Tým sa vyhneme zbytočnému SELECT
-          po úspešnom vložení.
-        */
+         * DÔLEŽITÁ OPRAVA:
+         *
+         * Nepoužívame .select().
+         *
+         * Verejný používateľ potrebuje iba
+         * INSERT. Nemá potrebovať SELECT
+         * prístup k emailom vo waitliste.
+         */
 
         const { error } =
           await supabaseClient
@@ -2017,10 +2040,10 @@
               .includes("duplicate") ||
             error.message
               ?.toLowerCase()
-              .includes("unique constraint")
+              .includes("unique")
           ) {
 
-            messageElement.textContent =
+            messageElement.innerHTML =
               "👀 Tento email už je medzi prvými!";
 
             messageElement.className =
@@ -2036,7 +2059,33 @@
 
 
           /*
-             RLS / OSTATNÉ CHYBY
+             RLS CHYBA
+          */
+
+          if (
+            error.message
+              ?.toLowerCase()
+              .includes("row-level security")
+          ) {
+
+            messageElement.innerHTML =
+              "⚠️ Supabase blokuje pridanie emailu.<br>" +
+              "<small>Skontroluj INSERT policy pre rolu anon.</small>";
+
+            messageElement.className =
+              "message error show";
+
+            button.disabled = false;
+
+            button.textContent =
+              "SKÚSIŤ ZNOVA →";
+
+            return;
+          }
+
+
+          /*
+             OSTATNÉ CHYBY
           */
 
           messageElement.innerHTML =
@@ -2063,11 +2112,6 @@
         /* =========================
            SUCCESS
         ========================= */
-
-        console.log(
-          "Email uložený."
-        );
-
 
         input.value = "";
 
@@ -2184,14 +2228,13 @@
 
 
     /* ==================================================
-       COUNTDOWN
+       REAL COUNTDOWN
     ==================================================
 
        21. september 2026
        10:00 slovenského času
 
-       September:
-       CEST = UTC+2
+       V septembri je Slovensko v CEST = UTC+2.
 
        10:00 CEST
        =
