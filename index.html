@@ -1,20 +1,159 @@
 <!DOCTYPE html>
 <html lang="sk">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>WayGo — Už čoskoro</title>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- =========================
+       SEO
+  ========================= -->
+
+  <title>
+    WayGo — Objavuj. Uč sa. Skúšaj.
+  </title>
+
+  <meta
+    name="description"
+    content="WayGo je nový priestor pre zvedavých ľudí. Objavuj nové veci, skúšaj nové skúsenosti a posúvaj sa ďalej."
+  >
+
+  <meta
+    name="robots"
+    content="index, follow"
+  >
+
+  <meta
+    name="theme-color"
+    content="#090511"
+  >
+
+  <!-- =========================
+       FAVICON / LOGO
+  ========================= -->
+
+  <link
+    rel="icon"
+    type="image/png"
+    href="/logo.png"
+  >
+
+  <link
+    rel="apple-touch-icon"
+    href="/logo.png"
+  >
+
+  <!-- =========================
+       OPEN GRAPH
+  ========================= -->
+
+  <meta
+    property="og:title"
+    content="WayGo — Objavuj. Uč sa. Skúšaj."
+  >
+
+  <meta
+    property="og:description"
+    content="WayGo je nový priestor pre zvedavých ľudí. Objavuj nové veci, skúšaj nové skúsenosti a posúvaj sa ďalej."
+  >
+
+  <meta
+    property="og:image"
+    content="https://waygo.fun/logo.png"
+  >
+
+  <meta
+    property="og:url"
+    content="https://waygo.fun/"
+  >
+
+  <meta
+    property="og:type"
+    content="website"
+  >
+
+  <meta
+    property="og:site_name"
+    content="WayGo"
+  >
+
+  <!-- =========================
+       TWITTER
+  ========================= -->
+
+  <meta
+    name="twitter:card"
+    content="summary"
+  >
+
+  <meta
+    name="twitter:title"
+    content="WayGo — Objavuj. Uč sa. Skúšaj."
+  >
+
+  <meta
+    name="twitter:description"
+    content="Objavuj nové veci. Skúšaj. Uč sa. Rast."
+  >
+
+  <meta
+    name="twitter:image"
+    content="https://waygo.fun/logo.png"
+  >
+
+  <!-- =========================
+       GOOGLE STRUCTURED DATA
+  ========================= -->
+
+  <script type="application/ld+json">
+
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "WayGo",
+    "alternateName": "WayGo Fun",
+    "url": "https://waygo.fun/",
+    "logo": "https://waygo.fun/logo.png",
+    "description": "WayGo je nový priestor pre zvedavých ľudí, ktorí chcú objavovať nové veci, skúšať nové skúsenosti a posúvať sa ďalej."
+  }
+
+  </script>
+
+
+  <!-- =========================
+       FONTS
+  ========================= -->
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
 
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap"
     rel="stylesheet"
   >
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- =========================
+       SUPABASE
+  ========================= -->
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+  ></script>
+
 
   <style>
 
@@ -24,25 +163,36 @@
       padding: 0;
     }
 
+
     :root {
+
       --purple: #9855ff;
       --pink: #ff4fd0;
       --blue: #648cff;
       --yellow: #ffe66f;
+
       --white: #fffaff;
+
       --muted: #968d9f;
+
       --bg: #090511;
+
     }
+
 
     html {
       scroll-behavior: smooth;
     }
 
+
     body {
+
       min-height: 100vh;
+
       overflow-x: hidden;
 
       background:
+
         radial-gradient(
           circle at 50% 15%,
           #381452 0%,
@@ -51,151 +201,261 @@
         );
 
       color: var(--white);
-      font-family: "DM Sans", sans-serif;
+
+      font-family:
+        "DM Sans",
+        sans-serif;
+
     }
+
 
     /* =========================
        BACKGROUND
     ========================= */
 
     .background {
+
       position: fixed;
+
       inset: 0;
+
       z-index: -100;
+
       overflow: hidden;
+
       pointer-events: none;
+
     }
 
+
     .glow {
+
       position: absolute;
+
       border-radius: 50%;
+
       filter: blur(130px);
+
       opacity: .45;
 
       animation:
         glowMove 13s ease-in-out infinite;
+
     }
+
 
     .glow-1 {
+
       width: 700px;
       height: 700px;
+
       left: -280px;
       top: -250px;
+
       background: #7135ff;
+
     }
+
 
     .glow-2 {
+
       width: 650px;
       height: 650px;
+
       right: -300px;
       top: 10%;
+
       background: #ff3fc9;
+
       animation-delay: -5s;
+
     }
 
+
     .glow-3 {
+
       width: 600px;
       height: 600px;
+
       left: 30%;
       bottom: -400px;
+
       background: #376dff;
+
       animation-delay: -8s;
+
     }
+
 
     @keyframes glowMove {
 
-      0%, 100% {
+      0%,
+      100% {
+
         transform:
           translate(0, 0)
           scale(1);
+
       }
 
       50% {
+
         transform:
           translate(40px, -40px)
           scale(1.12);
+
       }
 
     }
 
+
     .grain {
+
       position: absolute;
+
       inset: 0;
+
       opacity: .035;
 
       background-image:
+
         url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+
     }
 
+
     /* =========================
-       NAV
+       NAVIGATION
     ========================= */
 
     nav {
+
       position: relative;
+
       z-index: 100;
 
-      width: min(1250px, calc(100% - 40px));
+      width:
+        min(
+          1250px,
+          calc(100% - 40px)
+        );
+
       margin: auto;
 
       padding: 25px 0;
 
       display: flex;
+
       align-items: center;
+
       justify-content: space-between;
+
     }
+
 
     .logo {
-      font-family: "Space Grotesk";
-      font-size: 27px;
-      font-weight: 700;
-      letter-spacing: -1.5px;
+
+      display: flex;
+
+      align-items: center;
+
     }
 
-    .logo span {
+
+    .logo img {
+
+      display: block;
+
+      width: 125px;
+
+      height: auto;
+
+      object-fit: contain;
+
+    }
+
+
+    .text-logo {
+
+      font-family:
+        "Space Grotesk";
+
+      font-size: 27px;
+
+      font-weight: 700;
+
+      letter-spacing: -1.5px;
+
+    }
+
+
+    .text-logo span {
+
       color: var(--pink);
 
       text-shadow:
-        0 0 25px rgba(255,79,208,.7);
+        0 0 25px
+        rgba(255,79,208,.7);
+
     }
 
+
     .nav-pill {
-      padding: 9px 16px;
+
+      padding:
+        9px 16px;
 
       border:
-        1px solid rgba(255,255,255,.13);
+        1px solid
+        rgba(255,255,255,.13);
 
-      border-radius: 100px;
+      border-radius:
+        100px;
 
       background:
         rgba(255,255,255,.05);
 
-      color: #cfc5d8;
+      color:
+        #cfc5d8;
 
       font-size: 9px;
+
       font-weight: 800;
 
       letter-spacing: 1.7px;
-      text-transform: uppercase;
 
-      backdrop-filter: blur(15px);
+      text-transform:
+        uppercase;
+
+      backdrop-filter:
+        blur(15px);
+
     }
+
 
     /* =========================
        HERO
     ========================= */
 
     .hero {
+
       position: relative;
 
-      width: min(1500px, calc(100% - 10px));
+      width:
+        min(
+          1500px,
+          calc(100% - 10px)
+        );
 
-      min-height: 950px;
+      min-height:
+        950px;
 
       margin: auto;
 
       display: flex;
+
       align-items: center;
+
       justify-content: center;
 
       padding:
@@ -203,30 +463,41 @@
         180px;
 
       overflow: visible;
+
     }
 
+
     .hero-content {
+
       position: relative;
+
       z-index: 70;
 
       width: 100%;
 
       text-align: center;
+
     }
+
 
     /* =========================
        PHOTOS
     ========================= */
 
     .floating {
+
       position: absolute;
+
       z-index: 30;
 
       animation:
         floatingMove 5s ease-in-out infinite;
+
     }
 
+
     .floating-inner {
+
       position: relative;
 
       width: 100%;
@@ -235,23 +506,38 @@
       overflow: hidden;
 
       border:
-        5px solid rgba(255,255,255,.96);
+        5px solid
+        rgba(255,255,255,.96);
 
-      background: #171020;
+      background:
+        #171020;
 
       box-shadow:
-        0 40px 90px rgba(0,0,0,.62),
-        0 0 65px rgba(157,79,255,.27);
+
+        0 40px 90px
+        rgba(0,0,0,.62),
+
+        0 0 65px
+        rgba(157,79,255,.27);
 
       transition:
-        transform .35s cubic-bezier(.2,.8,.2,1),
-        box-shadow .35s ease;
+
+        transform
+        .35s
+        cubic-bezier(.2,.8,.2,1),
+
+        box-shadow
+        .35s ease;
+
     }
 
+
     .floating-inner::before {
+
       content: "";
 
       position: absolute;
+
       inset: 0;
 
       z-index: 3;
@@ -259,6 +545,7 @@
       pointer-events: none;
 
       background:
+
         linear-gradient(
           135deg,
           rgba(255,255,255,.22),
@@ -266,12 +553,16 @@
           transparent 65%,
           rgba(255,68,210,.15)
         );
+
     }
 
+
     .floating-inner::after {
+
       content: "";
 
       position: absolute;
+
       inset: 0;
 
       z-index: 4;
@@ -279,10 +570,14 @@
       pointer-events: none;
 
       border:
-        1px solid rgba(255,255,255,.2);
+        1px solid
+        rgba(255,255,255,.2);
+
     }
 
+
     .floating img {
+
       display: block;
 
       width: 100%;
@@ -293,219 +588,321 @@
       opacity: 1;
 
       filter:
+
         saturate(1.18)
         contrast(1.07)
         brightness(1.06);
 
       transition:
         transform .6s ease;
+
     }
 
-    .floating:hover .floating-inner {
+
+    .floating:hover
+    .floating-inner {
+
       transform:
         scale(1.08)
         rotate(0deg) !important;
 
       box-shadow:
-        0 50px 100px rgba(0,0,0,.7),
-        0 0 90px rgba(185,85,255,.45);
+
+        0 50px 100px
+        rgba(0,0,0,.7),
+
+        0 0 90px
+        rgba(185,85,255,.45);
+
     }
+
 
     .floating:hover img {
-      transform: scale(1.1);
+
+      transform:
+        scale(1.1);
+
     }
 
-    /* BIG PHOTOS */
+
+    /* =========================
+       BIG PHOTOS
+    ========================= */
 
     .sticker-1 {
+
       width: 390px;
       height: 525px;
 
       left: -65px;
       top: 3%;
 
-      transform: rotate(-11deg);
+      transform:
+        rotate(-11deg);
 
       animation-delay: -1s;
+
     }
 
-    .sticker-1 .floating-inner {
+
+    .sticker-1
+    .floating-inner {
+
       border-radius: 38px;
+
     }
+
 
     .sticker-2 {
+
       width: 390px;
       height: 525px;
 
       right: -65px;
       top: 2%;
 
-      transform: rotate(11deg);
+      transform:
+        rotate(11deg);
 
       animation-delay: -3s;
+
     }
 
-    .sticker-2 .floating-inner {
+
+    .sticker-2
+    .floating-inner {
+
       border-radius: 38px;
+
     }
+
 
     .sticker-3 {
+
       width: 455px;
       height: 305px;
 
       left: -30px;
       bottom: 0;
 
-      transform: rotate(7deg);
+      transform:
+        rotate(7deg);
 
       animation-delay: -5s;
+
     }
 
-    .sticker-3 .floating-inner {
+
+    .sticker-3
+    .floating-inner {
+
       border-radius: 32px;
+
     }
+
 
     .sticker-4 {
+
       width: 330px;
       height: 330px;
 
       right: -20px;
       bottom: 0;
 
-      transform: rotate(-9deg);
+      transform:
+        rotate(-9deg);
 
       animation-delay: -2s;
+
     }
 
-    .sticker-4 .floating-inner {
+
+    .sticker-4
+    .floating-inner {
+
       border-radius: 50%;
+
     }
+
 
     .sticker-5 {
+
       width: 235px;
       height: 235px;
 
       left: 12%;
       top: -3%;
 
-      transform: rotate(-13deg);
+      transform:
+        rotate(-13deg);
 
       animation-delay: -4s;
+
     }
 
-    .sticker-5 .floating-inner {
+
+    .sticker-5
+    .floating-inner {
+
       border-radius: 50%;
+
     }
+
 
     .sticker-6 {
+
       width: 245px;
       height: 245px;
 
       right: 12%;
       bottom: -3%;
 
-      transform: rotate(12deg);
+      transform:
+        rotate(12deg);
 
       animation-delay: -6s;
+
     }
 
-    .sticker-6 .floating-inner {
+
+    .sticker-6
+    .floating-inner {
+
       border-radius: 32px;
+
     }
+
 
     @keyframes floatingMove {
 
-      0%, 100% {
+      0%,
+      100% {
+
         margin-top: 0;
+
       }
 
       50% {
+
         margin-top: -30px;
+
       }
 
     }
+
 
     /* =========================
        STARS
     ========================= */
 
     .star {
+
       position: absolute;
 
       z-index: 55;
 
-      color: var(--yellow);
+      color:
+        var(--yellow);
 
       font-size: 34px;
 
       text-shadow:
-        0 0 25px rgba(255,227,110,.65);
+        0 0 25px
+        rgba(255,227,110,.65);
 
       animation:
-        starFloat 4s ease-in-out infinite;
+        starFloat 4s
+        ease-in-out infinite;
+
     }
+
 
     .star-1 {
+
       left: 22%;
       top: 27%;
+
     }
 
+
     .star-2 {
+
       right: 22%;
       top: 29%;
 
-      color: var(--pink);
+      color:
+        var(--pink);
 
-      animation-delay: -2s;
+      animation-delay:
+        -2s;
+
     }
 
+
     .star-3 {
+
       left: 33%;
       bottom: 23%;
 
-      color: var(--blue);
+      color:
+        var(--blue);
 
-      animation-delay: -1s;
+      animation-delay:
+        -1s;
+
     }
+
 
     @keyframes starFloat {
 
-      0%, 100% {
+      0%,
+      100% {
+
         transform:
           translateY(0)
           rotate(0)
           scale(1);
+
       }
 
       50% {
+
         transform:
           translateY(-13px)
           rotate(15deg)
           scale(1.15);
+
       }
 
     }
+
 
     /* =========================
        LAUNCH
     ========================= */
 
     .launch-pill {
+
       display: inline-flex;
 
       align-items: center;
+
       gap: 8px;
 
       margin-bottom: 27px;
 
-      padding: 10px 17px;
+      padding:
+        10px 17px;
 
       border:
-        1px solid rgba(255,255,255,.16);
+        1px solid
+        rgba(255,255,255,.16);
 
-      border-radius: 100px;
+      border-radius:
+        100px;
 
       background:
+
         linear-gradient(
           90deg,
           rgba(144,75,255,.2),
@@ -513,84 +910,128 @@
         );
 
       box-shadow:
-        0 0 35px rgba(143,70,255,.16);
+        0 0 35px
+        rgba(143,70,255,.16);
 
-      color: #ddd4e7;
+      color:
+        #ddd4e7;
 
       font-size: 9px;
+
       font-weight: 800;
 
       letter-spacing: 2px;
 
-      text-transform: uppercase;
+      text-transform:
+        uppercase;
 
       animation:
         appear .7s ease both;
+
     }
 
+
     .launch-dot {
+
       width: 6px;
       height: 6px;
 
       border-radius: 50%;
 
-      background: #72ffa5;
+      background:
+        #72ffa5;
 
       box-shadow:
-        0 0 14px #72ffa5;
+        0 0 14px
+        #72ffa5;
 
       animation:
         pulse 1.5s infinite;
+
     }
+
 
     @keyframes pulse {
 
-      0%, 100% {
-        transform: scale(1);
+      0%,
+      100% {
+
+        transform:
+          scale(1);
+
       }
 
       50% {
-        transform: scale(.55);
+
+        transform:
+          scale(.55);
+
       }
 
     }
+
 
     /* =========================
        TITLE
     ========================= */
 
     .hero-title {
+
       position: relative;
+
       z-index: 75;
 
-      font-family: "Space Grotesk";
+      font-family:
+        "Space Grotesk";
 
       font-size:
-        clamp(105px, 19vw, 245px);
+        clamp(
+          105px,
+          19vw,
+          245px
+        );
 
-      line-height: .75;
+      line-height:
+        .75;
 
-      letter-spacing: -14px;
+      letter-spacing:
+        -14px;
 
-      font-weight: 700;
+      font-weight:
+        700;
 
-      user-select: none;
+      user-select:
+        none;
 
       animation:
-        titleIn .9s .1s ease both;
+        titleIn
+        .9s
+        .1s
+        ease
+        both;
+
     }
+
 
     .hero-title .way {
-      color: #fffaff;
+
+      color:
+        #fffaff;
 
       text-shadow:
-        0 0 55px rgba(255,255,255,.08);
+        0 0 55px
+        rgba(255,255,255,.08);
+
     }
 
+
     .hero-title .go {
-      color: transparent;
+
+      color:
+        transparent;
 
       background:
+
         linear-gradient(
           110deg,
           #8749ff,
@@ -598,94 +1039,143 @@
           #ff9ce9
         );
 
-      -webkit-background-clip: text;
-      background-clip: text;
+      -webkit-background-clip:
+        text;
+
+      background-clip:
+        text;
 
       filter:
+
         drop-shadow(
           0 0 32px
           rgba(255,70,210,.3)
         );
+
     }
+
 
     /* =========================
        SUBTITLE
     ========================= */
 
     .subtitle {
+
       position: relative;
+
       z-index: 75;
 
-      max-width: 520px;
+      max-width:
+        520px;
 
-      margin: 43px auto 22px;
+      margin:
+        43px auto 22px;
 
-      color: #aaa0b4;
+      color:
+        #aaa0b4;
 
-      font-size: 15px;
+      font-size:
+        15px;
 
-      line-height: 1.7;
+      line-height:
+        1.7;
 
       animation:
-        appear .7s .25s ease both;
+        appear
+        .7s
+        .25s
+        ease
+        both;
+
     }
 
+
     .subtitle strong {
-      color: white;
+
+      color:
+        white;
+
     }
+
 
     /* =========================
        DATE
     ========================= */
 
     .date {
+
       position: relative;
+
       z-index: 75;
 
       display: inline-flex;
 
       align-items: center;
+
       gap: 9px;
 
       margin-bottom: 23px;
 
-      padding: 8px 14px;
+      padding:
+        8px 14px;
 
       border:
-        1px solid rgba(255,255,255,.13);
+        1px solid
+        rgba(255,255,255,.13);
 
-      border-radius: 12px;
+      border-radius:
+        12px;
 
       background:
         rgba(255,255,255,.05);
 
-      color: #d4c9de;
+      color:
+        #d4c9de;
 
-      font-size: 10px;
-      font-weight: 700;
+      font-size:
+        10px;
 
-      backdrop-filter: blur(18px);
+      font-weight:
+        700;
+
+      backdrop-filter:
+        blur(18px);
+
     }
+
 
     .date b {
-      color: #ff7fe0;
+
+      color:
+        #ff7fe0;
+
     }
+
 
     /* =========================
        SIGNUP
     ========================= */
 
     .signup {
+
       position: relative;
+
       z-index: 80;
 
       width:
-        min(580px, calc(100% - 35px));
+        min(
+          580px,
+          calc(100% - 35px)
+        );
 
-      margin: auto;
+      margin:
+        auto;
+
     }
 
+
     .form {
+
       display: flex;
 
       gap: 7px;
@@ -693,418 +1183,682 @@
       padding: 6px;
 
       border:
-        1px solid rgba(255,255,255,.18);
+        1px solid
+        rgba(255,255,255,.18);
 
-      border-radius: 18px;
+      border-radius:
+        18px;
 
       background:
         rgba(12,6,21,.86);
 
-      backdrop-filter: blur(25px);
+      backdrop-filter:
+        blur(25px);
 
       box-shadow:
-        0 25px 80px rgba(0,0,0,.45),
-        0 0 60px rgba(143,72,255,.14);
+
+        0 25px 80px
+        rgba(0,0,0,.45),
+
+        0 0 60px
+        rgba(143,72,255,.14);
+
     }
 
+
     .form:focus-within {
+
       border-color:
         rgba(192,124,255,.7);
 
       box-shadow:
-        0 25px 80px rgba(0,0,0,.48),
-        0 0 70px rgba(155,76,255,.24);
+
+        0 25px 80px
+        rgba(0,0,0,.48),
+
+        0 0 70px
+        rgba(155,76,255,.24);
+
     }
 
+
     .form input {
+
       flex: 1;
 
       min-width: 0;
 
       height: 54px;
 
-      padding: 0 16px;
+      padding:
+        0 16px;
 
-      border: none;
-      outline: none;
+      border:
+        none;
 
-      background: transparent;
-
-      color: white;
-
-      font-family: inherit;
-      font-size: 14px;
-    }
-
-    .form input::placeholder {
-      color: #6f6678;
-    }
-
-    .form button {
-      height: 54px;
-
-      padding: 0 23px;
-
-      border: none;
-
-      border-radius: 12px;
+      outline:
+        none;
 
       background:
+        transparent;
+
+      color:
+        white;
+
+      font-family:
+        inherit;
+
+      font-size:
+        14px;
+
+    }
+
+
+    .form input::placeholder {
+
+      color:
+        #6f6678;
+
+    }
+
+
+    .form button {
+
+      height:
+        54px;
+
+      padding:
+        0 23px;
+
+      border:
+        none;
+
+      border-radius:
+        12px;
+
+      background:
+
         linear-gradient(
           135deg,
           #ffffff,
           #eadcff
         );
 
-      color: #130b1b;
+      color:
+        #130b1b;
 
-      font-family: inherit;
+      font-family:
+        inherit;
 
-      font-size: 10px;
-      font-weight: 800;
+      font-size:
+        10px;
 
-      letter-spacing: .5px;
+      font-weight:
+        800;
 
-      cursor: pointer;
+      letter-spacing:
+        .5px;
+
+      cursor:
+        pointer;
 
       transition:
-        transform .2s ease,
-        box-shadow .2s ease;
+
+        transform
+        .2s ease,
+
+        box-shadow
+        .2s ease;
+
     }
+
 
     .form button:hover {
-      transform: translateY(-2px);
+
+      transform:
+        translateY(-2px);
 
       box-shadow:
+
         0 8px 30px
         rgba(225,194,255,.35);
+
     }
+
 
     .form button:disabled {
-      opacity: .5;
-      cursor: wait;
+
+      opacity:
+        .5;
+
+      cursor:
+        wait;
+
     }
+
 
     .small-note {
-      margin-top: 10px;
 
-      color: #61586b;
+      margin-top:
+        10px;
 
-      font-size: 9px;
+      color:
+        #61586b;
+
+      font-size:
+        9px;
+
     }
+
 
     /* =========================
        MESSAGE
     ========================= */
 
     .message {
-      display: none;
 
-      margin-top: 12px;
+      display:
+        none;
 
-      padding: 12px 14px;
+      margin-top:
+        12px;
 
-      border-radius: 11px;
+      padding:
+        12px 14px;
 
-      font-size: 12px;
+      border-radius:
+        11px;
 
-      text-align: left;
+      font-size:
+        12px;
+
+      text-align:
+        left;
+
     }
+
 
     .message.show {
-      display: block;
+
+      display:
+        block;
+
     }
 
+
     .message.success {
-      color: #9effbf;
+
+      color:
+        #9effbf;
 
       background:
         rgba(70,255,140,.07);
 
       border:
-        1px solid rgba(70,255,140,.18);
+        1px solid
+        rgba(70,255,140,.18);
+
     }
 
+
     .message.error {
-      color: #ff9eaf;
+
+      color:
+        #ff9eaf;
 
       background:
         rgba(255,70,110,.06);
 
       border:
-        1px solid rgba(255,70,110,.15);
+        1px solid
+        rgba(255,70,110,.15);
+
     }
+
 
     /* =========================
        COUNTDOWN
     ========================= */
 
     .countdown-wrapper {
-      position: relative;
 
-      z-index: 80;
+      position:
+        relative;
 
-      margin-top: 38px;
+      z-index:
+        80;
+
+      margin-top:
+        38px;
+
     }
+
 
     .countdown-title {
-      margin-bottom: 11px;
 
-      color: #776d83;
+      margin-bottom:
+        11px;
 
-      font-size: 8px;
-      font-weight: 800;
+      color:
+        #776d83;
 
-      letter-spacing: 3px;
+      font-size:
+        8px;
 
-      text-transform: uppercase;
+      font-weight:
+        800;
+
+      letter-spacing:
+        3px;
+
+      text-transform:
+        uppercase;
+
     }
+
 
     .countdown {
-      display: flex;
 
-      align-items: center;
-      justify-content: center;
+      display:
+        flex;
 
-      gap: 7px;
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      gap:
+        7px;
+
     }
 
-    .count-box {
-      min-width: 70px;
 
-      padding: 12px 8px;
+    .count-box {
+
+      min-width:
+        70px;
+
+      padding:
+        12px 8px;
 
       border:
-        1px solid rgba(255,255,255,.1);
+        1px solid
+        rgba(255,255,255,.1);
 
-      border-radius: 12px;
+      border-radius:
+        12px;
 
       background:
         rgba(255,255,255,.04);
 
-      backdrop-filter: blur(15px);
+      backdrop-filter:
+        blur(15px);
+
     }
+
 
     .count-box strong {
-      display: block;
 
-      font-family: "Space Grotesk";
+      display:
+        block;
 
-      font-size: 25px;
+      font-family:
+        "Space Grotesk";
 
-      line-height: 1;
+      font-size:
+        25px;
 
-      letter-spacing: -1px;
+      line-height:
+        1;
+
+      letter-spacing:
+        -1px;
+
     }
+
 
     .count-box span {
-      display: block;
 
-      margin-top: 5px;
+      display:
+        block;
 
-      color: #62596d;
+      margin-top:
+        5px;
 
-      font-size: 7px;
-      font-weight: 700;
+      color:
+        #62596d;
 
-      letter-spacing: 1px;
+      font-size:
+        7px;
 
-      text-transform: uppercase;
+      font-weight:
+        700;
+
+      letter-spacing:
+        1px;
+
+      text-transform:
+        uppercase;
+
     }
+
 
     .colon {
-      padding-bottom: 17px;
 
-      color: #8452bd;
+      padding-bottom:
+        17px;
 
-      font-weight: 800;
+      color:
+        #8452bd;
+
+      font-weight:
+        800;
+
     }
+
 
     /* =========================
        SECTIONS
     ========================= */
 
     .section {
+
       width:
-        min(1100px, calc(100% - 30px));
+        min(
+          1100px,
+          calc(100% - 30px)
+        );
 
       margin:
         0 auto 100px;
+
     }
+
 
     .section-header {
-      display: flex;
 
-      justify-content: space-between;
-      align-items: flex-end;
+      display:
+        flex;
 
-      gap: 30px;
+      justify-content:
+        space-between;
 
-      margin-bottom: 14px;
+      align-items:
+        flex-end;
 
-      padding-bottom: 20px;
+      gap:
+        30px;
+
+      margin-bottom:
+        14px;
+
+      padding-bottom:
+        20px;
 
       border-bottom:
-        1px solid rgba(255,255,255,.08);
+        1px solid
+        rgba(255,255,255,.08);
+
     }
+
 
     .section-number {
-      margin-bottom: 7px;
 
-      color: #746a7e;
+      margin-bottom:
+        7px;
 
-      font-size: 8px;
-      font-weight: 800;
-
-      letter-spacing: 2px;
-    }
-
-    .section-header h2 {
-      font-family: "Space Grotesk";
+      color:
+        #746a7e;
 
       font-size:
-        clamp(34px, 6vw, 58px);
+        8px;
 
-      letter-spacing: -3px;
+      font-weight:
+        800;
+
+      letter-spacing:
+        2px;
+
     }
+
+
+    .section-header h2 {
+
+      font-family:
+        "Space Grotesk";
+
+      font-size:
+        clamp(
+          34px,
+          6vw,
+          58px
+        );
+
+      letter-spacing:
+        -3px;
+
+    }
+
 
     .section-header p {
-      max-width: 340px;
 
-      color: #786f82;
+      max-width:
+        340px;
 
-      font-size: 12px;
+      color:
+        #786f82;
 
-      line-height: 1.7;
+      font-size:
+        12px;
 
-      text-align: right;
+      line-height:
+        1.7;
+
+      text-align:
+        right;
+
     }
+
 
     /* =========================
        CARDS
     ========================= */
 
     .cards {
-      display: grid;
+
+      display:
+        grid;
 
       grid-template-columns:
         repeat(3, 1fr);
 
-      gap: 12px;
+      gap:
+        12px;
+
     }
 
+
     .card {
-      position: relative;
 
-      min-height: 230px;
+      position:
+        relative;
 
-      padding: 24px;
+      min-height:
+        230px;
 
-      overflow: hidden;
+      padding:
+        24px;
+
+      overflow:
+        hidden;
 
       border:
-        1px solid rgba(255,255,255,.09);
+        1px solid
+        rgba(255,255,255,.09);
 
-      border-radius: 18px;
+      border-radius:
+        18px;
 
       background:
         rgba(255,255,255,.035);
 
       transition:
-        transform .3s ease,
-        border-color .3s ease;
+
+        transform
+        .3s ease,
+
+        border-color
+        .3s ease;
+
     }
+
 
     .card::after {
-      content: "";
 
-      position: absolute;
+      content:
+        "";
 
-      width: 180px;
-      height: 180px;
+      position:
+        absolute;
 
-      right: -80px;
-      top: -100px;
+      width:
+        180px;
 
-      border-radius: 50%;
+      height:
+        180px;
 
-      background: var(--card-color);
+      right:
+        -80px;
 
-      filter: blur(65px);
+      top:
+        -100px;
 
-      opacity: .25;
+      border-radius:
+        50%;
+
+      background:
+        var(--card-color);
+
+      filter:
+        blur(65px);
+
+      opacity:
+        .25;
+
     }
 
+
     .card:hover {
-      transform: translateY(-7px);
+
+      transform:
+        translateY(-7px);
 
       border-color:
         rgba(255,255,255,.18);
+
     }
+
 
     .card-number {
-      position: relative;
 
-      z-index: 2;
+      position:
+        relative;
 
-      margin-bottom: 70px;
+      z-index:
+        2;
 
-      color: #716879;
+      margin-bottom:
+        70px;
 
-      font-family: "Space Grotesk";
+      color:
+        #716879;
 
-      font-size: 10px;
+      font-family:
+        "Space Grotesk";
+
+      font-size:
+        10px;
+
     }
+
 
     .card h3 {
-      position: relative;
 
-      z-index: 2;
+      position:
+        relative;
 
-      margin-bottom: 8px;
+      z-index:
+        2;
 
-      font-family: "Space Grotesk";
+      margin-bottom:
+        8px;
 
-      font-size: 19px;
+      font-family:
+        "Space Grotesk";
+
+      font-size:
+        19px;
+
     }
+
 
     .card p {
-      position: relative;
 
-      z-index: 2;
+      position:
+        relative;
 
-      color: #756c80;
+      z-index:
+        2;
 
-      font-size: 12px;
+      color:
+        #756c80;
 
-      line-height: 1.7;
+      font-size:
+        12px;
+
+      line-height:
+        1.7;
+
     }
+
 
     /* =========================
        FINAL
     ========================= */
 
     .final {
+
       width:
-        min(1100px, calc(100% - 30px));
+        min(
+          1100px,
+          calc(100% - 30px)
+        );
 
       margin:
         0 auto 70px;
 
-      padding: 80px 25px;
+      padding:
+        80px 25px;
 
-      position: relative;
+      position:
+        relative;
 
-      overflow: hidden;
+      overflow:
+        hidden;
 
-      text-align: center;
+      text-align:
+        center;
 
       border:
-        1px solid rgba(255,255,255,.1);
+        1px solid
+        rgba(255,255,255,.1);
 
-      border-radius: 25px;
+      border-radius:
+        25px;
 
       background:
+
         radial-gradient(
           circle at 50% 110%,
           rgba(255,68,214,.18),
@@ -1112,83 +1866,134 @@
         ),
 
         rgba(255,255,255,.035);
+
     }
+
 
     .final small {
-      position: relative;
 
-      color: #8c8098;
+      position:
+        relative;
 
-      font-size: 9px;
-      font-weight: 800;
-
-      letter-spacing: 3px;
-    }
-
-    .final h2 {
-      position: relative;
-
-      margin: 15px 0;
-
-      font-family: "Space Grotesk";
+      color:
+        #8c8098;
 
       font-size:
-        clamp(42px, 8vw, 75px);
+        9px;
 
-      line-height: .95;
+      font-weight:
+        800;
 
-      letter-spacing: -4px;
+      letter-spacing:
+        3px;
+
     }
 
+
+    .final h2 {
+
+      position:
+        relative;
+
+      margin:
+        15px 0;
+
+      font-family:
+        "Space Grotesk";
+
+      font-size:
+        clamp(
+          42px,
+          8vw,
+          75px
+        );
+
+      line-height:
+        .95;
+
+      letter-spacing:
+        -4px;
+
+    }
+
+
     .final h2 span {
-      color: transparent;
+
+      color:
+        transparent;
 
       background:
+
         linear-gradient(
           90deg,
           #9a5cff,
           #ff5fd8
         );
 
-      -webkit-background-clip: text;
-      background-clip: text;
+      -webkit-background-clip:
+        text;
+
+      background-clip:
+        text;
+
     }
+
 
     .final p {
-      position: relative;
 
-      max-width: 430px;
+      position:
+        relative;
 
-      margin: 0 auto 28px;
+      max-width:
+        430px;
 
-      color: #7c7385;
+      margin:
+        0 auto 28px;
 
-      font-size: 13px;
+      color:
+        #7c7385;
 
-      line-height: 1.7;
+      font-size:
+        13px;
+
+      line-height:
+        1.7;
+
     }
+
 
     /* =========================
        FOOTER
     ========================= */
 
     footer {
-      width:
-        min(1100px, calc(100% - 30px));
 
-      margin: auto;
+      width:
+        min(
+          1100px,
+          calc(100% - 30px)
+        );
+
+      margin:
+        auto;
 
       padding:
         0 0 35px;
 
-      display: flex;
+      display:
+        flex;
 
-      justify-content: space-between;
+      justify-content:
+        space-between;
 
-      color: #514958;
+      color:
+        #514958;
 
-      font-size: 9px;
+      font-size:
+        9px;
+
     }
+
 
     /* =========================
        ANIMATIONS
@@ -1197,40 +2002,54 @@
     @keyframes appear {
 
       from {
-        opacity: 0;
+
+        opacity:
+          0;
 
         transform:
           translateY(18px);
+
       }
 
       to {
-        opacity: 1;
+
+        opacity:
+          1;
 
         transform:
           translateY(0);
+
       }
 
     }
+
 
     @keyframes titleIn {
 
       from {
-        opacity: 0;
+
+        opacity:
+          0;
 
         transform:
           scale(.92)
           translateY(20px);
+
       }
 
       to {
-        opacity: 1;
+
+        opacity:
+          1;
 
         transform:
           scale(1)
           translateY(0);
+
       }
 
     }
+
 
     /* =========================
        TABLET
@@ -1239,42 +2058,90 @@
     @media (max-width: 1100px) {
 
       .sticker-1 {
-        width: 285px;
-        height: 390px;
-        left: -50px;
+
+        width:
+          285px;
+
+        height:
+          390px;
+
+        left:
+          -50px;
+
       }
+
 
       .sticker-2 {
-        width: 285px;
-        height: 390px;
-        right: -50px;
+
+        width:
+          285px;
+
+        height:
+          390px;
+
+        right:
+          -50px;
+
       }
+
 
       .sticker-3 {
-        width: 320px;
-        height: 215px;
-        left: -30px;
+
+        width:
+          320px;
+
+        height:
+          215px;
+
+        left:
+          -30px;
+
       }
+
 
       .sticker-4 {
-        width: 230px;
-        height: 230px;
-        right: -20px;
+
+        width:
+          230px;
+
+        height:
+          230px;
+
+        right:
+          -20px;
+
       }
+
 
       .sticker-5 {
-        width: 160px;
-        height: 160px;
-        left: 10%;
+
+        width:
+          160px;
+
+        height:
+          160px;
+
+        left:
+          10%;
+
       }
 
+
       .sticker-6 {
-        width: 170px;
-        height: 170px;
-        right: 10%;
+
+        width:
+          170px;
+
+        height:
+          170px;
+
+        right:
+          10%;
+
       }
 
     }
+
 
     /* =========================
        MOBILE
@@ -1283,164 +2150,329 @@
     @media (max-width: 700px) {
 
       nav {
-        width: calc(100% - 28px);
-        padding-top: 18px;
+
+        width:
+          calc(100% - 28px);
+
+        padding-top:
+          18px;
+
       }
 
+
+      .logo img {
+
+        width:
+          105px;
+
+      }
+
+
       .hero {
-        width: 100%;
-        min-height: 760px;
+
+        width:
+          100%;
+
+        min-height:
+          760px;
 
         padding:
           50px 0 120px;
+
       }
+
 
       .hero-title {
-        font-size:
-          clamp(70px, 21vw, 115px);
 
-        letter-spacing: -7px;
+        font-size:
+          clamp(
+            70px,
+            21vw,
+            115px
+          );
+
+        letter-spacing:
+          -7px;
+
       }
+
 
       .subtitle {
-        max-width: 390px;
 
-        margin-top: 34px;
+        max-width:
+          390px;
 
-        padding: 0 25px;
+        margin-top:
+          34px;
 
-        font-size: 13px;
+        padding:
+          0 25px;
+
+        font-size:
+          13px;
+
       }
+
 
       .sticker-1 {
-        width: 125px;
-        height: 170px;
 
-        left: -22px;
-        top: 11%;
+        width:
+          125px;
+
+        height:
+          170px;
+
+        left:
+          -22px;
+
+        top:
+          11%;
+
       }
+
 
       .sticker-2 {
-        width: 125px;
-        height: 170px;
 
-        right: -22px;
-        top: 11%;
+        width:
+          125px;
+
+        height:
+          170px;
+
+        right:
+          -22px;
+
+        top:
+          11%;
+
       }
+
 
       .sticker-3 {
-        width: 165px;
-        height: 112px;
 
-        left: -15px;
-        bottom: 14%;
+        width:
+          165px;
+
+        height:
+          112px;
+
+        left:
+          -15px;
+
+        bottom:
+          14%;
+
       }
+
 
       .sticker-4 {
-        width: 120px;
-        height: 120px;
 
-        right: -12px;
-        bottom: 14%;
+        width:
+          120px;
+
+        height:
+          120px;
+
+        right:
+          -12px;
+
+        bottom:
+          14%;
+
       }
+
 
       .sticker-5 {
-        width: 75px;
-        height: 75px;
 
-        left: 7%;
-        top: 6%;
+        width:
+          75px;
+
+        height:
+          75px;
+
+        left:
+          7%;
+
+        top:
+          6%;
+
       }
+
 
       .sticker-6 {
-        width: 80px;
-        height: 80px;
 
-        right: 7%;
-        bottom: 6%;
+        width:
+          80px;
+
+        height:
+          80px;
+
+        right:
+          7%;
+
+        bottom:
+          6%;
+
       }
+
 
       .star {
-        font-size: 20px;
+
+        font-size:
+          20px;
+
       }
+
 
       .star-1 {
-        left: 5%;
+
+        left:
+          5%;
+
       }
+
 
       .star-2 {
-        right: 5%;
+
+        right:
+          5%;
+
       }
+
 
       .star-3 {
-        display: none;
+
+        display:
+          none;
+
       }
+
 
       .form {
-        flex-direction: column;
+
+        flex-direction:
+          column;
+
       }
+
 
       .form button {
-        width: 100%;
+
+        width:
+          100%;
+
       }
+
 
       .countdown {
-        gap: 4px;
+
+        gap:
+          4px;
+
       }
 
+
       .count-box {
-        min-width: 58px;
+
+        min-width:
+          58px;
 
         padding:
           10px 5px;
+
       }
+
 
       .count-box strong {
-        font-size: 20px;
+
+        font-size:
+          20px;
+
       }
+
 
       .colon {
-        font-size: 11px;
+
+        font-size:
+          11px;
+
       }
+
 
       .section-header {
-        display: block;
+
+        display:
+          block;
+
       }
+
 
       .section-header p {
-        margin-top: 12px;
-        text-align: left;
+
+        margin-top:
+          12px;
+
+        text-align:
+          left;
+
       }
+
 
       .cards {
-        grid-template-columns: 1fr;
+
+        grid-template-columns:
+          1fr;
+
       }
+
 
       .card {
-        min-height: 200px;
+
+        min-height:
+          200px;
+
       }
+
 
       .card-number {
-        margin-bottom: 50px;
+
+        margin-bottom:
+          50px;
+
       }
+
 
       .final {
-        padding: 65px 18px;
+
+        padding:
+          65px 18px;
+
       }
+
 
       .final h2 {
-        letter-spacing: -2.5px;
+
+        letter-spacing:
+          -2.5px;
+
       }
 
+
       footer {
-        flex-direction: column;
 
-        gap: 9px;
+        flex-direction:
+          column;
 
-        text-align: center;
+        gap:
+          9px;
+
+        text-align:
+          center;
+
       }
 
     }
+
 
     /* =========================
        SMALL PHONES
@@ -1449,84 +2481,170 @@
     @media (max-width: 430px) {
 
       .hero {
-        min-height: 720px;
+
+        min-height:
+          720px;
+
       }
+
 
       .hero-title {
-        font-size: 73px;
-        letter-spacing: -6px;
+
+        font-size:
+          73px;
+
+        letter-spacing:
+          -6px;
+
       }
+
 
       .sticker-1 {
-        width: 100px;
-        height: 135px;
-        left: -18px;
+
+        width:
+          100px;
+
+        height:
+          135px;
+
+        left:
+          -18px;
+
       }
+
 
       .sticker-2 {
-        width: 100px;
-        height: 135px;
-        right: -18px;
+
+        width:
+          100px;
+
+        height:
+          135px;
+
+        right:
+          -18px;
+
       }
+
 
       .sticker-3 {
-        width: 135px;
-        height: 92px;
-        left: -12px;
+
+        width:
+          135px;
+
+        height:
+          92px;
+
+        left:
+          -12px;
+
       }
+
 
       .sticker-4 {
-        width: 95px;
-        height: 95px;
-        right: -10px;
+
+        width:
+          95px;
+
+        height:
+          95px;
+
+        right:
+          -10px;
+
       }
+
 
       .sticker-5 {
-        width: 60px;
-        height: 60px;
+
+        width:
+          60px;
+
+        height:
+          60px;
+
       }
 
+
       .sticker-6 {
-        width: 65px;
-        height: 65px;
+
+        width:
+          65px;
+
+        height:
+          65px;
+
       }
 
     }
 
   </style>
+
 </head>
 
+
 <body>
+
+
+  <!-- =========================
+       BACKGROUND
+  ========================= -->
 
   <div class="background">
 
     <div class="glow glow-1"></div>
+
     <div class="glow glow-2"></div>
+
     <div class="glow glow-3"></div>
 
     <div class="grain"></div>
 
   </div>
 
-  <!-- NAV -->
+
+  <!-- =========================
+       NAVIGATION
+  ========================= -->
 
   <nav>
 
     <div class="logo">
-      Way<span>Go</span>
+
+      <!--
+        Nahraj logo ako:
+
+        logo.png
+
+        do hlavného priečinka stránky.
+      -->
+
+      <img
+        src="/logo.png"
+        alt="WayGo"
+      >
+
     </div>
 
+
     <div class="nav-pill">
-      coming soon ✦
+
+      už čoskoro ✦
+
     </div>
 
   </nav>
 
+
   <main>
 
-    <!-- HERO -->
+
+    <!-- =========================
+         HERO
+    ========================= -->
 
     <section class="hero">
+
 
       <!-- PHOTO 1 -->
 
@@ -1536,12 +2654,13 @@
 
           <img
             src="1"
-            alt="WayGo foto 1"
+            alt="WayGo — objavovanie"
           >
 
         </div>
 
       </div>
+
 
       <!-- PHOTO 2 -->
 
@@ -1551,12 +2670,13 @@
 
           <img
             src="2"
-            alt="WayGo foto 2"
+            alt="WayGo — nové skúsenosti"
           >
 
         </div>
 
       </div>
+
 
       <!-- PHOTO 3 -->
 
@@ -1566,12 +2686,13 @@
 
           <img
             src="3"
-            alt="WayGo foto 3"
+            alt="WayGo — dobrodružstvo"
           >
 
         </div>
 
       </div>
+
 
       <!-- PHOTO 4 -->
 
@@ -1581,12 +2702,13 @@
 
           <img
             src="4"
-            alt="WayGo foto 4"
+            alt="WayGo — komunita"
           >
 
         </div>
 
       </div>
+
 
       <!-- PHOTO 5 -->
 
@@ -1596,12 +2718,13 @@
 
           <img
             src="5"
-            alt="WayGo foto 5"
+            alt="WayGo — objavuj"
           >
 
         </div>
 
       </div>
+
 
       <!-- PHOTO 6 -->
 
@@ -1611,50 +2734,76 @@
 
           <img
             src="6"
-            alt="WayGo foto 6"
+            alt="WayGo — rast"
           >
 
         </div>
 
       </div>
 
+
       <!-- STARS -->
 
-      <div class="star star-1">✦</div>
-      <div class="star star-2">✧</div>
-      <div class="star star-3">✦</div>
+      <div class="star star-1">
+        ✦
+      </div>
 
-      <!-- CONTENT -->
+      <div class="star star-2">
+        ✧
+      </div>
+
+      <div class="star star-3">
+        ✦
+      </div>
+
+
+      <!-- =========================
+           HERO CONTENT
+      ========================= -->
 
       <div class="hero-content">
+
 
         <div class="launch-pill">
 
           <span class="launch-dot"></span>
 
-          WAYGO GOES LIVE
+          WAYGO ŠTARTUJE
 
         </div>
 
+
         <h1 class="hero-title">
 
-          <span class="way">Way</span><span class="go">Go</span>
+          <span class="way">
+            Way
+          </span>
+
+          <span class="go">
+            Go
+          </span>
 
         </h1>
+
 
         <p class="subtitle">
 
           Objavuj.
+
           Uč sa.
+
           Skúšaj nové veci.
 
           <br>
 
           <strong>
-            Tvoja cesta začína 21.9.
+            Tvoja cesta začína 21.9.2026.
           </strong>
 
         </p>
+
+
+        <!-- DATE -->
 
         <div class="date">
 
@@ -1662,7 +2811,9 @@
 
           <span>
 
-            <b>21. september 2026</b>
+            <b>
+              21. september 2026
+            </b>
 
             &nbsp; • &nbsp;
 
@@ -1674,7 +2825,10 @@
 
         </div>
 
-        <!-- EMAIL -->
+
+        <!-- =========================
+             EMAIL SIGNUP
+        ========================= -->
 
         <div class="signup">
 
@@ -1700,10 +2854,12 @@
 
           </form>
 
+
           <div
             id="message"
             class="message"
           ></div>
+
 
           <div class="small-note">
 
@@ -1713,7 +2869,10 @@
 
         </div>
 
-        <!-- COUNTDOWN -->
+
+        <!-- =========================
+             COUNTDOWN
+        ========================= -->
 
         <div class="countdown-wrapper">
 
@@ -1724,45 +2883,76 @@
             do launchu zostáva
           </div>
 
+
           <div class="countdown">
 
-            <div class="count-box">
-
-              <strong id="days">00</strong>
-
-              <span>dní</span>
-
-            </div>
-
-            <div class="colon">:</div>
 
             <div class="count-box">
 
-              <strong id="hours">00</strong>
+              <strong id="days">
+                00
+              </strong>
 
-              <span>hod</span>
+              <span>
+                dní
+              </span>
 
             </div>
 
-            <div class="colon">:</div>
+
+            <div class="colon">
+              :
+            </div>
+
 
             <div class="count-box">
 
-              <strong id="minutes">00</strong>
+              <strong id="hours">
+                00
+              </strong>
 
-              <span>min</span>
+              <span>
+                hod
+              </span>
 
             </div>
 
-            <div class="colon">:</div>
+
+            <div class="colon">
+              :
+            </div>
+
 
             <div class="count-box">
 
-              <strong id="seconds">00</strong>
+              <strong id="minutes">
+                00
+              </strong>
 
-              <span>sek</span>
+              <span>
+                min
+              </span>
 
             </div>
+
+
+            <div class="colon">
+              :
+            </div>
+
+
+            <div class="count-box">
+
+              <strong id="seconds">
+                00
+              </strong>
+
+              <span>
+                sek
+              </span>
+
+            </div>
+
 
           </div>
 
@@ -1772,35 +2962,52 @@
 
     </section>
 
-    <!-- ABOUT -->
+
+    <!-- =========================
+         ABOUT
+    ========================= -->
 
     <section class="section">
 
+
       <div class="section-header">
+
 
         <div>
 
           <div class="section-number">
+
             01 / WAYGO
+
           </div>
 
+
           <h2>
+
             Choď vlastnou cestou.
+
           </h2>
 
         </div>
 
+
         <p>
 
           WayGo je priestor pre ľudí,
-          ktorí chcú objavovať nové veci
+          ktorí chcú objavovať nové veci,
+          získavať skúsenosti
           a posúvať sa ďalej.
 
         </p>
 
+
       </div>
 
+
       <div class="cards">
+
+
+        <!-- CARD 1 -->
 
         <article
           class="card"
@@ -1825,6 +3032,9 @@
 
         </article>
 
+
+        <!-- CARD 2 -->
+
         <article
           class="card"
           style="--card-color:#ff4fcf"
@@ -1835,17 +3045,21 @@
           </div>
 
           <h3>
-            Skúška
+            Skús
           </h3>
 
           <p>
 
             Nemusíš všetko vedieť.
-            Stačí byť zvedavý a začať.
+            Stačí byť zvedavý
+            a začať.
 
           </p>
 
         </article>
+
+
+        <!-- CARD 3 -->
 
         <article
           class="card"
@@ -1857,37 +3071,49 @@
           </div>
 
           <h3>
-            Rast!
+            Rast
           </h3>
 
           <p>
 
             Malé kroky, nové skills
-            a veci, ktoré ťa posúvajú
-            ďalej.
+            a skúsenosti, ktoré ťa
+            posúvajú ďalej.
 
           </p>
 
         </article>
 
+
       </div>
 
     </section>
 
-    <!-- FINAL -->
+
+    <!-- =========================
+         FINAL CTA
+    ========================= -->
 
     <section class="final">
 
+
       <small>
+
         21.9. • 10:00 • WAYGO
+
       </small>
+
 
       <h2>
 
-        <span>Vidíme sa</span>
+        <span>
+          Vidíme sa
+        </span>
+
         21.9. ✦
 
       </h2>
+
 
       <p>
 
@@ -1896,7 +3122,9 @@
 
       </p>
 
+
       <div class="signup">
+
 
         <form
           class="form"
@@ -1911,43 +3139,69 @@
             required
           >
 
-          <button type="submit">
+
+          <button
+            type="submit"
+          >
+
             SOM IN →
+
           </button>
 
         </form>
+
 
         <div
           id="messageBottom"
           class="message"
         ></div>
 
+
       </div>
 
     </section>
 
+
   </main>
+
+
+  <!-- =========================
+       FOOTER
+  ========================= -->
 
   <footer>
 
     <div>
+
       © 2026 WayGo
+
     </div>
 
+
     <div>
+
       made for curious people ✦
+
     </div>
 
   </footer>
 
+
+  <!-- =========================
+       JAVASCRIPT
+  ========================= -->
+
   <script>
+
 
     /* ==================================================
        SUPABASE
     ================================================== */
 
+
     const SUPABASE_URL =
       "https://vfjounxgwkhjaopoertc.supabase.co";
+
 
     const SUPABASE_PUBLISHABLE_KEY =
       "sb_publishable_yBcXZlEACwgRoRyD6DiFJA_0ZPTYyxQ";
@@ -1964,13 +3218,16 @@
        EMAIL WAITLIST
     ================================================== */
 
+
     async function addToWaitlist(
       form,
       messageElement
     ) {
 
+
       const input =
         form.querySelector("input");
+
 
       const button =
         form.querySelector("button");
@@ -1987,7 +3244,9 @@
       }
 
 
-      button.disabled = true;
+      button.disabled =
+        true;
+
 
       button.textContent =
         "PRIPÁJAM...";
@@ -1999,19 +3258,12 @@
 
       try {
 
-        /*
-         * DÔLEŽITÁ OPRAVA:
-         *
-         * Nepoužívame .select().
-         *
-         * Verejný používateľ potrebuje iba
-         * INSERT. Nemá potrebovať SELECT
-         * prístup k emailom vo waitliste.
-         */
 
         const { error } =
           await supabaseClient
+
             .from("waitlist")
+
             .insert({
               email: email
             });
@@ -2021,7 +3273,9 @@
            ERROR
         ========================= */
 
+
         if (error) {
+
 
           console.error(
             "SUPABASE ERROR:",
@@ -2029,83 +3283,107 @@
           );
 
 
-          /*
-             DUPLICATE EMAIL
-          */
+          /* DUPLICATE EMAIL */
+
 
           if (
+
             error.code === "23505" ||
+
             error.message
               ?.toLowerCase()
               .includes("duplicate") ||
+
             error.message
               ?.toLowerCase()
               .includes("unique")
+
           ) {
+
 
             messageElement.innerHTML =
               "👀 Tento email už je medzi prvými!";
 
+
             messageElement.className =
               "message success show";
 
-            button.disabled = false;
+
+            button.disabled =
+              false;
+
 
             button.textContent =
               "SI IN ✓";
 
+
             return;
+
           }
 
 
-          /*
-             RLS CHYBA
-          */
+          /* RLS ERROR */
+
 
           if (
+
             error.message
               ?.toLowerCase()
               .includes("row-level security")
+
           ) {
+
 
             messageElement.innerHTML =
               "⚠️ Supabase blokuje pridanie emailu.<br>" +
               "<small>Skontroluj INSERT policy pre rolu anon.</small>";
 
+
             messageElement.className =
               "message error show";
 
-            button.disabled = false;
+
+            button.disabled =
+              false;
+
 
             button.textContent =
               "SKÚSIŤ ZNOVA →";
 
+
             return;
+
           }
 
 
-          /*
-             OSTATNÉ CHYBY
-          */
+          /* OTHER ERROR */
+
 
           messageElement.innerHTML =
             "⚠️ Nepodarilo sa pridať email.<br><small>" +
+
             escapeHtml(
               error.message ||
               "Neznáma Supabase chyba."
             ) +
+
             "</small>";
+
 
           messageElement.className =
             "message error show";
 
 
-          button.disabled = false;
+          button.disabled =
+            false;
+
 
           button.textContent =
             "SKÚSIŤ ZNOVA →";
 
+
           return;
+
         }
 
 
@@ -2113,7 +3391,9 @@
            SUCCESS
         ========================= */
 
-        input.value = "";
+
+        input.value =
+          "";
 
 
         messageElement.textContent =
@@ -2130,15 +3410,20 @@
 
         setTimeout(() => {
 
-          button.disabled = false;
+
+          button.disabled =
+            false;
+
 
           button.textContent =
             "CHCEM BYŤ PRI TOM →";
+
 
         }, 4000);
 
 
       } catch (error) {
+
 
         console.error(
           "NETWORK / JS ERROR:",
@@ -2148,10 +3433,12 @@
 
         messageElement.innerHTML =
           "⚠️ Niečo sa pokazilo.<br><small>" +
+
           escapeHtml(
             error.message ||
             "Skontroluj internet a Supabase nastavenie."
           ) +
+
           "</small>";
 
 
@@ -2159,7 +3446,9 @@
           "message error show";
 
 
-        button.disabled = false;
+        button.disabled =
+          false;
+
 
         button.textContent =
           "SKÚSIŤ ZNOVA →";
@@ -2173,12 +3462,19 @@
        SECURITY HELPER
     ================================================== */
 
+
     function escapeHtml(text) {
 
-      const div =
-        document.createElement("div");
 
-      div.textContent = text;
+      const div =
+        document.createElement(
+          "div"
+        );
+
+
+      div.textContent =
+        text;
+
 
       return div.innerHTML;
 
@@ -2189,17 +3485,29 @@
        FORM 1
     ================================================== */
 
+
     document
-      .getElementById("waitlistForm")
+
+      .getElementById(
+        "waitlistForm"
+      )
+
       .addEventListener(
         "submit",
         function(event) {
 
+
           event.preventDefault();
 
+
           addToWaitlist(
+
             this,
-            document.getElementById("message")
+
+            document.getElementById(
+              "message"
+            )
+
           );
 
         }
@@ -2210,17 +3518,29 @@
        FORM 2
     ================================================== */
 
+
     document
-      .getElementById("waitlistFormBottom")
+
+      .getElementById(
+        "waitlistFormBottom"
+      )
+
       .addEventListener(
         "submit",
         function(event) {
 
+
           event.preventDefault();
 
+
           addToWaitlist(
+
             this,
-            document.getElementById("messageBottom")
+
+            document.getElementById(
+              "messageBottom"
+            )
+
           );
 
         }
@@ -2228,18 +3548,21 @@
 
 
     /* ==================================================
-       REAL COUNTDOWN
+       COUNTDOWN
     ==================================================
 
        21. september 2026
        10:00 slovenského času
 
-       V septembri je Slovensko v CEST = UTC+2.
+       Slovensko:
+       CEST = UTC+2
 
        10:00 CEST
        =
        08:00 UTC
+
     ================================================== */
+
 
     const LAUNCH_TIME =
       Date.UTC(
@@ -2254,6 +3577,7 @@
 
     function updateCountdown() {
 
+
       const now =
         Date.now();
 
@@ -2263,29 +3587,35 @@
 
 
       /* =========================
-         LAUNCH UŽ PREBEHOL
+         LAUNCH PREBEHOL
       ========================= */
+
 
       if (remaining <= 0) {
 
+
         document.getElementById(
           "days"
-        ).textContent = "00";
+        ).textContent =
+          "00";
 
 
         document.getElementById(
           "hours"
-        ).textContent = "00";
+        ).textContent =
+          "00";
 
 
         document.getElementById(
           "minutes"
-        ).textContent = "00";
+        ).textContent =
+          "00";
 
 
         document.getElementById(
           "seconds"
-        ).textContent = "00";
+        ).textContent =
+          "00";
 
 
         document.getElementById(
@@ -2300,8 +3630,9 @@
 
 
       /* =========================
-         MILISEKUNDY → SEKUNDY
+         SECONDS
       ========================= */
+
 
       const totalSeconds =
         Math.floor(
@@ -2313,6 +3644,7 @@
          DAYS
       ========================= */
 
+
       const days =
         Math.floor(
           totalSeconds / 86400
@@ -2322,6 +3654,7 @@
       /* =========================
          HOURS
       ========================= */
+
 
       const hours =
         Math.floor(
@@ -2334,6 +3667,7 @@
          MINUTES
       ========================= */
 
+
       const minutes =
         Math.floor(
           (totalSeconds % 3600) /
@@ -2345,48 +3679,46 @@
          SECONDS
       ========================= */
 
+
       const seconds =
         totalSeconds % 60;
 
 
       /* =========================
-         UPDATE HTML
+         UPDATE
       ========================= */
+
 
       document.getElementById(
         "days"
       ).textContent =
-        String(days).padStart(
-          2,
-          "0"
-        );
+
+        String(days)
+          .padStart(2, "0");
 
 
       document.getElementById(
         "hours"
       ).textContent =
-        String(hours).padStart(
-          2,
-          "0"
-        );
+
+        String(hours)
+          .padStart(2, "0");
 
 
       document.getElementById(
         "minutes"
       ).textContent =
-        String(minutes).padStart(
-          2,
-          "0"
-        );
+
+        String(minutes)
+          .padStart(2, "0");
 
 
       document.getElementById(
         "seconds"
       ).textContent =
-        String(seconds).padStart(
-          2,
-          "0"
-        );
+
+        String(seconds)
+          .padStart(2, "0");
 
     }
 
@@ -2394,6 +3726,7 @@
     /* ==================================================
        COUNTDOWN START
     ================================================== */
+
 
     updateCountdown();
 
@@ -2403,7 +3736,10 @@
       1000
     );
 
+
   </script>
 
+
 </body>
+
 </html>
