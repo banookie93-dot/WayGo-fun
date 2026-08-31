@@ -1,0 +1,4642 @@
+<!DOCTYPE html>
+<html lang="sk">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>WayGo — Moje štúdium</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 75% 5%,
+                    rgba(139, 48, 230, .14),
+                    transparent 32%
+                ),
+                radial-gradient(
+                    circle at 15% 85%,
+                    rgba(63, 73, 190, .09),
+                    transparent 30%
+                ),
+                #03030c;
+
+            color: #fff;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+
+            position: fixed;
+
+            inset: 0;
+
+            pointer-events: none;
+
+            background-image:
+                radial-gradient(
+                    circle,
+                    rgba(255,255,255,.8) 1px,
+                    transparent 1.5px
+                ),
+                radial-gradient(
+                    circle,
+                    rgba(170,80,255,.8) 1px,
+                    transparent 1.5px
+                );
+
+            background-size:
+                150px 150px,
+                230px 230px;
+
+            opacity: .18;
+
+            z-index: -1;
+        }
+
+        button,
+        input,
+        select {
+            font-family: inherit;
+        }
+
+        button,
+        a {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+
+        /* =====================================================
+           APP
+        ====================================================== */
+
+        .app {
+            min-height: 100vh;
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+        ====================================================== */
+
+        .sidebar {
+            width: 245px;
+
+            min-height: 100vh;
+
+            position: fixed;
+
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            z-index: 50;
+
+            padding: 25px 15px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(11,8,25,.98),
+                    rgba(5,5,16,.99)
+                );
+
+            border-right:
+                1px solid rgba(157,76,235,.25);
+
+            box-shadow:
+                10px 0 35px rgba(0,0,0,.25);
+        }
+
+        .logo {
+            display: flex;
+
+            align-items: center;
+
+            padding:
+                0 15px 30px;
+
+            font-size: 29px;
+
+            font-weight: 800;
+
+            letter-spacing: -2px;
+        }
+
+        .logo span {
+            background:
+                linear-gradient(
+                    90deg,
+                    #8d38ff,
+                    #d567ff,
+                    #657eff
+                );
+
+            -webkit-background-clip: text;
+            background-clip: text;
+
+            color: transparent;
+        }
+
+        .menu-label {
+            padding:
+                0 15px 10px;
+
+            color: #514b5d;
+
+            font-size: 9px;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+        }
+
+        .menu {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 4px;
+        }
+
+        .menu-item {
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 12px 14px;
+
+            border-radius: 10px;
+
+            color: #827b8e;
+
+            font-size: 12px;
+
+            transition: .25s;
+        }
+
+        .menu-item:hover {
+            color: #d5cbe1;
+
+            background:
+                rgba(122,44,185,.10);
+
+            transform:
+                translateX(2px);
+        }
+
+        .menu-item.active {
+            color: #fff;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(132,43,194,.28),
+                    rgba(77,43,150,.10)
+                );
+
+            border:
+                1px solid rgba(160,67,239,.25);
+
+            box-shadow:
+                inset 3px 0 0 #a64dff;
+        }
+
+        .menu-icon {
+            width: 21px;
+
+            text-align: center;
+
+            color: #a960ed;
+
+            font-size: 15px;
+        }
+
+        .menu-item.active .menu-icon {
+            color: #cf6cff;
+        }
+
+        .sidebar-bottom {
+            position: absolute;
+
+            left: 15px;
+            right: 15px;
+
+            bottom: 20px;
+
+            padding-top: 15px;
+
+            border-top:
+                1px solid rgba(139,76,194,.12);
+        }
+
+        .mini-user {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 10px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(106,41,160,.08);
+        }
+
+        .avatar-small,
+        .profile-avatar {
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle at 30% 25%,
+                    #b968ff,
+                    #5422a0 60%,
+                    #130a2c
+                );
+
+            border:
+                1px solid #9347e7;
+        }
+
+        .avatar-small {
+            width: 35px;
+            height: 35px;
+
+            flex-shrink: 0;
+
+            font-size: 13px;
+        }
+
+        .mini-user-text {
+            overflow: hidden;
+        }
+
+        .mini-user-text strong {
+            display: block;
+
+            color: #d7cedf;
+
+            font-size: 11px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+        .mini-user-text span {
+            color: #6d6578;
+
+            font-size: 9px;
+        }
+
+        .logout-button {
+            width: 100%;
+
+            padding: 10px;
+
+            margin-top: 10px;
+
+            border-radius: 8px;
+
+            border:
+                1px solid rgba(255,80,130,.15);
+
+            background:
+                rgba(255,50,100,.05);
+
+            color: #a77889;
+
+            cursor: pointer;
+
+            font-size: 9px;
+
+            transition: .25s;
+        }
+
+        .logout-button:hover {
+            color: #ff86ad;
+
+            background:
+                rgba(255,50,100,.1);
+        }
+
+
+        /* =====================================================
+           MAIN
+        ====================================================== */
+
+        .main {
+            width: calc(100% - 245px);
+
+            margin-left: 245px;
+
+            padding:
+                30px 35px 50px;
+        }
+
+
+        /* =====================================================
+           TOPBAR
+        ====================================================== */
+
+        .topbar {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 25px;
+        }
+
+        .page-title {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+        .page-title h1 {
+            font-size: 25px;
+        }
+
+        .page-title p {
+            margin-top: 6px;
+
+            color: #777080;
+
+            font-size: 11px;
+        }
+
+        .top-actions {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+        .notification,
+        .mobile-menu {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            border:
+                1px solid rgba(139,72,198,.3);
+
+            background:
+                rgba(22,16,37,.75);
+
+            color: #b46bff;
+
+            cursor: pointer;
+        }
+
+        .profile {
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            padding:
+                5px 10px 5px 5px;
+
+            border:
+                1px solid rgba(139,72,198,.25);
+
+            border-radius: 12px;
+
+            background:
+                rgba(21,16,34,.7);
+        }
+
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+
+            font-size: 11px;
+        }
+
+        .profile-name {
+            max-width: 150px;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+            font-size: 10px;
+
+            color: #bcb3c8;
+        }
+
+
+        /* =====================================================
+           CARD
+        ====================================================== */
+
+        .card {
+            position: relative;
+
+            border:
+                1px solid rgba(139,70,204,.24);
+
+            border-radius: 15px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(18,13,32,.92),
+                    rgba(7,7,18,.94)
+                );
+
+            box-shadow:
+                inset 0 0 35px rgba(118,38,190,.025),
+                0 10px 30px rgba(0,0,0,.18);
+
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 1px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(186,91,255,.35),
+                    transparent
+                );
+        }
+
+
+        /* =====================================================
+           SETUP
+        ====================================================== */
+
+        #setupView {
+            max-width: 900px;
+
+            margin: 0 auto;
+        }
+
+        .setup-card {
+            padding: 30px;
+        }
+
+        .setup-header {
+            margin-bottom: 30px;
+        }
+
+        .setup-header h2 {
+            font-size: 22px;
+        }
+
+        .setup-header p {
+            margin-top: 8px;
+
+            color: #766e80;
+
+            font-size: 11px;
+
+            line-height: 1.6;
+        }
+
+        .step-indicator {
+            display: flex;
+
+            gap: 7px;
+
+            margin-bottom: 28px;
+        }
+
+        .step {
+            height: 4px;
+
+            flex: 1;
+
+            border-radius: 10px;
+
+            background: #211a2d;
+        }
+
+        .step.active {
+            background:
+                linear-gradient(
+                    90deg,
+                    #6e2bd0,
+                    #d15cff
+                );
+
+            box-shadow:
+                0 0 10px rgba(163,61,255,.3);
+        }
+
+        .step-title {
+            margin-bottom: 18px;
+        }
+
+        .step-title h3 {
+            font-size: 15px;
+        }
+
+        .step-title p {
+            margin-top: 5px;
+
+            color: #665e6e;
+
+            font-size: 9px;
+        }
+
+        .option-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 12px;
+        }
+
+        .option {
+            position: relative;
+
+            padding: 18px;
+
+            border:
+                1px solid rgba(126,65,184,.2);
+
+            border-radius: 12px;
+
+            background:
+                rgba(9,8,19,.75);
+
+            cursor: pointer;
+
+            transition: .25s;
+        }
+
+        .option:hover {
+            border-color:
+                rgba(170,78,241,.5);
+
+            transform:
+                translateY(-2px);
+
+            background:
+                rgba(30,15,47,.7);
+        }
+
+        .option.selected {
+            border-color:
+                #a94fff;
+
+            background:
+                rgba(125,42,190,.13);
+
+            box-shadow:
+                0 0 20px rgba(149,54,240,.1);
+        }
+
+        .option-icon {
+            font-size: 22px;
+
+            margin-bottom: 10px;
+        }
+
+        .option strong {
+            display: block;
+
+            color: #d5cbdc;
+
+            font-size: 12px;
+        }
+
+        .option span {
+            display: block;
+
+            margin-top: 5px;
+
+            color: #6d6575;
+
+            font-size: 9px;
+
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        .form-group label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #968ba0;
+
+            font-size: 9px;
+        }
+
+        .form-control {
+            width: 100%;
+
+            height: 45px;
+
+            padding:
+                0 13px;
+
+            border:
+                1px solid rgba(130,72,180,.25);
+
+            border-radius: 9px;
+
+            outline: none;
+
+            background:
+                rgba(6,5,15,.85);
+
+            color: #fff;
+
+            font-size: 11px;
+        }
+
+        .form-control:focus {
+            border-color: #a64cff;
+
+            box-shadow:
+                0 0 15px rgba(158,66,255,.12);
+        }
+
+        select.form-control {
+            appearance: none;
+
+            background-image:
+                linear-gradient(45deg, transparent 50%, #a960ed 50%),
+                linear-gradient(135deg, #a960ed 50%, transparent 50%);
+
+            background-position:
+                calc(100% - 18px) 19px,
+                calc(100% - 13px) 19px;
+
+            background-size:
+                5px 5px,
+                5px 5px;
+
+            background-repeat: no-repeat;
+        }
+
+        option {
+            background: #100b1b;
+
+            color: white;
+        }
+
+        .subjects-picker {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 8px;
+
+            max-height: 300px;
+
+            overflow-y: auto;
+
+            padding: 4px;
+        }
+
+        .subject-option {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding: 11px;
+
+            border:
+                1px solid rgba(126,65,184,.17);
+
+            border-radius: 9px;
+
+            background:
+                rgba(8,8,18,.7);
+
+            color: #9b92a4;
+
+            cursor: pointer;
+
+            font-size: 9px;
+        }
+
+        .subject-option:hover {
+            border-color:
+                rgba(168,76,240,.35);
+        }
+
+        .subject-option input {
+            accent-color: #a64cff;
+        }
+
+        .empty-state {
+            padding: 20px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(255,255,255,.025);
+
+            border:
+                1px dashed rgba(130,72,180,.2);
+
+            color: #655e6c;
+
+            font-size: 9px;
+
+            line-height: 1.6;
+        }
+
+        .setup-actions {
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 10px;
+
+            margin-top: 25px;
+        }
+
+        .button {
+            min-width: 120px;
+
+            height: 43px;
+
+            padding:
+                0 18px;
+
+            border-radius: 9px;
+
+            cursor: pointer;
+
+            font-size: 10px;
+
+            font-weight: 700;
+        }
+
+        .button-secondary {
+            border:
+                1px solid rgba(130,72,180,.25);
+
+            background:
+                rgba(12,9,22,.8);
+
+            color: #8f8598;
+        }
+
+        .button-primary {
+            border: none;
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #6d27ce,
+                    #ad42ec
+                );
+
+            box-shadow:
+                0 0 20px rgba(151,55,235,.18);
+        }
+
+        .button-primary:disabled {
+            opacity: .45;
+
+            cursor: not-allowed;
+        }
+
+
+        /* =====================================================
+           FEED
+        ====================================================== */
+
+        #feedView {
+            display: none;
+        }
+
+        .feed-layout {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                300px;
+
+            gap: 18px;
+        }
+
+        .feed-main {
+            min-width: 0;
+        }
+
+        .feed-filter {
+            padding: 16px 18px;
+
+            margin-bottom: 18px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+        }
+
+        .filter-info strong {
+            display: block;
+
+            font-size: 12px;
+        }
+
+        .filter-info span {
+            display: block;
+
+            margin-top: 4px;
+
+            color: #675f70;
+
+            font-size: 8px;
+        }
+
+        .change-settings {
+            border:
+                1px solid rgba(130,72,180,.25);
+
+            background:
+                rgba(11,9,20,.7);
+
+            color: #a85be9;
+
+            border-radius: 8px;
+
+            padding: 8px 11px;
+
+            cursor: pointer;
+
+            font-size: 8px;
+        }
+
+        .post {
+            padding: 20px;
+
+            margin-bottom: 15px;
+        }
+
+        .post-header {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+        .post-avatar {
+            width: 36px;
+            height: 36px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #8f40ed,
+                    #29145a
+                );
+
+            color: #fff;
+
+            font-size: 11px;
+        }
+
+        .post-author {
+            min-width: 0;
+        }
+
+        .post-author strong {
+            display: block;
+
+            color: #c9bfd1;
+
+            font-size: 10px;
+        }
+
+        .post-author span {
+            display: block;
+
+            margin-top: 3px;
+
+            color: #5f5868;
+
+            font-size: 8px;
+        }
+
+        .post-body {
+            margin-top: 15px;
+
+            color: #a9a0b1;
+
+            font-size: 10px;
+
+            line-height: 1.7;
+
+            white-space: pre-wrap;
+        }
+
+        .post-subject {
+            display: inline-block;
+
+            margin-top: 13px;
+
+            padding: 5px 8px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(143,59,220,.1);
+
+            border:
+                1px solid rgba(154,65,229,.2);
+
+            color: #ae62e8;
+
+            font-size: 7px;
+        }
+
+        .empty-feed {
+            padding: 45px 25px;
+
+            text-align: center;
+        }
+
+        .empty-feed-icon {
+            font-size: 30px;
+
+            margin-bottom: 13px;
+        }
+
+        .empty-feed h3 {
+            font-size: 14px;
+        }
+
+        .empty-feed p {
+            max-width: 400px;
+
+            margin:
+                8px auto 0;
+
+            color: #665e6e;
+
+            font-size: 9px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           SUMMARY
+        ====================================================== */
+
+        .summary-card {
+            padding: 20px;
+
+            position: sticky;
+
+            top: 20px;
+        }
+
+        .summary-title {
+            font-size: 13px;
+
+            margin-bottom: 18px;
+        }
+
+        .summary-row {
+            padding: 11px 0;
+
+            border-bottom:
+                1px solid rgba(128,69,180,.1);
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: #625b6a;
+
+            font-size: 8px;
+
+            text-transform: uppercase;
+
+            letter-spacing: .7px;
+        }
+
+        .summary-value {
+            margin-top: 4px;
+
+            color: #bdb2c7;
+
+            font-size: 10px;
+
+            line-height: 1.5;
+        }
+
+        .summary-subjects {
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 5px;
+
+            margin-top: 7px;
+        }
+
+        .summary-subject {
+            padding: 5px 7px;
+
+            border-radius: 7px;
+
+            background:
+                rgba(128,48,194,.1);
+
+            color: #a98bb8;
+
+            font-size: 7px;
+        }
+
+
+        /* =====================================================
+           LOADING
+        ====================================================== */
+
+        .loading {
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            min-height: 150px;
+
+            color: #766d80;
+
+            font-size: 9px;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+
+            margin-right: 9px;
+
+            border-radius: 50%;
+
+            border:
+                2px solid rgba(174,85,255,.2);
+
+            border-top-color:
+                #ad4cff;
+
+            animation:
+                spin .7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+
+        /* =====================================================
+           TOAST
+        ====================================================== */
+
+        .toast {
+            position: fixed;
+
+            right: 25px;
+            bottom: 25px;
+
+            z-index: 1000;
+
+            max-width: 340px;
+
+            padding: 13px 16px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(21,14,35,.97);
+
+            border:
+                1px solid rgba(164,72,239,.35);
+
+            color: #c9bdd1;
+
+            font-size: 9px;
+
+            box-shadow:
+                0 15px 40px rgba(0,0,0,.4);
+
+            transform:
+                translateY(20px);
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            transition: .25s;
+        }
+
+        .toast.show {
+            transform:
+                translateY(0);
+
+            opacity: 1;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ====================================================== */
+
+        .mobile-menu {
+            display: none;
+        }
+
+        @media(max-width: 1050px) {
+
+            .sidebar {
+                width: 210px;
+            }
+
+            .main {
+                width: calc(100% - 210px);
+
+                margin-left: 210px;
+
+                padding-left: 22px;
+                padding-right: 22px;
+            }
+
+            .feed-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-card {
+                position: static;
+            }
+
+        }
+
+        @media(max-width: 850px) {
+
+            .sidebar {
+                transform:
+                    translateX(-100%);
+
+                transition: .3s;
+            }
+
+            .sidebar.open {
+                transform:
+                    translateX(0);
+            }
+
+            .main {
+                width: 100%;
+
+                margin-left: 0;
+
+                padding:
+                    20px 15px 40px;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+        }
+
+        @media(max-width: 600px) {
+
+            .notification {
+                display: none;
+            }
+
+            .profile-name {
+                display: none;
+            }
+
+            .page-title h1 {
+                font-size: 21px;
+            }
+
+            .option-grid,
+            .subjects-picker {
+                grid-template-columns: 1fr;
+            }
+
+            .setup-card {
+                padding: 20px;
+            }
+
+            .feed-filter {
+                align-items: flex-start;
+
+                flex-direction: column;
+            }
+
+            .setup-actions {
+                flex-direction: column-reverse;
+            }
+
+            .button {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- =====================================================
+         SIDEBAR
+    ====================================================== -->
+
+    <aside
+        class="sidebar"
+        id="sidebar"
+    >
+
+        <a
+            href="home.html"
+            class="logo"
+        >
+            Way<span>Go</span>
+        </a>
+
+
+        <div class="menu-label">
+            MENU
+        </div>
+
+
+        <nav class="menu">
+
+            <a
+                href="dashboard.html"
+                class="menu-item"
+            >
+                <span class="menu-icon">⌂</span>
+                Prehľad
+            </a>
+
+
+            <a
+                href="ms.html"
+                class="menu-item active"
+            >
+                <span class="menu-icon">▣</span>
+                Moje štúdium
+            </a>
+
+
+            <a
+                href="personal.html"
+                class="menu-item"
+            >
+                <span class="menu-icon">✦</span>
+                Môj osobný rast
+            </a>
+
+
+            <a
+                href="sport.html"
+                class="menu-item"
+            >
+                <span class="menu-icon">⚡</span>
+                Môj šport
+            </a>
+
+
+            <a
+                href="tests.html"
+                class="menu-item"
+            >
+                <span class="menu-icon">✓</span>
+                Moje testy
+            </a>
+
+
+            <a
+                href="notes.html"
+                class="menu-item"
+            >
+                <span class="menu-icon">☷</span>
+                Poznámky
+            </a>
+
+
+            <a
+                href="videos.html"
+                class="menu-item"
+            >
+                <span class="menu-icon">▶</span>
+                Videá
+            </a>
+
+
+            <a
+                href="social.html"
+                class="menu-item"
+            >
+                <span class="menu-icon">♧</span>
+                Sociál
+            </a>
+
+
+            <br>
+
+
+            <div class="menu-label">
+                OSTATNÉ
+            </div>
+
+
+            <a
+                href="#"
+                class="menu-item"
+            >
+                <span class="menu-icon">♡</span>
+                Obľúbené
+            </a>
+
+
+            <a
+                href="#"
+                class="menu-item"
+            >
+                <span class="menu-icon">⚙</span>
+                Nastavenia
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="mini-user">
+
+                <div
+                    class="avatar-small"
+                    id="sidebarAvatar"
+                >
+                    V
+                </div>
+
+                <div class="mini-user-text">
+
+                    <strong id="sidebarUserName">
+                        Používateľ
+                    </strong>
+
+                    <span>
+                        WayGo
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="logout-button"
+                onclick="logout()"
+            >
+                Odhlásiť sa
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="main">
+
+
+        <!-- TOPBAR -->
+
+        <div class="topbar">
+
+            <div class="page-title">
+
+                <button
+                    class="mobile-menu"
+                    onclick="toggleSidebar()"
+                >
+                    ☰
+                </button>
+
+                <div>
+
+                    <h1>
+                        Moje štúdium
+                    </h1>
+
+                    <p id="pageSubtitle">
+                        Nastav si svoje štúdium a zobrazíme ti relevantný obsah.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="top-actions">
+
+                <button class="notification">
+                    ♧
+                </button>
+
+
+                <div class="profile">
+
+                    <div
+                        class="profile-avatar"
+                        id="profileAvatar"
+                    >
+                        V
+                    </div>
+
+                    <span
+                        class="profile-name"
+                        id="profileName"
+                    >
+                        Používateľ
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================================
+             SETUP VIEW
+        ================================================== -->
+
+        <section
+            id="setupView"
+            class="card setup-card"
+        >
+
+            <div class="setup-header">
+
+                <h2>
+                    Nastav si svoje štúdium
+                </h2>
+
+                <p>
+                    Tieto informácie použijeme na filtrovanie obsahu
+                    vo feede Moje štúdium.
+                </p>
+
+            </div>
+
+
+            <div class="step-indicator">
+
+                <div
+                    class="step active"
+                    id="stepIndicator1"
+                ></div>
+
+                <div
+                    class="step"
+                    id="stepIndicator2"
+                ></div>
+
+                <div
+                    class="step"
+                    id="stepIndicator3"
+                ></div>
+
+                <div
+                    class="step"
+                    id="stepIndicator4"
+                ></div>
+
+            </div>
+
+
+            <!-- STEP 1 -->
+
+            <div
+                id="setupStep1"
+            >
+
+                <div class="step-title">
+
+                    <h3>
+                        Čo momentálne študuješ?
+                    </h3>
+
+                    <p>
+                        Vyber jednu možnosť.
+                    </p>
+
+                </div>
+
+
+                <div class="option-grid">
+
+
+                    <div
+                        class="option"
+                        data-type="zakladna"
+                        onclick="selectStudyType('zakladna')"
+                    >
+
+                        <div class="option-icon">
+                            🏫
+                        </div>
+
+                        <strong>
+                            Základná škola
+                        </strong>
+
+                        <span>
+                            Študujem na základnej škole.
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="option"
+                        data-type="stredna"
+                        onclick="selectStudyType('stredna')"
+                    >
+
+                        <div class="option-icon">
+                            🎓
+                        </div>
+
+                        <strong>
+                            Stredná škola
+                        </strong>
+
+                        <span>
+                            Študujem na strednej škole.
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="option"
+                        data-type="vysoka"
+                        onclick="selectStudyType('vysoka')"
+                    >
+
+                        <div class="option-icon">
+                            🎓
+                        </div>
+
+                        <strong>
+                            Vysoká škola
+                        </strong>
+
+                        <span>
+                            Študujem na vysokej škole.
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="option"
+                        data-type="nestudujem"
+                        onclick="selectStudyType('nestudujem')"
+                    >
+
+                        <div class="option-icon">
+                            🌱
+                        </div>
+
+                        <strong>
+                            Neštudujem
+                        </strong>
+
+                        <span>
+                            Chcem sa vzdelávať vlastným tempom.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="setup-actions">
+
+                    <div></div>
+
+                    <button
+                        class="button button-primary"
+                        id="step1Next"
+                        onclick="nextFromStep1()"
+                        disabled
+                    >
+                        Ďalej
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- STEP 2 -->
+
+            <div
+                id="setupStep2"
+                style="display:none;"
+            >
+
+                <div class="step-title">
+
+                    <h3 id="step2Title">
+                        Vyber školu
+                    </h3>
+
+                    <p id="step2Description">
+                        Vyber školu zo zoznamu vytvoreného administrátorom.
+                    </p>
+
+                </div>
+
+
+                <div id="schoolSelectionArea">
+
+                    <div class="form-group">
+
+                        <label for="schoolSelect">
+                            Škola
+                        </label>
+
+                        <select
+                            class="form-control"
+                            id="schoolSelect"
+                            onchange="schoolChanged()"
+                        >
+
+                            <option value="">
+                                Načítavam školy...
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="levelSelectionArea"
+                    style="display:none;"
+                >
+
+                    <div class="form-group">
+
+                        <label for="levelSelect">
+                            Úroveň
+                        </label>
+
+                        <select
+                            class="form-control"
+                            id="levelSelect"
+                        >
+
+                            <option value="">
+                                Vyber úroveň
+                            </option>
+
+                            <option value="zaciatocnik">
+                                Začiatočník
+                            </option>
+
+                            <option value="pokrocily">
+                                Pokročilý
+                            </option>
+
+                            <option value="expert">
+                                Expert
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="setup-actions">
+
+                    <button
+                        class="button button-secondary"
+                        onclick="goToStep(1)"
+                    >
+                        Späť
+                    </button>
+
+                    <button
+                        class="button button-primary"
+                        id="step2Next"
+                        onclick="nextFromStep2()"
+                        disabled
+                    >
+                        Ďalej
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- STEP 3 -->
+
+            <div
+                id="setupStep3"
+                style="display:none;"
+            >
+
+                <div class="step-title">
+
+                    <h3>
+                        Vyber ročník
+                    </h3>
+
+                    <p>
+                        Ročníky sú nastavené administrátorom podľa školy.
+                    </p>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="gradeSelect">
+                        Ročník
+                    </label>
+
+                    <select
+                        class="form-control"
+                        id="gradeSelect"
+                        onchange="gradeChanged()"
+                    >
+
+                        <option value="">
+                            Najprv vyber školu
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div
+                    class="form-group"
+                    id="fieldArea"
+                    style="display:none;"
+                >
+
+                    <label for="fieldSelect">
+                        Odbor
+                    </label>
+
+                    <select
+                        class="form-control"
+                        id="fieldSelect"
+                        onchange="fieldChanged()"
+                    >
+
+                        <option value="">
+                            Vyber odbor
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="setup-actions">
+
+                    <button
+                        class="button button-secondary"
+                        onclick="goToStep(2)"
+                    >
+                        Späť
+                    </button>
+
+                    <button
+                        class="button button-primary"
+                        id="step3Next"
+                        onclick="nextFromStep3()"
+                        disabled
+                    >
+                        Ďalej
+                    </button>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- STEP 4 -->
+
+            <div
+                id="setupStep4"
+                style="display:none;"
+            >
+
+                <div class="step-title">
+
+                    <h3 id="step4Title">
+                        Dokonči nastavenie
+                    </h3>
+
+                    <p id="step4Description">
+                        Vyber predmety, ktoré chceš sledovať.
+                    </p>
+
+                </div>
+
+
+                <div
+                    id="adminSubjectsArea"
+                >
+
+                    <div class="loading">
+
+                        <div class="spinner"></div>
+
+                        Načítavam predmety...
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="ownSubjectsArea"
+                    style="display:none;"
+                >
+
+                    <div class="form-group">
+
+                        <label>
+                            Tvoje predmety
+                        </label>
+
+                        <div
+                            class="subjects-picker"
+                            id="ownSubjectsPicker"
+                        ></div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="ownLevelSelect">
+                            Tvoja úroveň
+                        </label>
+
+                        <select
+                            class="form-control"
+                            id="ownLevelSelect"
+                        >
+
+                            <option value="">
+                                Vyber úroveň
+                            </option>
+
+                            <option value="zaciatocnik">
+                                Začiatočník
+                            </option>
+
+                            <option value="pokrocily">
+                                Pokročilý
+                            </option>
+
+                            <option value="expert">
+                                Expert
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <div class="setup-actions">
+
+                    <button
+                        class="button button-secondary"
+                        onclick="goToStep(3)"
+                    >
+                        Späť
+                    </button>
+
+                    <button
+                        class="button button-primary"
+                        id="saveStudyButton"
+                        onclick="saveStudy()"
+                    >
+                        Uložiť a pokračovať
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             FEED VIEW
+        ================================================== -->
+
+        <section id="feedView">
+
+
+            <div class="feed-layout">
+
+
+                <div class="feed-main">
+
+
+                    <div class="card feed-filter">
+
+                        <div class="filter-info">
+
+                            <strong>
+                                Feed Moje štúdium
+                            </strong>
+
+                            <span id="filterDescription">
+                                Obsah filtrovaný podľa tvojho štúdia.
+                            </span>
+
+                        </div>
+
+
+                        <button
+                            class="change-settings"
+                            onclick="openStudySettings()"
+                        >
+                            Upraviť štúdium
+                        </button>
+
+                    </div>
+
+
+                    <div id="postsContainer">
+
+                        <div class="card loading">
+
+                            <div class="spinner"></div>
+
+                            Načítavam feed...
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- SUMMARY -->
+
+                <aside>
+
+                    <div class="card summary-card">
+
+                        <div class="summary-title">
+                            Moje štúdium
+                        </div>
+
+
+                        <div class="summary-row">
+
+                            <div class="summary-label">
+                                Typ
+                            </div>
+
+                            <div
+                                class="summary-value"
+                                id="summaryType"
+                            >
+                                —
+                            </div>
+
+                        </div>
+
+
+                        <div class="summary-row">
+
+                            <div class="summary-label">
+                                Škola
+                            </div>
+
+                            <div
+                                class="summary-value"
+                                id="summarySchool"
+                            >
+                                —
+                            </div>
+
+                        </div>
+
+
+                        <div class="summary-row">
+
+                            <div class="summary-label">
+                                Ročník
+                            </div>
+
+                            <div
+                                class="summary-value"
+                                id="summaryGrade"
+                            >
+                                —
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            class="summary-row"
+                            id="summaryFieldRow"
+                        >
+
+                            <div class="summary-label">
+                                Odbor
+                            </div>
+
+                            <div
+                                class="summary-value"
+                                id="summaryField"
+                            >
+                                —
+                            </div>
+
+                        </div>
+
+
+                        <div class="summary-row">
+
+                            <div class="summary-label">
+                                Predmety
+                            </div>
+
+                            <div
+                                class="summary-subjects"
+                                id="summarySubjects"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+                </aside>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+
+<div
+    class="toast"
+    id="toast"
+></div>
+
+
+
+<script>
+
+/* =========================================================
+   SUPABASE
+   Tvoje pôvodné Supabase údaje
+========================================================= */
+
+const SUPABASE_URL =
+    "https://bgyxmsxzfbqxtkthmflj.supabase.co";
+
+const SUPABASE_ANON_KEY =
+    "sb_publishable_AT7-5smSRbLmzF-43wn1Pg_Hs7ru49f";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+let currentUser = null;
+
+let currentStep = 1;
+
+let studyData = {
+
+    type: null,
+
+    schoolId: null,
+
+    schoolName: null,
+
+    gradeId: null,
+
+    gradeName: null,
+
+    fieldId: null,
+
+    fieldName: null,
+
+    level: null,
+
+    subjects: []
+
+};
+
+let schools = [];
+
+let grades = [];
+
+let fields = [];
+
+let subjects = [];
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function $(id) {
+
+    return document.getElementById(id);
+
+}
+
+
+function escapeHtml(value) {
+
+    if (value === null || value === undefined) {
+        return "";
+    }
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+function showToast(message) {
+
+    const toast = $("toast");
+
+    toast.textContent = message;
+
+    toast.classList.add("show");
+
+    setTimeout(function() {
+
+        toast.classList.remove("show");
+
+    }, 3000);
+
+}
+
+
+/* =========================================================
+   USER UI
+========================================================= */
+
+function updateUserInterface(user) {
+
+    if (!user) {
+        return;
+    }
+
+    const metadata =
+        user.user_metadata || {};
+
+    const name =
+        metadata.full_name ||
+        metadata.name ||
+        user.email?.split("@")[0] ||
+        "Používateľ";
+
+    const firstLetter =
+        name.charAt(0).toUpperCase();
+
+    $("profileName").textContent =
+        name;
+
+    $("sidebarUserName").textContent =
+        name;
+
+    $("profileAvatar").textContent =
+        firstLetter;
+
+    $("sidebarAvatar").textContent =
+        firstLetter;
+
+}
+
+
+/* =========================================================
+   STUDY TYPE
+========================================================= */
+
+function selectStudyType(type) {
+
+    studyData.type = type;
+
+    document
+        .querySelectorAll(".option")
+        .forEach(function(option) {
+
+            option.classList.remove(
+                "selected"
+            );
+
+        });
+
+
+    const selected =
+        document.querySelector(
+            `.option[data-type="${type}"]`
+        );
+
+
+    if (selected) {
+
+        selected.classList.add(
+            "selected"
+        );
+
+    }
+
+
+    $("step1Next").disabled = false;
+
+}
+
+
+/* =========================================================
+   STEP NAVIGATION
+========================================================= */
+
+function goToStep(step) {
+
+    currentStep = step;
+
+
+    for (
+        let i = 1;
+        i <= 4;
+        i++
+    ) {
+
+        const element =
+            $("setupStep" + i);
+
+        if (element) {
+
+            element.style.display =
+                i === step
+                    ? "block"
+                    : "none";
+
+        }
+
+
+        const indicator =
+            $("stepIndicator" + i);
+
+        if (indicator) {
+
+            indicator.classList.toggle(
+                "active",
+                i <= step
+            );
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   STEP 1
+========================================================= */
+
+async function nextFromStep1() {
+
+    if (!studyData.type) {
+        return;
+    }
+
+
+    if (
+        studyData.type ===
+        "nestudujem"
+    ) {
+
+        $("step2Title").textContent =
+            "Vyber svoju úroveň";
+
+        $("step2Description").textContent =
+            "Vyber úroveň, na ktorej sa momentálne nachádzaš.";
+
+
+        $("schoolSelectionArea").style.display =
+            "none";
+
+        $("levelSelectionArea").style.display =
+            "block";
+
+
+        $("step2Next").disabled = true;
+
+
+        $("levelSelect").onchange =
+            function() {
+
+                studyData.level =
+                    this.value;
+
+                $("step2Next").disabled =
+                    !this.value;
+
+            };
+
+
+    } else {
+
+        $("step2Title").textContent =
+            "Vyber školu";
+
+        $("step2Description").textContent =
+            "Školy spravuje administrátor WayGo.";
+
+
+        $("schoolSelectionArea").style.display =
+            "block";
+
+        $("levelSelectionArea").style.display =
+            "none";
+
+
+        $("step2Next").disabled = true;
+
+
+        await loadSchools();
+
+    }
+
+
+    goToStep(2);
+
+}
+
+
+/* =========================================================
+   LOAD SCHOOLS
+========================================================= */
+
+async function loadSchools() {
+
+    const select =
+        $("schoolSelect");
+
+    select.innerHTML =
+        `<option value="">Načítavam školy...</option>`;
+
+
+    /*
+       Tabuľka:
+       schools
+
+       Očakávané stĺpce:
+       id
+       name
+       type
+       active
+    */
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("schools")
+            .select("*")
+            .eq(
+                "type",
+                studyData.type
+            )
+            .eq(
+                "active",
+                true
+            )
+            .order("name");
+
+
+    if (error) {
+
+        console.error(
+            "schools:",
+            error
+        );
+
+        select.innerHTML =
+            `<option value="">Školy sa nepodarilo načítať</option>`;
+
+        showToast(
+            "Nepodarilo sa načítať školy zo Supabase."
+        );
+
+        return;
+
+    }
+
+
+    schools = data || [];
+
+
+    select.innerHTML =
+        `<option value="">Vyber školu</option>`;
+
+
+    schools.forEach(function(school) {
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+        option.value =
+            school.id;
+
+        option.textContent =
+            school.name;
+
+        select.appendChild(
+            option
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   SCHOOL CHANGED
+========================================================= */
+
+function schoolChanged() {
+
+    const schoolId =
+        $("schoolSelect").value;
+
+
+    studyData.schoolId =
+        schoolId || null;
+
+
+    const school =
+        schools.find(function(item) {
+
+            return String(item.id) ===
+                String(schoolId);
+
+        });
+
+
+    studyData.schoolName =
+        school?.name || null;
+
+
+    $("step2Next").disabled =
+        !schoolId;
+
+}
+
+
+/* =========================================================
+   STEP 2
+========================================================= */
+
+async function nextFromStep2() {
+
+    if (
+        studyData.type ===
+        "nestudujem"
+    ) {
+
+        if (!studyData.level) {
+            return;
+        }
+
+
+        await prepareOwnSubjects();
+
+        goToStep(4);
+
+        return;
+
+    }
+
+
+    if (!studyData.schoolId) {
+        return;
+    }
+
+
+    await loadGrades();
+
+    goToStep(3);
+
+}
+
+
+/* =========================================================
+   LOAD GRADES
+========================================================= */
+
+async function loadGrades() {
+
+    const select =
+        $("gradeSelect");
+
+    select.innerHTML =
+        `<option value="">Načítavam ročníky...</option>`;
+
+
+    /*
+       Tabuľka:
+       school_grades
+
+       Očakávané:
+       id
+       school_id
+       name
+       order_index
+       active
+    */
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("school_grades")
+            .select("*")
+            .eq(
+                "school_id",
+                studyData.schoolId
+            )
+            .eq(
+                "active",
+                true
+            )
+            .order(
+                "order_index",
+                {
+                    ascending: true
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "grades:",
+            error
+        );
+
+        select.innerHTML =
+            `<option value="">Ročníky sa nepodarilo načítať</option>`;
+
+        showToast(
+            "Nepodarilo sa načítať ročníky."
+        );
+
+        return;
+
+    }
+
+
+    grades = data || [];
+
+
+    select.innerHTML =
+        `<option value="">Vyber ročník</option>`;
+
+
+    grades.forEach(function(grade) {
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+        option.value =
+            grade.id;
+
+        option.textContent =
+            grade.name;
+
+        select.appendChild(
+            option
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   GRADE CHANGED
+========================================================= */
+
+async function gradeChanged() {
+
+    const gradeId =
+        $("gradeSelect").value;
+
+
+    studyData.gradeId =
+        gradeId || null;
+
+
+    const grade =
+        grades.find(function(item) {
+
+            return String(item.id) ===
+                String(gradeId);
+
+        });
+
+
+    studyData.gradeName =
+        grade?.name || null;
+
+
+    $("step3Next").disabled =
+        !gradeId;
+
+
+    if (
+        studyData.type ===
+        "stredna" ||
+        studyData.type ===
+        "vysoka"
+    ) {
+
+        await loadFields();
+
+    } else {
+
+        $("fieldArea").style.display =
+            "none";
+
+        studyData.fieldId =
+            null;
+
+        studyData.fieldName =
+            null;
+
+    }
+
+}
+
+
+/* =========================================================
+   LOAD FIELDS
+========================================================= */
+
+async function loadFields() {
+
+    $("fieldArea").style.display =
+        "block";
+
+
+    const select =
+        $("fieldSelect");
+
+
+    select.innerHTML =
+        `<option value="">Načítavam odbory...</option>`;
+
+
+    /*
+       Tabuľka:
+       school_fields
+
+       Očakávané:
+       id
+       school_id
+       name
+       active
+    */
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("school_fields")
+            .select("*")
+            .eq(
+                "school_id",
+                studyData.schoolId
+            )
+            .eq(
+                "active",
+                true
+            )
+            .order("name");
+
+
+    if (error) {
+
+        console.error(
+            "fields:",
+            error
+        );
+
+        select.innerHTML =
+            `<option value="">Odbory sa nepodarilo načítať</option>`;
+
+        $("step3Next").disabled =
+            true;
+
+        return;
+
+    }
+
+
+    fields = data || [];
+
+
+    select.innerHTML =
+        `<option value="">Vyber odbor</option>`;
+
+
+    fields.forEach(function(field) {
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+        option.value =
+            field.id;
+
+        option.textContent =
+            field.name;
+
+        select.appendChild(
+            option
+        );
+
+    });
+
+
+    $("step3Next").disabled =
+        true;
+
+}
+
+
+/* =========================================================
+   FIELD CHANGED
+========================================================= */
+
+function fieldChanged() {
+
+    const fieldId =
+        $("fieldSelect").value;
+
+
+    studyData.fieldId =
+        fieldId || null;
+
+
+    const field =
+        fields.find(function(item) {
+
+            return String(item.id) ===
+                String(fieldId);
+
+        });
+
+
+    studyData.fieldName =
+        field?.name || null;
+
+
+    $("step3Next").disabled =
+        !fieldId;
+
+}
+
+
+/* =========================================================
+   STEP 3
+========================================================= */
+
+async function nextFromStep3() {
+
+    if (!studyData.gradeId) {
+        return;
+    }
+
+
+    if (
+        studyData.type ===
+            "stredna" ||
+        studyData.type ===
+            "vysoka"
+    ) {
+
+        if (!studyData.fieldId) {
+            return;
+        }
+
+    }
+
+
+    await loadAdminSubjects();
+
+    goToStep(4);
+
+}
+
+
+/* =========================================================
+   LOAD ADMIN SUBJECTS
+========================================================= */
+
+async function loadAdminSubjects() {
+
+    const container =
+        $("adminSubjectsArea");
+
+
+    container.innerHTML = `
+        <div class="loading">
+            <div class="spinner"></div>
+            Načítavam predmety...
+        </div>
+    `;
+
+
+    /*
+       Tabuľka:
+       subjects
+
+       Očakávané:
+       id
+       name
+       school_id
+       grade_id
+       field_id
+       active
+    */
+
+
+    let query =
+        supabaseClient
+            .from("subjects")
+            .select("*")
+            .eq(
+                "school_id",
+                studyData.schoolId
+            )
+            .eq(
+                "grade_id",
+                studyData.gradeId
+            )
+            .eq(
+                "active",
+                true
+            )
+            .order("name");
+
+
+    if (
+        studyData.type ===
+            "stredna" ||
+        studyData.type ===
+            "vysoka"
+    ) {
+
+        query =
+            query.eq(
+                "field_id",
+                studyData.fieldId
+            );
+
+    }
+
+
+    const {
+        data,
+        error
+    } =
+        await query;
+
+
+    if (error) {
+
+        console.error(
+            "subjects:",
+            error
+        );
+
+        container.innerHTML = `
+            <div class="empty-state">
+                Predmety sa nepodarilo načítať.
+                Skontroluj nastavenie tabuľky subjects v Supabase.
+            </div>
+        `;
+
+        $("saveStudyButton").disabled =
+            true;
+
+        return;
+
+    }
+
+
+    subjects = data || [];
+
+
+    if (!subjects.length) {
+
+        container.innerHTML = `
+            <div class="empty-state">
+                Pre zvolenú školu, ročník a odbor zatiaľ
+                administrátor nepridal predmety.
+            </div>
+        `;
+
+        $("saveStudyButton").disabled =
+            true;
+
+        return;
+
+    }
+
+
+    $("saveStudyButton").disabled =
+        false;
+
+
+    container.innerHTML = `
+
+        <div class="form-group">
+
+            <label>
+                Predmety nastavené školou
+            </label>
+
+            <div
+                class="subjects-picker"
+                id="adminSubjectsPicker"
+            ></div>
+
+        </div>
+
+    `;
+
+
+    const picker =
+        $("adminSubjectsPicker");
+
+
+    subjects.forEach(function(subject) {
+
+        const label =
+            document.createElement(
+                "label"
+            );
+
+        label.className =
+            "subject-option";
+
+
+        label.innerHTML = `
+
+            <input
+                type="checkbox"
+                value="${escapeHtml(subject.id)}"
+                data-subject-name="${escapeHtml(subject.name)}"
+            >
+
+            <span>
+                ${escapeHtml(subject.name)}
+            </span>
+
+        `;
+
+
+        picker.appendChild(
+            label
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   NON-STUDENT SUBJECTS
+========================================================= */
+
+async function prepareOwnSubjects() {
+
+    $("adminSubjectsArea").style.display =
+        "none";
+
+    $("ownSubjectsArea").style.display =
+        "block";
+
+
+    const picker =
+        $("ownSubjectsPicker");
+
+
+    picker.innerHTML = `
+        <div class="loading">
+            <div class="spinner"></div>
+            Načítavam dostupné predmety...
+        </div>
+    `;
+
+
+    /*
+       Pre "Neštudujem" používame všetky
+       aktívne predmety vytvorené adminom.
+    */
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("subjects")
+            .select("*")
+            .eq(
+                "active",
+                true
+            )
+            .order("name");
+
+
+    if (error) {
+
+        console.error(
+            "own subjects:",
+            error
+        );
+
+        picker.innerHTML = `
+            <div class="empty-state">
+                Predmety sa nepodarilo načítať.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    subjects = data || [];
+
+
+    if (!subjects.length) {
+
+        picker.innerHTML = `
+            <div class="empty-state">
+                Administrátor zatiaľ nepridal žiadne predmety.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    picker.innerHTML = "";
+
+
+    subjects.forEach(function(subject) {
+
+        const label =
+            document.createElement(
+                "label"
+            );
+
+        label.className =
+            "subject-option";
+
+
+        label.innerHTML = `
+
+            <input
+                type="checkbox"
+                value="${escapeHtml(subject.id)}"
+                data-subject-name="${escapeHtml(subject.name)}"
+            >
+
+            <span>
+                ${escapeHtml(subject.name)}
+            </span>
+
+        `;
+
+
+        picker.appendChild(
+            label
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   RESET STEP 4
+========================================================= */
+
+function resetStep4() {
+
+    $("adminSubjectsArea").style.display =
+        "block";
+
+    $("ownSubjectsArea").style.display =
+        "none";
+
+}
+
+
+/* =========================================================
+   SAVE STUDY
+========================================================= */
+
+async function saveStudy() {
+
+    if (!currentUser) {
+
+        showToast(
+            "Nie si prihlásený."
+        );
+
+        return;
+
+    }
+
+
+    const button =
+        $("saveStudyButton");
+
+
+    let selectedSubjects = [];
+
+
+    const checkboxes =
+        document.querySelectorAll(
+            "#adminSubjectsPicker input[type='checkbox'], #ownSubjectsPicker input[type='checkbox']"
+        );
+
+
+    checkboxes.forEach(function(checkbox) {
+
+        if (checkbox.checked) {
+
+            selectedSubjects.push({
+
+                id:
+                    checkbox.value,
+
+                name:
+                    checkbox.dataset.subjectName
+
+            });
+
+        }
+
+    });
+
+
+    if (!selectedSubjects.length) {
+
+        showToast(
+            "Vyber aspoň jeden predmet."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        studyData.type ===
+        "nestudujem"
+    ) {
+
+        const level =
+            $("ownLevelSelect").value;
+
+
+        if (!level) {
+
+            showToast(
+                "Vyber svoju úroveň."
+            );
+
+            return;
+
+        }
+
+
+        studyData.level =
+            level;
+
+    }
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "Ukladám...";
+
+
+    /*
+       1. Uloženie hlavného nastavenia používateľa.
+
+       Tabuľka:
+       user_study_profiles
+
+       Očakávané:
+       user_id
+       study_type
+       school_id
+       grade_id
+       field_id
+       level
+       updated_at
+    */
+
+
+    const profilePayload = {
+
+        user_id:
+            currentUser.id,
+
+        study_type:
+            studyData.type,
+
+        school_id:
+            studyData.schoolId,
+
+        grade_id:
+            studyData.gradeId,
+
+        field_id:
+            studyData.fieldId,
+
+        level:
+            studyData.level,
+
+        updated_at:
+            new Date().toISOString()
+
+    };
+
+
+    const {
+        data: profile,
+        error: profileError
+    } =
+        await supabaseClient
+            .from("user_study_profiles")
+            .upsert(
+                profilePayload,
+                {
+                    onConflict:
+                        "user_id"
+                }
+            )
+            .select()
+            .single();
+
+
+    if (profileError) {
+
+        console.error(
+            "profile:",
+            profileError
+        );
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "Uložiť a pokračovať";
+
+
+        showToast(
+            "Nastavenie štúdia sa nepodarilo uložiť."
+        );
+
+        return;
+
+    }
+
+
+    /*
+       2. Najprv odstránime staré predmety.
+    */
+
+    const {
+        error: deleteError
+    } =
+        await supabaseClient
+            .from(
+                "user_study_subjects"
+            )
+            .delete()
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+
+    if (deleteError) {
+
+        console.error(
+            "delete subjects:",
+            deleteError
+        );
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "Uložiť a pokračovať";
+
+        showToast(
+            "Nepodarilo sa aktualizovať predmety."
+        );
+
+        return;
+
+    }
+
+
+    /*
+       3. Uložíme nové predmety.
+    */
+
+    const subjectRows =
+        selectedSubjects.map(
+            function(subject) {
+
+                return {
+
+                    user_id:
+                        currentUser.id,
+
+                    subject_id:
+                        subject.id
+
+                };
+
+            }
+        );
+
+
+    const {
+        error: subjectError
+    } =
+        await supabaseClient
+            .from(
+                "user_study_subjects"
+            )
+            .insert(
+                subjectRows
+            );
+
+
+    if (subjectError) {
+
+        console.error(
+            "insert subjects:",
+            subjectError
+        );
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "Uložiť a pokračovať";
+
+        showToast(
+            "Predmety sa nepodarilo uložiť."
+        );
+
+        return;
+
+    }
+
+
+    studyData.subjects =
+        selectedSubjects;
+
+
+    button.disabled =
+        false;
+
+    button.textContent =
+        "Uložiť a pokračovať";
+
+
+    await loadSavedStudy();
+
+
+    showFeed();
+
+}
+
+
+/* =========================================================
+   LOAD SAVED STUDY
+========================================================= */
+
+async function loadSavedStudy() {
+
+    if (!currentUser) {
+        return false;
+    }
+
+
+    const {
+        data: profile,
+        error
+    } =
+        await supabaseClient
+            .from(
+                "user_study_profiles"
+            )
+            .select(`
+                *,
+                schools:school_id (
+                    id,
+                    name
+                ),
+                grades:grade_id (
+                    id,
+                    name
+                ),
+                fields:field_id (
+                    id,
+                    name
+                )
+            `)
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+
+    if (error) {
+
+        console.error(
+            "saved study:",
+            error
+        );
+
+        return false;
+
+    }
+
+
+    if (!profile) {
+
+        return false;
+
+    }
+
+
+    studyData.type =
+        profile.study_type;
+
+    studyData.schoolId =
+        profile.school_id;
+
+    studyData.gradeId =
+        profile.grade_id;
+
+    studyData.fieldId =
+        profile.field_id;
+
+    studyData.level =
+        profile.level;
+
+
+    studyData.schoolName =
+        profile.schools?.name ||
+        null;
+
+    studyData.gradeName =
+        profile.grades?.name ||
+        null;
+
+    studyData.fieldName =
+        profile.fields?.name ||
+        null;
+
+
+    /*
+       Načítame používateľove predmety.
+    */
+
+    const {
+        data: userSubjects,
+        error: subjectsError
+    } =
+        await supabaseClient
+            .from(
+                "user_study_subjects"
+            )
+            .select(`
+                subject_id,
+                subjects:subject_id (
+                    id,
+                    name
+                )
+            `)
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+
+    if (!subjectsError) {
+
+        studyData.subjects =
+            (userSubjects || [])
+                .map(function(row) {
+
+                    return {
+
+                        id:
+                            row.subjects?.id ||
+                            row.subject_id,
+
+                        name:
+                            row.subjects?.name ||
+                            "Predmet"
+
+                    };
+
+                });
+
+    }
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   SHOW FEED
+========================================================= */
+
+function showFeed() {
+
+    $("setupView").style.display =
+        "none";
+
+    $("feedView").style.display =
+        "block";
+
+
+    $("pageSubtitle").textContent =
+        "Obsah prispôsobený tvojmu štúdiu.";
+
+
+    updateStudySummary();
+
+    loadStudyFeed();
+
+}
+
+
+/* =========================================================
+   OPEN SETTINGS
+========================================================= */
+
+function openStudySettings() {
+
+    $("feedView").style.display =
+        "none";
+
+    $("setupView").style.display =
+        "block";
+
+
+    populateExistingSettings();
+
+}
+
+
+/* =========================================================
+   POPULATE EXISTING SETTINGS
+========================================================= */
+
+async function populateExistingSettings() {
+
+    goToStep(1);
+
+
+    document
+        .querySelectorAll(".option")
+        .forEach(function(option) {
+
+            option.classList.remove(
+                "selected"
+            );
+
+        });
+
+
+    if (studyData.type) {
+
+        const selected =
+            document.querySelector(
+                `.option[data-type="${studyData.type}"]`
+            );
+
+        if (selected) {
+
+            selected.classList.add(
+                "selected"
+            );
+
+        }
+
+
+        $("step1Next").disabled =
+            false;
+
+    }
+
+}
+
+
+/* =========================================================
+   SUMMARY
+========================================================= */
+
+function getStudyTypeName(type) {
+
+    const names = {
+
+        zakladna:
+            "Základná škola",
+
+        stredna:
+            "Stredná škola",
+
+        vysoka:
+            "Vysoká škola",
+
+        nestudujem:
+            "Neštudujem"
+
+    };
+
+
+    return names[type] || "—";
+
+}
+
+
+function getLevelName(level) {
+
+    const names = {
+
+        zaciatocnik:
+            "Začiatočník",
+
+        pokrocily:
+            "Pokročilý",
+
+        expert:
+            "Expert"
+
+    };
+
+
+    return names[level] || "—";
+
+}
+
+
+function updateStudySummary() {
+
+    $("summaryType").textContent =
+        getStudyTypeName(
+            studyData.type
+        );
+
+
+    $("summarySchool").textContent =
+        studyData.schoolName ||
+        (
+            studyData.type ===
+            "nestudujem"
+                ? "—"
+                : "—"
+        );
+
+
+    $("summaryGrade").textContent =
+        studyData.gradeName ||
+        "—";
+
+
+    if (
+        studyData.type ===
+        "stredna" ||
+        studyData.type ===
+        "vysoka"
+    ) {
+
+        $("summaryFieldRow").style.display =
+            "block";
+
+        $("summaryField").textContent =
+            studyData.fieldName ||
+            "—";
+
+    } else {
+
+        $("summaryFieldRow").style.display =
+            "none";
+
+    }
+
+
+    if (
+        studyData.type ===
+        "nestudujem"
+    ) {
+
+        $("summaryGrade").textContent =
+            getLevelName(
+                studyData.level
+            );
+
+    }
+
+
+    const subjectsContainer =
+        $("summarySubjects");
+
+
+    subjectsContainer.innerHTML =
+        "";
+
+
+    if (
+        !studyData.subjects.length
+    ) {
+
+        subjectsContainer.innerHTML =
+            `<span class="summary-subject">Žiadne</span>`;
+
+        return;
+
+    }
+
+
+    studyData.subjects.forEach(
+        function(subject) {
+
+            const element =
+                document.createElement(
+                    "span"
+                );
+
+            element.className =
+                "summary-subject";
+
+            element.textContent =
+                subject.name;
+
+            subjectsContainer.appendChild(
+                element
+            );
+
+        }
+    );
+
+
+    let filterText =
+        getStudyTypeName(
+            studyData.type
+        );
+
+
+    if (studyData.schoolName) {
+
+        filterText +=
+            " • " +
+            studyData.schoolName;
+
+    }
+
+
+    if (studyData.gradeName) {
+
+        filterText +=
+            " • " +
+            studyData.gradeName;
+
+    }
+
+
+    if (studyData.fieldName) {
+
+        filterText +=
+            " • " +
+            studyData.fieldName;
+
+    }
+
+
+    $("filterDescription").textContent =
+        filterText;
+
+}
+
+
+/* =========================================================
+   FEED
+========================================================= */
+
+async function loadStudyFeed() {
+
+    const container =
+        $("postsContainer");
+
+
+    container.innerHTML = `
+
+        <div class="card loading">
+
+            <div class="spinner"></div>
+
+            Načítavam feed...
+
+        </div>
+
+    `;
+
+
+    /*
+       Feed vytvára admin.
+
+       Tabuľka:
+       study_posts
+
+       Očakávané:
+       id
+       author_name
+       author_avatar
+       content
+       school_id
+       grade_id
+       field_id
+       subject_id
+       study_type
+       created_at
+       active
+    */
+
+
+    let query =
+        supabaseClient
+            .from("study_posts")
+            .select(`
+                *,
+                schools:school_id (
+                    name
+                ),
+                grades:grade_id (
+                    name
+                ),
+                fields:field_id (
+                    name
+                ),
+                subjects:subject_id (
+                    name
+                )
+            `)
+            .eq(
+                "active",
+                true
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            )
+            .limit(50);
+
+
+    /*
+       Štúdium typu "neštudujem":
+       filtrujeme primárne podľa predmetov.
+    */
+
+    const {
+        data: posts,
+        error
+    } =
+        await query;
+
+
+    if (error) {
+
+        console.error(
+            "feed:",
+            error
+        );
+
+        container.innerHTML = `
+
+            <div class="card empty-feed">
+
+                <div class="empty-feed-icon">
+                    ⚠
+                </div>
+
+                <h3>
+                    Feed sa nepodarilo načítať
+                </h3>
+
+                <p>
+                    Skontroluj tabuľku study_posts a jej RLS
+                    pravidlá v Supabase.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    /*
+       Filtrovanie robíme až tu, aby sme vedeli
+       podporiť viac typov príspevkov bez
+       vymýšľania dát.
+    */
+
+    const filteredPosts =
+        (posts || []).filter(
+            function(post) {
+
+                return postMatchesStudy(
+                    post
+                );
+
+            }
+        );
+
+
+    renderPosts(
+        filteredPosts
+    );
+
+}
+
+
+/* =========================================================
+   POST FILTER
+========================================================= */
+
+function postMatchesStudy(post) {
+
+    /*
+       Admin môže vytvoriť:
+       - všeobecný príspevok
+       - príspevok pre typ školy
+       - príspevok pre školu
+       - príspevok pre ročník
+       - príspevok pre odbor
+       - príspevok pre predmet
+
+       NULL znamená "bez obmedzenia".
+    */
+
+
+    if (
+        post.study_type &&
+        post.study_type !==
+            studyData.type
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        post.school_id &&
+        String(post.school_id) !==
+            String(studyData.schoolId)
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        post.grade_id &&
+        String(post.grade_id) !==
+            String(studyData.gradeId)
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        post.field_id &&
+        String(post.field_id) !==
+            String(studyData.fieldId)
+    ) {
+
+        return false;
+
+    }
+
+
+    /*
+       Ak je príspevok viazaný na predmet,
+       musí byť medzi používateľovými predmetmi.
+    */
+
+    if (post.subject_id) {
+
+        const hasSubject =
+            studyData.subjects.some(
+                function(subject) {
+
+                    return String(
+                        subject.id
+                    ) === String(
+                        post.subject_id
+                    );
+
+                }
+            );
+
+
+        if (!hasSubject) {
+
+            return false;
+
+        }
+
+    }
+
+
+    return true;
+
+}
+
+
+/* =========================================================
+   RENDER POSTS
+========================================================= */
+
+function renderPosts(posts) {
+
+    const container =
+        $("postsContainer");
+
+
+    if (!posts.length) {
+
+        container.innerHTML = `
+
+            <div class="card empty-feed">
+
+                <div class="empty-feed-icon">
+                    📚
+                </div>
+
+                <h3>
+                    Zatiaľ tu nič nie je
+                </h3>
+
+                <p>
+                    Pre tvoje študijné nastavenie zatiaľ
+                    administrátor nepridal žiadne príspevky.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    posts.forEach(function(post) {
+
+        const card =
+            document.createElement(
+                "article"
+            );
+
+        card.className =
+            "card post";
+
+
+        const author =
+            post.author_name ||
+            "WayGo";
+
+
+        const initial =
+            author
+                .charAt(0)
+                .toUpperCase();
+
+
+        const date =
+            formatDate(
+                post.created_at
+            );
+
+
+        let subjectHtml = "";
+
+
+        if (post.subjects?.name) {
+
+            subjectHtml = `
+
+                <div class="post-subject">
+
+                    ${escapeHtml(
+                        post.subjects.name
+                    )}
+
+                </div>
+
+            `;
+
+        }
+
+
+        card.innerHTML = `
+
+            <div class="post-header">
+
+                <div class="post-avatar">
+
+                    ${escapeHtml(initial)}
+
+                </div>
+
+
+                <div class="post-author">
+
+                    <strong>
+                        ${escapeHtml(author)}
+                    </strong>
+
+                    <span>
+                        ${escapeHtml(date)}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="post-body">
+
+                ${escapeHtml(
+                    post.content || ""
+                )}
+
+            </div>
+
+
+            ${subjectHtml}
+
+        `;
+
+
+        container.appendChild(
+            card
+        );
+
+    });
+
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function formatDate(value) {
+
+    if (!value) {
+        return "";
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return "";
+
+    }
+
+
+    return date.toLocaleString(
+        "sk-SK",
+        {
+            day: "numeric",
+            month: "numeric",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        }
+    );
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout() {
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .auth
+            .signOut();
+
+
+    if (error) {
+
+        console.error(
+            error
+        );
+
+        showToast(
+            "Odhlásenie sa nepodarilo."
+        );
+
+        return;
+
+    }
+
+
+    window.location.href =
+        "dashboard.html";
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+function toggleSidebar() {
+
+    $("sidebar")
+        .classList
+        .toggle("open");
+
+}
+
+
+document
+    .querySelectorAll(".menu-item")
+    .forEach(function(item) {
+
+        item.addEventListener(
+            "click",
+            function() {
+
+                if (
+                    window.innerWidth <= 850
+                ) {
+
+                    $("sidebar")
+                        .classList
+                        .remove("open");
+
+                }
+
+            }
+        );
+
+    });
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+async function checkAuth() {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
+
+
+    if (error) {
+
+        console.error(
+            "Session:",
+            error
+        );
+
+        window.location.href =
+            "dashboard.html";
+
+        return;
+
+    }
+
+
+    const session =
+        data.session;
+
+
+    if (!session?.user) {
+
+        window.location.href =
+            "dashboard.html";
+
+        return;
+
+    }
+
+
+    currentUser =
+        session.user;
+
+
+    updateUserInterface(
+        currentUser
+    );
+
+
+    const hasStudy =
+        await loadSavedStudy();
+
+
+    if (hasStudy) {
+
+        showFeed();
+
+    } else {
+
+        $("setupView").style.display =
+            "block";
+
+        $("feedView").style.display =
+            "none";
+
+        goToStep(1);
+
+    }
+
+}
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+supabaseClient
+    .auth
+    .onAuthStateChange(
+        function(event, session) {
+
+            if (
+                event ===
+                    "SIGNED_OUT"
+            ) {
+
+                window.location.href =
+                    "dashboard.html";
+
+                return;
+
+            }
+
+
+            if (
+                session?.user
+            ) {
+
+                currentUser =
+                    session.user;
+
+                updateUserInterface(
+                    currentUser
+                );
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   START
+========================================================= */
+
+checkAuth();
+
+</script>
+
+</body>
+
+</html>
