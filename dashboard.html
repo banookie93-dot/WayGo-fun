@@ -1,0 +1,3763 @@
+<!DOCTYPE html>
+<html lang="sk">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>WayGo — Dashboard</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+
+        /* =====================================================
+           RESET
+        ====================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+
+            background:
+                radial-gradient(
+                    circle at 75% 5%,
+                    rgba(139, 48, 230, .14),
+                    transparent 32%
+                ),
+                radial-gradient(
+                    circle at 15% 85%,
+                    rgba(63, 73, 190, .09),
+                    transparent 30%
+                ),
+                #03030c;
+
+            color: #fff;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+
+            position: fixed;
+
+            inset: 0;
+
+            pointer-events: none;
+
+            background-image:
+                radial-gradient(
+                    circle,
+                    rgba(255,255,255,.8) 1px,
+                    transparent 1.5px
+                ),
+                radial-gradient(
+                    circle,
+                    rgba(170,80,255,.8) 1px,
+                    transparent 1.5px
+                );
+
+            background-size:
+                150px 150px,
+                230px 230px;
+
+            opacity: .18;
+
+            z-index: -1;
+        }
+
+        button,
+        input {
+            font-family: inherit;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+
+        /* =====================================================
+           APP
+        ====================================================== */
+
+        .app {
+            min-height: 100vh;
+            display: flex;
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+        ====================================================== */
+
+        .sidebar {
+            width: 245px;
+
+            min-height: 100vh;
+
+            position: fixed;
+
+            left: 0;
+            top: 0;
+            bottom: 0;
+
+            z-index: 50;
+
+            padding: 25px 15px;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(11,8,25,.98),
+                    rgba(5,5,16,.99)
+                );
+
+            border-right:
+                1px solid rgba(157,76,235,.25);
+
+            box-shadow:
+                10px 0 35px rgba(0,0,0,.25);
+        }
+
+        .logo {
+            display: flex;
+
+            align-items: center;
+
+            padding:
+                0 15px 30px;
+
+            font-size: 29px;
+
+            font-weight: 800;
+
+            letter-spacing: -2px;
+        }
+
+        .logo span,
+        .auth-logo span {
+            background:
+                linear-gradient(
+                    90deg,
+                    #8d38ff,
+                    #d567ff,
+                    #657eff
+                );
+
+            -webkit-background-clip: text;
+            background-clip: text;
+
+            color: transparent;
+        }
+
+        .menu-label {
+            padding:
+                0 15px 10px;
+
+            color: #514b5d;
+
+            font-size: 9px;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+        }
+
+        .menu {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 4px;
+        }
+
+        .menu-item {
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 12px 14px;
+
+            border-radius: 10px;
+
+            color: #827b8e;
+
+            font-size: 12px;
+
+            transition: .25s;
+        }
+
+        .menu-item:hover {
+            color: #d5cbe1;
+
+            background:
+                rgba(122,44,185,.10);
+
+            transform: translateX(2px);
+        }
+
+        .menu-item.active {
+            color: #fff;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(132,43,194,.28),
+                    rgba(77,43,150,.10)
+                );
+
+            border:
+                1px solid rgba(160,67,239,.25);
+
+            box-shadow:
+                inset 3px 0 0 #a64dff,
+                0 0 20px rgba(129,45,207,.08);
+        }
+
+        .menu-icon {
+            width: 21px;
+
+            text-align: center;
+
+            color: #a960ed;
+
+            font-size: 15px;
+        }
+
+        .menu-item.active .menu-icon {
+            color: #cf6cff;
+
+            filter:
+                drop-shadow(
+                    0 0 7px #a43eff
+                );
+        }
+
+        .sidebar-bottom {
+            position: absolute;
+
+            left: 15px;
+            right: 15px;
+
+            bottom: 20px;
+
+            padding-top: 15px;
+
+            border-top:
+                1px solid rgba(139,76,194,.12);
+        }
+
+        .mini-user {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 10px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(106,41,160,.08);
+        }
+
+        .avatar-small {
+            width: 35px;
+            height: 35px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background:
+                radial-gradient(
+                    circle at 30% 25%,
+                    #b968ff,
+                    #5422a0 60%,
+                    #130a2c
+                );
+
+            border:
+                1px solid #9347e7;
+
+            font-size: 13px;
+
+            box-shadow:
+                0 0 15px rgba(149,55,255,.25);
+        }
+
+        .mini-user-text {
+            overflow: hidden;
+        }
+
+        .mini-user-text strong {
+            display: block;
+
+            color: #d7cedf;
+
+            font-size: 11px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+        .mini-user-text span {
+            color: #6d6578;
+
+            font-size: 9px;
+        }
+
+        .logout-button {
+            width: 100%;
+
+            padding: 10px;
+
+            margin-top: 10px;
+
+            border-radius: 8px;
+
+            border:
+                1px solid rgba(255,80,130,.15);
+
+            background:
+                rgba(255,50,100,.05);
+
+            color: #a77889;
+
+            cursor: pointer;
+
+            font-size: 9px;
+
+            transition: .25s;
+        }
+
+        .logout-button:hover {
+            color: #ff86ad;
+
+            background:
+                rgba(255,50,100,.1);
+
+            border-color:
+                rgba(255,80,130,.28);
+        }
+
+
+        /* =====================================================
+           MAIN
+        ====================================================== */
+
+        .main {
+            width: calc(100% - 245px);
+
+            margin-left: 245px;
+
+            padding:
+                30px 35px 50px;
+        }
+
+
+        /* =====================================================
+           TOPBAR
+        ====================================================== */
+
+        .topbar {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            font-size: 25px;
+
+            letter-spacing: -.5px;
+        }
+
+        .page-title p {
+            margin-top: 6px;
+
+            color: #777080;
+
+            font-size: 11px;
+        }
+
+        .top-actions {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+        .notification,
+        .mobile-menu {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            border:
+                1px solid rgba(139,72,198,.3);
+
+            background:
+                rgba(22,16,37,.75);
+
+            color: #b46bff;
+
+            cursor: pointer;
+
+            transition: .25s;
+        }
+
+        .notification:hover,
+        .mobile-menu:hover {
+            color: #e1b7ff;
+
+            border-color:
+                rgba(174,91,255,.55);
+
+            box-shadow:
+                0 0 18px rgba(151,55,235,.12);
+        }
+
+        .profile {
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            padding:
+                5px 10px 5px 5px;
+
+            border:
+                1px solid rgba(139,72,198,.25);
+
+            border-radius: 12px;
+
+            background:
+                rgba(21,16,34,.7);
+        }
+
+        .profile-avatar {
+            width: 32px;
+            height: 32px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #8f40ed,
+                    #29145a
+                );
+
+            font-size: 11px;
+        }
+
+        .profile-name {
+            max-width: 150px;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+            font-size: 10px;
+
+            color: #bcb3c8;
+        }
+
+
+        /* =====================================================
+           DASHBOARD GRID
+        ====================================================== */
+
+        .dashboard-grid {
+            display: grid;
+
+            grid-template-columns:
+                minmax(0, 1.6fr)
+                minmax(280px, .8fr);
+
+            gap: 18px;
+        }
+
+        .left-column,
+        .right-column {
+            min-width: 0;
+        }
+
+
+        /* =====================================================
+           CARD
+        ====================================================== */
+
+        .card {
+            position: relative;
+
+            border:
+                1px solid rgba(139,70,204,.24);
+
+            border-radius: 15px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(18,13,32,.92),
+                    rgba(7,7,18,.94)
+                );
+
+            box-shadow:
+                inset 0 0 35px rgba(118,38,190,.025),
+                0 10px 30px rgba(0,0,0,.18);
+
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 1px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(186,91,255,.35),
+                    transparent
+                );
+
+            opacity: .6;
+        }
+
+        .card-title {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 18px;
+        }
+
+        .card-title h2 {
+            font-size: 13px;
+        }
+
+        .card-title span {
+            color: #665f6d;
+
+            font-size: 9px;
+
+            letter-spacing: .5px;
+        }
+
+
+        /* =====================================================
+           PROFILE
+        ====================================================== */
+
+        .profile-card {
+            padding: 20px;
+        }
+
+        .profile-main {
+            display: grid;
+
+            grid-template-columns:
+                auto 1fr auto;
+
+            align-items: center;
+
+            gap: 15px;
+        }
+
+        .big-avatar {
+            width: 65px;
+            height: 65px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 22px;
+
+            background:
+                radial-gradient(
+                    circle at 30% 25%,
+                    #bc6eff,
+                    #5221a1 55%,
+                    #110722
+                );
+
+            border:
+                2px solid #984bf1;
+
+            box-shadow:
+                0 0 25px rgba(147,54,255,.25);
+        }
+
+        .user-name {
+            font-size: 17px;
+
+            font-weight: 700;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+        .user-level {
+            margin-top: 4px;
+
+            color: #8f849a;
+
+            font-size: 9px;
+        }
+
+        .pro-xp {
+            text-align: right;
+        }
+
+        .pro-xp strong {
+            display: block;
+
+            color: #d064ff;
+
+            font-size: 16px;
+        }
+
+        .pro-xp span {
+            color: #5d5667;
+
+            font-size: 8px;
+        }
+
+        .xp-line {
+            height: 5px;
+
+            margin-top: 8px;
+
+            width: 150px;
+
+            background: #1d1928;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+        .xp-line span {
+            display: block;
+
+            width: 0%;
+
+            height: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #6e2bd0,
+                    #d55cff
+                );
+
+            box-shadow:
+                0 0 8px #9e42ff;
+        }
+
+
+        /* =====================================================
+           STATS
+        ====================================================== */
+
+        .stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 10px;
+
+            margin-top: 20px;
+        }
+
+        .stat {
+            padding: 13px;
+
+            border-radius: 10px;
+
+            background:
+                rgba(11,10,23,.8);
+
+            border:
+                1px solid rgba(128,67,187,.18);
+
+            transition: .25s;
+        }
+
+        .stat:hover {
+            border-color:
+                rgba(168,76,240,.32);
+
+            transform:
+                translateY(-2px);
+        }
+
+        .stat-label {
+            color: #676071;
+
+            font-size: 8px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            margin-top: 7px;
+
+            font-size: 18px;
+
+            color: #c9bfda;
+        }
+
+        .stat-change {
+            margin-top: 3px;
+
+            color: #58cda5;
+
+            font-size: 8px;
+        }
+
+
+        /* =====================================================
+           CHART
+        ====================================================== */
+
+        .chart-card {
+            padding: 20px;
+
+            margin-top: 18px;
+        }
+
+        .chart {
+            height: 210px;
+
+            position: relative;
+
+            display: flex;
+
+            align-items: flex-end;
+
+            gap: 10px;
+
+            padding:
+                10px 10px 25px 35px;
+
+            overflow: hidden;
+        }
+
+        .chart::before {
+            content: "";
+
+            position: absolute;
+
+            inset:
+                10px 10px 25px 35px;
+
+            background:
+                repeating-linear-gradient(
+                    to bottom,
+                    transparent 0,
+                    transparent 39px,
+                    rgba(119,89,155,.12) 40px
+                );
+        }
+
+        .chart-labels {
+            position: absolute;
+
+            left: 0;
+            top: 8px;
+            bottom: 25px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            color: #514b5a;
+
+            font-size: 7px;
+        }
+
+        .bar {
+            flex: 1;
+
+            position: relative;
+
+            max-width: 45px;
+
+            min-width: 8px;
+
+            height: 0%;
+
+            border-radius:
+                5px 5px 2px 2px;
+
+            background:
+                linear-gradient(
+                    to top,
+                    rgba(93,33,174,.25),
+                    rgba(181,72,255,.8)
+                );
+
+            box-shadow:
+                0 0 10px rgba(151,50,255,.12);
+        }
+
+        .chart-days {
+            position: absolute;
+
+            left: 35px;
+            right: 10px;
+            bottom: 4px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            color: #514b5a;
+
+            font-size: 7px;
+        }
+
+
+        /* =====================================================
+           SUBJECTS
+        ====================================================== */
+
+        .subjects-card {
+            padding: 20px;
+
+            margin-top: 18px;
+        }
+
+        .subject-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 10px;
+        }
+
+        .subject-card {
+            padding: 15px;
+
+            border-radius: 10px;
+
+            border:
+                1px solid rgba(125,65,186,.17);
+
+            background:
+                rgba(8,8,19,.7);
+
+            transition: .25s;
+        }
+
+        .subject-card:hover {
+            border-color:
+                rgba(168,76,240,.38);
+
+            background:
+                rgba(18,11,31,.8);
+
+            transform:
+                translateY(-2px);
+        }
+
+        .subject-top {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+        }
+
+        .subject-icon {
+            width: 27px;
+            height: 27px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 7px;
+
+            background:
+                rgba(131,48,211,.15);
+
+            color: #bc61ff;
+
+            font-size: 12px;
+        }
+
+        .subject-percent {
+            color: #b69acb;
+
+            font-size: 9px;
+        }
+
+        .subject-name {
+            margin-top: 11px;
+
+            color: #a9a0b3;
+
+            font-size: 10px;
+
+            min-height: 24px;
+        }
+
+        .subject-line {
+            height: 4px;
+
+            margin-top: 8px;
+
+            border-radius: 10px;
+
+            background: #1c1927;
+
+            overflow: hidden;
+        }
+
+        .subject-line span {
+            display: block;
+
+            height: 100%;
+
+            width: 0%;
+
+            border-radius: inherit;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #6828c7,
+                    #bd56ff
+                );
+        }
+
+
+        /* =====================================================
+           ACTIVITY
+        ====================================================== */
+
+        .activity-card {
+            padding: 20px;
+
+            margin-top: 18px;
+        }
+
+        .activity {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 12px 0;
+
+            border-bottom:
+                1px solid rgba(128,69,180,.1);
+        }
+
+        .activity:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+
+            flex-shrink: 0;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 8px;
+
+            background:
+                rgba(121,43,193,.14);
+
+            color: #bd61ff;
+        }
+
+        .activity-text {
+            flex: 1;
+
+            min-width: 0;
+        }
+
+        .activity-text strong {
+            display: block;
+
+            color: #aaa1b2;
+
+            font-size: 10px;
+        }
+
+        .activity-text span {
+            display: block;
+
+            margin-top: 3px;
+
+            color: #5e5767;
+
+            font-size: 8px;
+        }
+
+        .activity-time {
+            flex-shrink: 0;
+
+            color: #554e5e;
+
+            font-size: 8px;
+        }
+
+
+        /* =====================================================
+           TOPICS
+        ====================================================== */
+
+        .topics-card {
+            padding: 20px;
+
+            height: 100%;
+        }
+
+        .topic-chart {
+            height: 170px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+        }
+
+        .donut {
+            width: 130px;
+            height: 130px;
+
+            border-radius: 50%;
+
+            background:
+                conic-gradient(
+                    #27212f 0 100%
+                );
+
+            box-shadow:
+                0 0 25px rgba(132,49,255,.15);
+
+            position: relative;
+        }
+
+        .donut::after {
+            content: "";
+
+            position: absolute;
+
+            width: 78px;
+            height: 78px;
+
+            left: 26px;
+            top: 26px;
+
+            border-radius: 50%;
+
+            background: #0b0915;
+        }
+
+        .topic-list {
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 9px;
+
+            margin-top: 8px;
+        }
+
+        .topic {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            color: #8e8597;
+
+            font-size: 9px;
+        }
+
+        .topic-left {
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+        }
+
+        .purple {
+            background: #a94fff;
+        }
+
+        .blue {
+            background: #4f8eff;
+        }
+
+        .pink {
+            background: #eb5fcb;
+        }
+
+        .cyan {
+            background: #61c6ff;
+        }
+
+        .gray {
+            background: #71677d;
+        }
+
+        .topic-value {
+            color: #c2b7cb;
+        }
+
+
+        /* =====================================================
+           GOAL
+        ====================================================== */
+
+        .goal-card {
+            padding: 20px;
+
+            margin-top: 18px;
+        }
+
+        .goal-circle {
+            width: 150px;
+            height: 150px;
+
+            margin: 15px auto 20px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            background:
+                radial-gradient(
+                    circle,
+                    #0c0917 58%,
+                    transparent 59%
+                ),
+                conic-gradient(
+                    #21192d 0 100%
+                );
+
+            box-shadow:
+                0 0 30px rgba(151,52,255,.15);
+        }
+
+        .goal-circle strong {
+            font-size: 27px;
+        }
+
+        .goal-circle span {
+            margin-top: 4px;
+
+            color: #71697a;
+
+            font-size: 8px;
+        }
+
+        .goal-description {
+            text-align: center;
+
+            color: #777080;
+
+            font-size: 9px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           STREAK
+        ====================================================== */
+
+        .streak-card {
+            padding: 20px;
+
+            margin-top: 18px;
+        }
+
+        .streak-number {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin: 15px 0;
+        }
+
+        .fire {
+            font-size: 28px;
+
+            filter:
+                drop-shadow(
+                    0 0 10px #ff6c34
+                );
+        }
+
+        .streak-number strong {
+            font-size: 25px;
+
+            color: #d7cde0;
+        }
+
+        .streak-number span {
+            color: #746b7c;
+
+            font-size: 9px;
+        }
+
+        .week {
+            display: grid;
+
+            grid-template-columns:
+                repeat(7, 1fr);
+
+            gap: 5px;
+        }
+
+        .day {
+            text-align: center;
+
+            color: #5d5665;
+
+            font-size: 7px;
+        }
+
+        .day-dot {
+            width: 21px;
+            height: 21px;
+
+            margin: 5px auto 0;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            border:
+                1px solid rgba(128,68,178,.2);
+
+            font-size: 8px;
+        }
+
+
+        /* =====================================================
+           QUICK ACTIONS
+        ====================================================== */
+
+        .quick-card {
+            padding: 20px;
+
+            margin-top: 18px;
+        }
+
+        .quick {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 10px;
+
+            margin-top: 7px;
+
+            border-radius: 9px;
+
+            border:
+                1px solid rgba(125,66,184,.15);
+
+            background:
+                rgba(11,9,20,.6);
+
+            color: #918799;
+
+            font-size: 9px;
+
+            transition: .25s;
+        }
+
+        .quick:hover {
+            border-color:
+                rgba(168,76,240,.45);
+
+            color: #d4c7df;
+
+            background:
+                rgba(100,35,158,.12);
+
+            transform:
+                translateX(2px);
+        }
+
+        .quick-icon {
+            color: #b257f5;
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           MOBILE BUTTON
+        ====================================================== */
+
+        .mobile-menu {
+            display: none;
+        }
+
+
+        /* =====================================================
+           AUTH OVERLAY
+        ====================================================== */
+
+        .auth-overlay {
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 99999;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            background:
+                rgba(2,1,8,.88);
+
+            backdrop-filter:
+                blur(16px);
+
+            -webkit-backdrop-filter:
+                blur(16px);
+        }
+
+        .auth-modal {
+            width: 100%;
+
+            max-width: 420px;
+
+            padding: 35px;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(22,14,38,.99),
+                    rgba(7,6,17,.99)
+                );
+
+            border:
+                1px solid rgba(168,73,244,.38);
+
+            box-shadow:
+                0 0 80px rgba(119,38,214,.20),
+                0 25px 80px rgba(0,0,0,.65);
+
+            animation:
+                authAppear .4s ease;
+        }
+
+        @keyframes authAppear {
+
+            from {
+                opacity: 0;
+
+                transform:
+                    translateY(15px)
+                    scale(.97);
+            }
+
+            to {
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+
+        }
+
+        .auth-logo {
+            text-align: center;
+
+            margin-bottom: 28px;
+
+            font-size: 31px;
+
+            font-weight: 800;
+
+            letter-spacing: -2px;
+        }
+
+        .auth-heading {
+            text-align: center;
+
+            margin-bottom: 25px;
+        }
+
+        .auth-heading h1 {
+            font-size: 23px;
+
+            margin-bottom: 7px;
+        }
+
+        .auth-heading p {
+            color: #716979;
+
+            font-size: 10px;
+        }
+
+        .auth-content form {
+            display: flex;
+
+            flex-direction: column;
+        }
+
+        .auth-content label {
+            margin-bottom: 7px;
+
+            color: #95899f;
+
+            font-size: 9px;
+        }
+
+        .auth-content input {
+            width: 100%;
+
+            height: 44px;
+
+            margin-bottom: 15px;
+
+            padding:
+                0 13px;
+
+            border-radius: 9px;
+
+            outline: none;
+
+            border:
+                1px solid rgba(130,72,180,.25);
+
+            background:
+                rgba(6,5,15,.85);
+
+            color: white;
+
+            font-size: 11px;
+
+            transition: .25s;
+        }
+
+        .auth-content input::placeholder {
+            color: #4e4856;
+        }
+
+        .auth-content input:focus {
+            border-color:
+                #a64cff;
+
+            box-shadow:
+                0 0 15px
+                rgba(158,66,255,.12);
+        }
+
+        .auth-options {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            margin:
+                -2px 0 18px;
+        }
+
+        .auth-options a {
+            color: #a952e8;
+
+            font-size: 8px;
+        }
+
+        .remember {
+            display: flex !important;
+
+            align-items: center;
+
+            gap: 6px;
+
+            margin: 0 !important;
+        }
+
+        .remember input {
+            width: 12px !important;
+            height: 12px !important;
+
+            margin: 0 !important;
+
+            accent-color: #a64cff;
+        }
+
+        .remember span {
+            color: #625b6a;
+
+            font-size: 8px;
+        }
+
+        .auth-button {
+            width: 100%;
+
+            height: 45px;
+
+            border: none;
+
+            border-radius: 9px;
+
+            cursor: pointer;
+
+            color: white;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #6d27ce,
+                    #ad42ec
+                );
+
+            box-shadow:
+                0 0 20px
+                rgba(151,55,235,.18);
+
+            transition: .25s;
+        }
+
+        .auth-button:hover {
+            transform:
+                translateY(-1px);
+
+            box-shadow:
+                0 0 30px
+                rgba(168,65,255,.3);
+        }
+
+        .auth-button:disabled {
+            opacity: .6;
+
+            cursor: wait;
+
+            transform: none;
+        }
+
+        .auth-switch {
+            text-align: center;
+
+            margin-top: 22px;
+
+            color: #5e5667;
+
+            font-size: 9px;
+        }
+
+        .auth-switch button {
+            border: none;
+
+            background: none;
+
+            color: #b454f3;
+
+            cursor: pointer;
+
+            font-size: 9px;
+
+            margin-left: 3px;
+        }
+
+        .auth-switch button:hover {
+            color: #d276ff;
+        }
+
+        .auth-message {
+            display: none;
+
+            margin-bottom: 15px;
+
+            padding: 10px;
+
+            border-radius: 8px;
+
+            font-size: 9px;
+
+            line-height: 1.5;
+        }
+
+        .auth-message.error {
+            display: block;
+
+            color: #ff8fba;
+
+            background:
+                rgba(255,50,120,.08);
+
+            border:
+                1px solid rgba(255,50,120,.18);
+        }
+
+        .auth-message.success {
+            display: block;
+
+            color: #73e5b5;
+
+            background:
+                rgba(40,210,140,.07);
+
+            border:
+                1px solid rgba(40,210,140,.16);
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ====================================================== */
+
+        @media(max-width: 1150px) {
+
+            .sidebar {
+                width: 210px;
+            }
+
+            .main {
+                width: calc(100% - 210px);
+
+                margin-left: 210px;
+
+                padding-left: 22px;
+                padding-right: 22px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .right-column {
+                display: grid;
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                gap: 18px;
+
+                align-items: start;
+            }
+
+            .right-column .streak-card,
+            .right-column .quick-card {
+                margin-top: 0;
+            }
+
+            .right-column .topics-card {
+                height: auto;
+            }
+
+        }
+
+
+        @media(max-width: 850px) {
+
+            .sidebar {
+                transform:
+                    translateX(-100%);
+
+                transition: .3s;
+            }
+
+            .sidebar.open {
+                transform:
+                    translateX(0);
+            }
+
+            .main {
+                width: 100%;
+
+                margin-left: 0;
+
+                padding:
+                    20px 15px 40px;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .topbar {
+                gap: 10px;
+            }
+
+            .page-title {
+                display: flex;
+
+                align-items: center;
+
+                gap: 10px;
+            }
+
+            .subject-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media(max-width: 600px) {
+
+            .topbar {
+                margin-bottom: 20px;
+            }
+
+            .page-title h1 {
+                font-size: 21px;
+            }
+
+            .page-title p {
+                font-size: 9px;
+            }
+
+            .profile-main {
+                grid-template-columns:
+                    auto 1fr;
+            }
+
+            .pro-xp {
+                grid-column:
+                    1 / -1;
+
+                text-align: left;
+            }
+
+            .xp-line {
+                width: 100%;
+            }
+
+            .stats {
+                grid-template-columns:
+                    1fr;
+            }
+
+            .right-column {
+                display: block;
+            }
+
+            .right-column .streak-card,
+            .right-column .quick-card {
+                margin-top: 18px;
+            }
+
+            .subject-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+            .profile-name {
+                display: none;
+            }
+
+            .notification {
+                display: none;
+            }
+
+            .chart {
+                gap: 5px;
+            }
+
+            .activity-time {
+                display: none;
+            }
+
+            .auth-modal {
+                padding:
+                    27px 22px;
+
+                border-radius:
+                    16px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     AUTH
+====================================================== -->
+
+<div
+    class="auth-overlay"
+    id="authOverlay"
+>
+
+    <div class="auth-modal">
+
+        <div class="auth-logo">
+            Way<span>Go</span>
+        </div>
+
+
+        <!-- LOGIN -->
+
+        <div
+            class="auth-content"
+            id="loginContent"
+        >
+
+            <div class="auth-heading">
+
+                <h1>
+                    Vitaj späť
+                </h1>
+
+                <p>
+                    Prihlás sa do svojho WayGo účtu
+                </p>
+
+            </div>
+
+
+            <div
+                id="loginMessage"
+                class="auth-message"
+            ></div>
+
+
+            <form id="loginForm">
+
+                <label for="loginEmail">
+                    E-mail
+                </label>
+
+                <input
+                    type="email"
+                    id="loginEmail"
+                    placeholder="tvoj@email.com"
+                    autocomplete="email"
+                    required
+                >
+
+
+                <label for="loginPassword">
+                    Heslo
+                </label>
+
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="••••••••"
+                    autocomplete="current-password"
+                    required
+                >
+
+
+                <div class="auth-options">
+
+                    <label class="remember">
+
+                        <input
+                            type="checkbox"
+                        >
+
+                        <span>
+                            Zapamätať si ma
+                        </span>
+
+                    </label>
+
+
+                    <a href="#">
+                        Zabudol/a si heslo?
+                    </a>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="auth-button"
+                    id="loginButton"
+                >
+                    Prihlásiť sa
+                </button>
+
+            </form>
+
+
+            <p class="auth-switch">
+
+                Nemáš účet?
+
+                <button
+                    type="button"
+                    onclick="showRegister()"
+                >
+                    Zaregistruj sa
+                </button>
+
+            </p>
+
+        </div>
+
+
+        <!-- REGISTER -->
+
+        <div
+            class="auth-content"
+            id="registerContent"
+            style="display:none;"
+        >
+
+            <div class="auth-heading">
+
+                <h1>
+                    Vytvor si účet
+                </h1>
+
+                <p>
+                    Začni svoju cestu s WayGo
+                </p>
+
+            </div>
+
+
+            <div
+                id="registerMessage"
+                class="auth-message"
+            ></div>
+
+
+            <form id="registerForm">
+
+                <label for="registerName">
+                    Meno
+                </label>
+
+                <input
+                    type="text"
+                    id="registerName"
+                    placeholder="Tvoje meno"
+                    autocomplete="name"
+                    required
+                >
+
+
+                <label for="registerEmail">
+                    E-mail
+                </label>
+
+                <input
+                    type="email"
+                    id="registerEmail"
+                    placeholder="tvoj@email.com"
+                    autocomplete="email"
+                    required
+                >
+
+
+                <label for="registerPassword">
+                    Heslo
+                </label>
+
+                <input
+                    type="password"
+                    id="registerPassword"
+                    placeholder="Min. 8 znakov"
+                    autocomplete="new-password"
+                    minlength="8"
+                    required
+                >
+
+
+                <label for="registerPassword2">
+                    Zopakuj heslo
+                </label>
+
+                <input
+                    type="password"
+                    id="registerPassword2"
+                    placeholder="••••••••"
+                    autocomplete="new-password"
+                    minlength="8"
+                    required
+                >
+
+
+                <button
+                    type="submit"
+                    class="auth-button"
+                    id="registerButton"
+                >
+                    Vytvoriť účet
+                </button>
+
+            </form>
+
+
+            <p class="auth-switch">
+
+                Už máš účet?
+
+                <button
+                    type="button"
+                    onclick="showLogin()"
+                >
+                    Prihlás sa
+                </button>
+
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     APP
+====================================================== -->
+
+<div class="app">
+
+
+    <!-- SIDEBAR -->
+
+    <aside
+        class="sidebar"
+        id="sidebar"
+    >
+
+        <a
+            href="home.html"
+            class="logo"
+        >
+            Way<span>Go</span>
+        </a>
+
+
+        <div class="menu-label">
+            MENU
+        </div>
+<nav class="menu">
+
+    <!-- PREHĽAD -->
+    <a
+        href="dashboard.html"
+        class="menu-item active"
+    >
+        <span class="menu-icon">⌂</span>
+        Prehľad
+    </a>
+
+
+    <div class="menu-label">
+        KATEGÓRIE
+    </div>
+
+
+    <!-- MOJE ŠTÚDIUM -->
+    <a
+        href="study.html"
+        class="menu-item"
+    >
+        <span class="menu-icon">▣</span>
+        Moje štúdium
+    </a>
+
+
+    <!-- MÔJ OSOBNÝ RAST -->
+    <a
+        href="personal-growth.html"
+        class="menu-item"
+    >
+        <span class="menu-icon">✦</span>
+        Môj osobný rast
+    </a>
+
+
+    <!-- MÔJ ŠPORT -->
+    <a
+        href="sport.html"
+        class="menu-item"
+    >
+        <span class="menu-icon">⚡</span>
+        Môj šport
+    </a>
+
+
+    <!-- SOCIÁL -->
+    <a
+        href="social.html"
+        class="menu-item"
+    >
+        <span class="menu-icon">♧</span>
+        Sociál
+    </a>
+
+
+    <br>
+
+
+    <div class="menu-label">
+        OSTATNÉ
+    </div>
+
+
+    <!-- OBĽÚBENÉ -->
+    <a
+        href="#"
+        class="menu-item"
+    >
+        <span class="menu-icon">♡</span>
+        Obľúbené
+    </a>
+
+
+    <!-- NASTAVENIA -->
+    <a
+        href="#"
+        class="menu-item"
+    >
+        <span class="menu-icon">⚙</span>
+        Nastavenia
+    </a>
+
+</nav>
+
+
+
+        <div class="sidebar-bottom">
+
+            <div class="mini-user">
+
+                <div
+                    class="avatar-small"
+                    id="sidebarAvatar"
+                >
+                    V
+                </div>
+
+
+                <div class="mini-user-text">
+
+                    <strong id="sidebarUserName">
+                        Používateľ
+                    </strong>
+
+                    <span id="sidebarUserLevel">
+                        Účet
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="logout-button"
+                onclick="logout()"
+            >
+                Odhlásiť sa
+            </button>
+
+        </div>
+
+    </aside>
+
+
+
+    <!-- MAIN -->
+
+    <main class="main">
+
+
+        <!-- TOPBAR -->
+
+        <div class="topbar">
+
+            <div class="page-title">
+
+                <button
+                    class="mobile-menu"
+                    onclick="toggleSidebar()"
+                >
+                    ☰
+                </button>
+
+
+                <div>
+
+                    <h1>
+                        Prehľad
+                    </h1>
+
+                    <p>
+                        Vitaj späť. Pokračuj vo svojej ceste.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="top-actions">
+
+                <button
+                    class="notification"
+                    type="button"
+                    aria-label="Notifikácie"
+                >
+                    ♧
+                </button>
+
+
+                <div class="profile">
+
+                    <div
+                        class="profile-avatar"
+                        id="profileAvatar"
+                    >
+                        V
+                    </div>
+
+
+                    <span
+                        class="profile-name"
+                        id="profileName"
+                    >
+                        Používateľ
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- DASHBOARD -->
+
+        <div class="dashboard-grid">
+
+
+            <!-- =================================================
+                 LEFT COLUMN
+            ================================================== -->
+
+            <div class="left-column">
+
+
+                <!-- PROFILE -->
+
+                <section class="card profile-card">
+
+                    <div class="profile-main">
+
+                        <div
+                            class="big-avatar"
+                            id="bigAvatar"
+                        >
+                            V
+                        </div>
+
+
+                        <div>
+
+                            <div
+                                class="user-name"
+                                id="dashboardUserName"
+                            >
+                                Používateľ
+                            </div>
+
+                            <div
+                                class="user-level"
+                                id="dashboardUserLevel"
+                            >
+                                Tvoj WayGo účet
+                            </div>
+
+                        </div>
+
+
+                        <div class="pro-xp">
+
+                            <strong id="xpValue">
+                                —
+                            </strong>
+
+                            <span id="xpText">
+                                XP
+                            </span>
+
+                            <div class="xp-line">
+
+                                <span id="xpProgress"></span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="stats">
+
+
+                        <div class="stat">
+
+                            <div class="stat-label">
+                                Séria dní
+                            </div>
+
+                            <div
+                                class="stat-value"
+                                id="streakValue"
+                            >
+                                —
+                            </div>
+
+                            <div
+                                class="stat-change"
+                                id="streakChange"
+                            >
+                                —
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat">
+
+                            <div class="stat-label">
+                                Čas učenia
+                            </div>
+
+                            <div
+                                class="stat-value"
+                                id="studyTimeValue"
+                            >
+                                —
+                            </div>
+
+                            <div
+                                class="stat-change"
+                                id="studyTimeChange"
+                            >
+                                —
+                            </div>
+
+                        </div>
+
+
+                        <div class="stat">
+
+                            <div class="stat-label">
+                                Dokončené
+                            </div>
+
+                            <div
+                                class="stat-value"
+                                id="completedValue"
+                            >
+                                —
+                            </div>
+
+                            <div
+                                class="stat-change"
+                                id="completedChange"
+                            >
+                                —
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- PROGRESS -->
+
+                <section class="card chart-card">
+
+                    <div class="card-title">
+
+                        <h2>
+                            Tvoj progres
+                        </h2>
+
+                        <span>
+                            ÚDAJE Z ÚČTU
+                        </span>
+
+                    </div>
+
+
+                    <div class="chart">
+
+
+                        <div class="chart-labels">
+
+                            <span>100%</span>
+                            <span>75%</span>
+                            <span>50%</span>
+                            <span>25%</span>
+                            <span>0%</span>
+
+                        </div>
+
+
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+                        <div class="bar"></div>
+
+
+                        <div class="chart-days">
+
+                            <span>—</span>
+                            <span>—</span>
+                            <span>—</span>
+                            <span>—</span>
+                            <span>—</span>
+                            <span>—</span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- SUBJECTS -->
+
+                <section class="card subjects-card">
+
+                    <div class="card-title">
+
+                        <h2>
+                            Moje predmety
+                        </h2>
+
+                        <span>
+                            ZOZNAM
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="subject-grid"
+                        id="subjectGrid"
+                    >
+
+                        <div class="subject-card">
+
+                            <div class="subject-top">
+
+                                <div class="subject-icon">
+                                    —
+                                </div>
+
+                                <div class="subject-percent">
+                                    —
+                                </div>
+
+                            </div>
+
+                            <div class="subject-name">
+                                Zatiaľ žiadne údaje
+                            </div>
+
+                            <div class="subject-line">
+                                <span></span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- ACTIVITY -->
+
+                <section class="card activity-card">
+
+                    <div class="card-title">
+
+                        <h2>
+                            Nedávna aktivita
+                        </h2>
+
+                        <span>
+                            AKTIVITA
+                        </span>
+
+                    </div>
+
+
+                    <div id="activityList">
+
+                        <div class="activity">
+
+                            <div class="activity-icon">
+                                —
+                            </div>
+
+                            <div class="activity-text">
+
+                                <strong>
+                                    Zatiaľ žiadna aktivita
+                                </strong>
+
+                                <span>
+                                    Aktivita sa zobrazí po napojení príslušných údajov.
+                                </span>
+
+                            </div>
+
+                            <div class="activity-time">
+                                —
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 RIGHT COLUMN
+            ================================================== -->
+
+            <div class="right-column">
+
+
+                <!-- TOPICS -->
+
+                <section class="card topics-card">
+
+                    <div class="card-title">
+
+                        <h2>
+                            Najviac času v témach
+                        </h2>
+
+                        <span>
+                            ÚDAJE
+                        </span>
+
+                    </div>
+
+
+                    <div class="topic-chart">
+
+                        <div
+                            class="donut"
+                            id="topicDonut"
+                        ></div>
+
+                    </div>
+
+
+                    <div
+                        class="topic-list"
+                        id="topicList"
+                    >
+
+                        <div class="topic">
+
+                            <div class="topic-left">
+
+                                <div class="dot gray"></div>
+
+                                Zatiaľ bez údajov
+
+                            </div>
+
+                            <div class="topic-value">
+                                —
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- GOAL -->
+
+                <section class="card goal-card">
+
+                    <div class="card-title">
+
+                        <h2>
+                            Denný cieľ
+                        </h2>
+
+                        <span>
+                            DNES
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="goal-circle"
+                        id="goalCircle"
+                    >
+
+                        <strong id="goalPercent">
+                            —
+                        </strong>
+
+                        <span id="goalMinutes">
+                            —
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="goal-description"
+                        id="goalDescription"
+                    >
+                        Denný cieľ zatiaľ nemá dostupné údaje.
+                    </div>
+
+                </section>
+
+
+
+                <!-- STREAK -->
+
+                <section class="card streak-card">
+
+                    <div class="card-title">
+
+                        <h2>
+                            Séria dní
+                        </h2>
+
+                        <span>
+                            🔥
+                        </span>
+
+                    </div>
+
+
+                    <div class="streak-number">
+
+                        <div class="fire">
+                            🔥
+                        </div>
+
+                        <strong id="bigStreakValue">
+                            —
+                        </strong>
+
+                        <span>
+                            dní za sebou
+                        </span>
+
+                    </div>
+
+
+                    <div class="week">
+
+                        <div class="day">
+                            P
+                            <div class="day-dot">—</div>
+                        </div>
+
+                        <div class="day">
+                            U
+                            <div class="day-dot">—</div>
+                        </div>
+
+                        <div class="day">
+                            S
+                            <div class="day-dot">—</div>
+                        </div>
+
+                        <div class="day">
+                            Š
+                            <div class="day-dot">—</div>
+                        </div>
+
+                        <div class="day">
+                            P
+                            <div class="day-dot">—</div>
+                        </div>
+
+                        <div class="day">
+                            S
+                            <div class="day-dot">—</div>
+                        </div>
+
+                        <div class="day">
+                            N
+                            <div class="day-dot">—</div>
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+
+                <!-- QUICK ACTIONS -->
+
+                <section class="card quick-card">
+
+                    <div class="card-title">
+
+                        <h2>
+                            Rýchle akcie
+                        </h2>
+
+                    </div>
+
+
+                    <a
+                        href="tests.html"
+                        class="quick"
+                    >
+
+                        <span class="quick-icon">
+                            ✓
+                        </span>
+
+                        Spustiť nový test
+
+                    </a>
+
+
+                    <a
+                        href="notes.html"
+                        class="quick"
+                    >
+
+                        <span class="quick-icon">
+                            ☷
+                        </span>
+
+                        Vytvoriť poznámku
+
+                    </a>
+
+
+                    <a
+                        href="videos.html"
+                        class="quick"
+                    >
+
+                        <span class="quick-icon">
+                            ▶
+                        </span>
+
+                        Pokračovať vo videu
+
+                    </a>
+
+
+                    <a
+                        href="social.html"
+                        class="quick"
+                    >
+
+                        <span class="quick-icon">
+                            ♧
+                        </span>
+
+                        Otvoriť sociálne skupiny
+
+                    </a>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+
+<script>
+
+/* =========================================================
+   SUPABASE CONFIG
+========================================================= */
+
+const SUPABASE_URL =
+    "https://bgyxmsxzfbqxtkthmflj.supabase.co";
+
+const SUPABASE_ANON_KEY =
+    "sb_publishable_AT7-5smSRbLmzF-43wn1Pg_Hs7ru49f";
+
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+    );
+
+
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const authOverlay =
+    document.getElementById("authOverlay");
+
+const loginContent =
+    document.getElementById("loginContent");
+
+const registerContent =
+    document.getElementById("registerContent");
+
+const loginMessage =
+    document.getElementById("loginMessage");
+
+const registerMessage =
+    document.getElementById("registerMessage");
+
+
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+function showMessage(
+    element,
+    message,
+    type = "error"
+) {
+
+    element.textContent = message;
+
+    element.className =
+        "auth-message " + type;
+
+}
+
+
+function clearMessage(element) {
+
+    element.textContent = "";
+
+    element.className =
+        "auth-message";
+
+}
+
+
+/* =========================================================
+   LOGIN / REGISTER SWITCH
+========================================================= */
+
+function showLogin() {
+
+    loginContent.style.display =
+        "block";
+
+    registerContent.style.display =
+        "none";
+
+    clearMessage(loginMessage);
+
+    clearMessage(registerMessage);
+
+}
+
+
+function showRegister() {
+
+    loginContent.style.display =
+        "none";
+
+    registerContent.style.display =
+        "block";
+
+    clearMessage(loginMessage);
+
+    clearMessage(registerMessage);
+
+}
+
+
+/* =========================================================
+   SAFE VALUE
+========================================================= */
+
+function safeValue(value) {
+
+    if (
+        value === null ||
+        value === undefined ||
+        value === ""
+    ) {
+
+        return "—";
+
+    }
+
+    return value;
+
+}
+
+
+/* =========================================================
+   USER UI
+========================================================= */
+
+function updateUserInterface(user) {
+
+    if (!user) {
+        return;
+    }
+
+
+    const metadata =
+        user.user_metadata || {};
+
+
+    const name =
+        metadata.full_name ||
+        metadata.name ||
+        user.email?.split("@")[0] ||
+        "Používateľ";
+
+
+    const firstLetter =
+        name
+            .charAt(0)
+            .toUpperCase();
+
+
+    document.getElementById(
+        "profileName"
+    ).textContent = name;
+
+
+    document.getElementById(
+        "dashboardUserName"
+    ).textContent = name;
+
+
+    document.getElementById(
+        "sidebarUserName"
+    ).textContent = name;
+
+
+    document.getElementById(
+        "profileAvatar"
+    ).textContent = firstLetter;
+
+
+    document.getElementById(
+        "bigAvatar"
+    ).textContent = firstLetter;
+
+
+    document.getElementById(
+        "sidebarAvatar"
+    ).textContent = firstLetter;
+
+
+    /*
+     * Supabase user_metadata môže obsahovať
+     * napr. level, xp alebo inú hodnotu,
+     * ale nič nevymýšľame.
+     */
+
+    const level =
+        metadata.level;
+
+    if (level !== undefined && level !== null) {
+
+        document.getElementById(
+            "dashboardUserLevel"
+        ).textContent =
+            "Úroveň " + level;
+
+        document.getElementById(
+            "sidebarUserLevel"
+        ).textContent =
+            "Úroveň " + level;
+
+    }
+
+
+    /*
+     * XP zobrazíme iba vtedy,
+     * ak ich používateľ skutočne má
+     * v metadata.
+     */
+
+    const xp =
+        metadata.xp;
+
+    if (xp !== undefined && xp !== null) {
+
+        document.getElementById(
+            "xpValue"
+        ).textContent =
+            Number(xp).toLocaleString("sk-SK");
+
+    }
+
+}
+
+
+/* =========================================================
+   RESET DASHBOARD DATA
+========================================================= */
+
+function resetDashboardData() {
+
+    document.getElementById(
+        "xpValue"
+    ).textContent = "—";
+
+
+    document.getElementById(
+        "xpText"
+    ).textContent = "XP";
+
+
+    document.getElementById(
+        "xpProgress"
+    ).style.width = "0%";
+
+
+    document.getElementById(
+        "streakValue"
+    ).textContent = "—";
+
+
+    document.getElementById(
+        "streakChange"
+    ).textContent = "—";
+
+
+    document.getElementById(
+        "studyTimeValue"
+    ).textContent = "—";
+
+
+    document.getElementById(
+        "studyTimeChange"
+    ).textContent = "—";
+
+
+    document.getElementById(
+        "completedValue"
+    ).textContent = "—";
+
+
+    document.getElementById(
+        "completedChange"
+    ).textContent = "—";
+
+
+    document.getElementById(
+        "bigStreakValue"
+    ).textContent = "—";
+
+
+    document.getElementById(
+        "goalPercent"
+    ).textContent = "—";
+
+
+    document.getElementById(
+        "goalMinutes"
+    ).textContent = "—";
+
+
+    document.getElementById(
+        "goalDescription"
+    ).textContent =
+        "Denný cieľ zatiaľ nemá dostupné údaje.";
+
+
+    document.getElementById(
+        "subjectGrid"
+    ).innerHTML = `
+
+        <div class="subject-card">
+
+            <div class="subject-top">
+
+                <div class="subject-icon">
+                    —
+                </div>
+
+                <div class="subject-percent">
+                    —
+                </div>
+
+            </div>
+
+            <div class="subject-name">
+                Zatiaľ žiadne údaje
+            </div>
+
+            <div class="subject-line">
+                <span></span>
+            </div>
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "activityList"
+    ).innerHTML = `
+
+        <div class="activity">
+
+            <div class="activity-icon">
+                —
+            </div>
+
+            <div class="activity-text">
+
+                <strong>
+                    Zatiaľ žiadna aktivita
+                </strong>
+
+                <span>
+                    Aktivita sa zobrazí po napojení príslušných údajov.
+                </span>
+
+            </div>
+
+            <div class="activity-time">
+                —
+            </div>
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "topicList"
+    ).innerHTML = `
+
+        <div class="topic">
+
+            <div class="topic-left">
+
+                <div class="dot gray"></div>
+
+                Zatiaľ bez údajov
+
+            </div>
+
+            <div class="topic-value">
+                —
+            </div>
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "topicDonut"
+    ).style.background =
+        "conic-gradient(#27212f 0 100%)";
+
+
+    document.querySelectorAll(
+        ".bar"
+    ).forEach(function(bar) {
+
+        bar.style.height = "0%";
+
+    });
+
+}
+
+
+/* =========================================================
+   CHECK AUTH
+========================================================= */
+
+async function checkAuth() {
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .auth
+            .getSession();
+
+
+    if (error) {
+
+        console.error(
+            "Supabase session error:",
+            error
+        );
+
+        resetDashboardData();
+
+        showLogin();
+
+        authOverlay.style.display =
+            "flex";
+
+        return;
+
+    }
+
+
+    const session =
+        data.session;
+
+
+    if (session?.user) {
+
+        updateUserInterface(
+            session.user
+        );
+
+        authOverlay.style.display =
+            "none";
+
+    } else {
+
+        resetDashboardData();
+
+        authOverlay.style.display =
+            "flex";
+
+    }
+
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+document
+    .getElementById("loginForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+            clearMessage(loginMessage);
+
+
+            const button =
+                document.getElementById(
+                    "loginButton"
+                );
+
+
+            const email =
+                document
+                    .getElementById(
+                        "loginEmail"
+                    )
+                    .value
+                    .trim();
+
+
+            const password =
+                document
+                    .getElementById(
+                        "loginPassword"
+                    )
+                    .value;
+
+
+            button.disabled = true;
+
+            button.textContent =
+                "Prihlasujem...";
+
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .auth
+                    .signInWithPassword({
+
+                        email,
+                        password
+
+                    });
+
+
+            button.disabled = false;
+
+            button.textContent =
+                "Prihlásiť sa";
+
+
+            if (error) {
+
+                console.error(error);
+
+                showMessage(
+                    loginMessage,
+                    "Nepodarilo sa prihlásiť. Skontroluj e-mail a heslo.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            updateUserInterface(
+                data.user
+            );
+
+
+            authOverlay.style.display =
+                "none";
+
+        }
+    );
+
+
+/* =========================================================
+   REGISTER
+========================================================= */
+
+document
+    .getElementById("registerForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+            clearMessage(
+                registerMessage
+            );
+
+
+            const button =
+                document.getElementById(
+                    "registerButton"
+                );
+
+
+            const name =
+                document
+                    .getElementById(
+                        "registerName"
+                    )
+                    .value
+                    .trim();
+
+
+            const email =
+                document
+                    .getElementById(
+                        "registerEmail"
+                    )
+                    .value
+                    .trim();
+
+
+            const password =
+                document
+                    .getElementById(
+                        "registerPassword"
+                    )
+                    .value;
+
+
+            const password2 =
+                document
+                    .getElementById(
+                        "registerPassword2"
+                    )
+                    .value;
+
+
+            if (password !== password2) {
+
+                showMessage(
+                    registerMessage,
+                    "Heslá sa nezhodujú.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (password.length < 8) {
+
+                showMessage(
+                    registerMessage,
+                    "Heslo musí mať minimálne 8 znakov.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            button.disabled = true;
+
+            button.textContent =
+                "Vytváram účet...";
+
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient
+                    .auth
+                    .signUp({
+
+                        email,
+                        password,
+
+                        options: {
+
+                            data: {
+
+                                full_name: name
+
+                            }
+
+                        }
+
+                    });
+
+
+            button.disabled = false;
+
+            button.textContent =
+                "Vytvoriť účet";
+
+
+            if (error) {
+
+                console.error(error);
+
+                showMessage(
+                    registerMessage,
+                    error.message,
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            if (!data.session) {
+
+                showMessage(
+                    registerMessage,
+                    "Účet bol vytvorený. Skontroluj svoj e-mail a potvrď registráciu.",
+                    "success"
+                );
+
+                return;
+
+            }
+
+
+            updateUserInterface(
+                data.user
+            );
+
+
+            authOverlay.style.display =
+                "none";
+
+        }
+    );
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+supabaseClient
+    .auth
+    .onAuthStateChange(
+        function(event, session) {
+
+            console.log(
+                "Auth event:",
+                event
+            );
+
+
+            if (session?.user) {
+
+                updateUserInterface(
+                    session.user
+                );
+
+                authOverlay.style.display =
+                    "none";
+
+            }
+
+        }
+    );
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+async function logout() {
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .auth
+            .signOut();
+
+
+    if (error) {
+
+        console.error(
+            "Logout error:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    resetDashboardData();
+
+    authOverlay.style.display =
+        "flex";
+
+    showLogin();
+
+}
+
+
+/* =========================================================
+   MOBILE SIDEBAR
+========================================================= */
+
+function toggleSidebar() {
+
+    const sidebar =
+        document.getElementById(
+            "sidebar"
+        );
+
+    sidebar.classList.toggle(
+        "open"
+    );
+
+}
+
+
+/* =========================================================
+   CLOSE MOBILE SIDEBAR
+========================================================= */
+
+document
+    .querySelectorAll(".menu-item")
+    .forEach(function(item) {
+
+        item.addEventListener(
+            "click",
+            function() {
+
+                if (
+                    window.innerWidth <= 850
+                ) {
+
+                    document
+                        .getElementById(
+                            "sidebar"
+                        )
+                        .classList
+                        .remove("open");
+
+                }
+
+            }
+        );
+
+    });
+
+
+/* =========================================================
+   START
+========================================================= */
+
+resetDashboardData();
+
+checkAuth();
+
+</script>
+
+
+</body>
+
+</html>
