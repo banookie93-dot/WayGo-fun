@@ -3259,14 +3259,17 @@
       try {
 
 
-        const { error } =
-          await supabaseClient
-
-            .from("waitlist")
-
-            .insert({
-              email: email
-            });
+       const { data, error } =
+  await supabaseClient
+    .from("waitlist")
+    .insert({
+      email: email
+    })
+    .select();
+console.log("SUPABASE RESULT:", {
+  data,
+  error
+});
 
 
         /* =========================
